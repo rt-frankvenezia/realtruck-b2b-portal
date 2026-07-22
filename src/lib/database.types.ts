@@ -1258,7 +1258,61 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      current_company_id: { Args: never; Returns: string }
+      current_email: { Args: never; Returns: string }
+      current_location_ids: { Args: never; Returns: string[] }
+      current_user_role: {
+        Args: never
+        Returns: Database["public"]["Enums"]["user_role"]
+      }
+      get_customer_facing_status: {
+        Args: { p_installation_id: string }
+        Returns: Database["public"]["Enums"]["customer_facing_status"]
+      }
+      is_realtruck_admin: { Args: never; Returns: boolean }
+      transition_installation_status: {
+        Args: {
+          p_installation_id: string
+          p_new_status: Database["public"]["Enums"]["dealer_operational_status"]
+          p_note?: string
+          p_source: Database["public"]["Enums"]["status_change_source"]
+        }
+        Returns: {
+          bed_length: string | null
+          cap_color: string | null
+          cap_finish: string | null
+          cap_model: string | null
+          company_id: string
+          completed_date: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          dealer_instructions: string | null
+          dealer_payout: number | null
+          dealer_status: Database["public"]["Enums"]["dealer_operational_status"]
+          estimated_cap_arrival_date: string | null
+          freight: number
+          id: string
+          installation_fee: number
+          location_id: string
+          msrp: number
+          order_date: string
+          order_number: string
+          scheduled_installation_date: string | null
+          surcharge: number
+          updated_at: string
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_year: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "installations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       checklist_item_key:
@@ -1272,6 +1326,14 @@ export type Database = {
         | "answered_questions"
       company_status: "active" | "suspended" | "closed" | "pending_provisioning"
       confirmation_status: "pending" | "confirmed" | "issue_reported"
+      customer_facing_status:
+        | "order_received"
+        | "shipped_to_dealer"
+        | "arrived_at_dealer"
+        | "schedule_installation"
+        | "installation_scheduled"
+        | "installed"
+        | "unavailable"
       date_proposal_status: "proposed" | "declined" | "confirmed" | "replaced"
       dealer_operational_status:
         | "requested"
@@ -1464,6 +1526,15 @@ export const Constants = {
       ],
       company_status: ["active", "suspended", "closed", "pending_provisioning"],
       confirmation_status: ["pending", "confirmed", "issue_reported"],
+      customer_facing_status: [
+        "order_received",
+        "shipped_to_dealer",
+        "arrived_at_dealer",
+        "schedule_installation",
+        "installation_scheduled",
+        "installed",
+        "unavailable",
+      ],
       date_proposal_status: ["proposed", "declined", "confirmed", "replaced"],
       dealer_operational_status: [
         "requested",
