@@ -198,16 +198,19 @@ export type Database = {
           confirmed_at: string | null
           installation_id: string
           status: Database["public"]["Enums"]["confirmation_status"]
+          submitted_at: string | null
         }
         Insert: {
           confirmed_at?: string | null
           installation_id: string
           status?: Database["public"]["Enums"]["confirmation_status"]
+          submitted_at?: string | null
         }
         Update: {
           confirmed_at?: string | null
           installation_id?: string
           status?: Database["public"]["Enums"]["confirmation_status"]
+          submitted_at?: string | null
         }
         Relationships: [
           {
@@ -1258,6 +1261,52 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_manage_installation: {
+        Args: { p_installation_id: string }
+        Returns: boolean
+      }
+      compute_installation_payout_breakdown: {
+        Args: { p_installation_id: string }
+        Returns: Json
+      }
+      confirm_installation_completion: {
+        Args: { p_installation_id: string }
+        Returns: {
+          bed_length: string | null
+          cap_color: string | null
+          cap_finish: string | null
+          cap_model: string | null
+          company_id: string
+          completed_date: string | null
+          created_at: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          dealer_instructions: string | null
+          dealer_payout: number | null
+          dealer_status: Database["public"]["Enums"]["dealer_operational_status"]
+          estimated_cap_arrival_date: string | null
+          freight: number
+          id: string
+          installation_fee: number
+          location_id: string
+          msrp: number
+          order_date: string
+          order_number: string
+          scheduled_installation_date: string | null
+          surcharge: number
+          updated_at: string
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_year: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "installations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_company_id: { Args: never; Returns: string }
       current_email: { Args: never; Returns: string }
       current_location_ids: { Args: never; Returns: string[] }
@@ -1269,7 +1318,81 @@ export type Database = {
         Args: { p_installation_id: string }
         Returns: Database["public"]["Enums"]["customer_facing_status"]
       }
+      installation_verification_status: {
+        Args: { p_installation_id: string }
+        Returns: Json
+      }
+      is_installation_customer: {
+        Args: { p_installation_id: string }
+        Returns: boolean
+      }
       is_realtruck_admin: { Args: never; Returns: boolean }
+      report_installation_issue: {
+        Args: {
+          p_description: string
+          p_installation_id: string
+          p_issue_type: Database["public"]["Enums"]["issue_type"]
+          p_photo_ids?: string[]
+        }
+        Returns: {
+          description: string | null
+          id: string
+          installation_id: string
+          issue_type: Database["public"]["Enums"]["issue_type"]
+          photo_ids: string[]
+          reported_at: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["issue_status"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "installation_issues"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      required_checklist_items: {
+        Args: never
+        Returns: Database["public"]["Enums"]["checklist_item_key"][]
+      }
+      required_photo_categories: {
+        Args: never
+        Returns: Database["public"]["Enums"]["photo_category"][]
+      }
+      resolve_installation_issue: {
+        Args: { p_issue_id: string; p_resolution_note?: string }
+        Returns: {
+          description: string | null
+          id: string
+          installation_id: string
+          issue_type: Database["public"]["Enums"]["issue_type"]
+          photo_ids: string[]
+          reported_at: string
+          resolved_at: string | null
+          status: Database["public"]["Enums"]["issue_status"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "installation_issues"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      submit_installation_verification: {
+        Args: { p_installation_id: string; p_note?: string }
+        Returns: {
+          confirmed_at: string | null
+          installation_id: string
+          status: Database["public"]["Enums"]["confirmation_status"]
+          submitted_at: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "installation_confirmations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       transition_installation_status: {
         Args: {
           p_installation_id: string
