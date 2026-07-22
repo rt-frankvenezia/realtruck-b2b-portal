@@ -299,7 +299,7 @@ export function VerificationPanel({
                   <div className="flex flex-col gap-3">
                     <Select value={issueType} onValueChange={(v) => setIssueType(v as IssueType)}>
                       <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue>{ISSUE_TYPE_LABEL[issueType]}</SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {(Object.keys(ISSUE_TYPE_LABEL) as IssueType[]).map((type) => (

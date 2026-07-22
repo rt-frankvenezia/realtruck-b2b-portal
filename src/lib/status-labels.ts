@@ -99,6 +99,54 @@ export const ISSUE_TYPE_LABEL: Record<Database['public']['Enums']['issue_type'],
   other: 'Other',
 }
 
+export const COMPANY_STATUS_LABEL: Record<Database['public']['Enums']['company_status'], string> = {
+  active: 'Active',
+  suspended: 'Suspended',
+  closed: 'Closed',
+  pending_provisioning: 'Pending Provisioning',
+}
+
+export const COMPANY_STATUS_VARIANT: Record<Database['public']['Enums']['company_status'], BadgeVariant> = {
+  active: 'default',
+  suspended: 'destructive',
+  closed: 'destructive',
+  pending_provisioning: 'outline',
+}
+
+export const LOCATION_STATUS_LABEL: Record<Database['public']['Enums']['location_status'], string> = {
+  pending_approval: 'Pending Approval',
+  active: 'Active',
+  suspended: 'Suspended',
+  closed: 'Closed',
+}
+
+export const LOCATION_STATUS_VARIANT: Record<Database['public']['Enums']['location_status'], BadgeVariant> = {
+  pending_approval: 'outline',
+  active: 'default',
+  suspended: 'destructive',
+  closed: 'destructive',
+}
+
+export const USER_ROLE_LABEL: Record<Database['public']['Enums']['user_role'], string> = {
+  realtruck_admin: 'RealTruck Admin',
+  dealer_admin: 'Dealer Admin',
+  location_admin: 'Location Admin',
+  staff: 'Staff',
+  customer: 'Customer',
+}
+
+export const USER_STATUS_LABEL: Record<Database['public']['Enums']['user_status'], string> = {
+  invited: 'Invited',
+  active: 'Active',
+  disabled: 'Disabled',
+}
+
+export const USER_STATUS_VARIANT: Record<Database['public']['Enums']['user_status'], BadgeVariant> = {
+  invited: 'outline',
+  active: 'default',
+  disabled: 'destructive',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount

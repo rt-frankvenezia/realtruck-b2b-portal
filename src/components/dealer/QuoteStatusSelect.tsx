@@ -32,7 +32,7 @@ export function QuoteStatusSelect({ quoteId, status }: { quoteId: string; status
   return (
     <Select value={status} onValueChange={(v) => handleChange(v as QuoteStatus)} disabled={isPending}>
       <SelectTrigger className="w-48">
-        <SelectValue />
+        <SelectValue>{QUOTE_STATUS_LABEL[status]}</SelectValue>
       </SelectTrigger>
       <SelectContent>
         {DEALER_SETTABLE_STATUSES.map((s) => (

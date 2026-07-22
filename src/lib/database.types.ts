@@ -1261,6 +1261,24 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_dealer_health: {
+        Args: never
+        Returns: {
+          active_user_count: number
+          aged_quotes: number
+          all_users_inactive_30d: boolean
+          company_id: string
+          company_name: string
+          company_status: Database["public"]["Enums"]["company_status"]
+          flags: string[]
+          has_location_admin: boolean
+          health_tier: Database["public"]["Enums"]["dealer_health_tier"]
+          open_quotes: number
+          orphaned_quotes: number
+          sla_compliance_pct: number
+          total_user_count: number
+        }[]
+      }
       can_manage_installation: {
         Args: { p_installation_id: string }
         Returns: boolean
@@ -1458,6 +1476,11 @@ export type Database = {
         | "installed"
         | "unavailable"
       date_proposal_status: "proposed" | "declined" | "confirmed" | "replaced"
+      dealer_health_tier:
+        | "healthy"
+        | "needs_attention"
+        | "critical"
+        | "inactive"
       dealer_operational_status:
         | "requested"
         | "scheduling_proposed"
@@ -1659,6 +1682,12 @@ export const Constants = {
         "unavailable",
       ],
       date_proposal_status: ["proposed", "declined", "confirmed", "replaced"],
+      dealer_health_tier: [
+        "healthy",
+        "needs_attention",
+        "critical",
+        "inactive",
+      ],
       dealer_operational_status: [
         "requested",
         "scheduling_proposed",
