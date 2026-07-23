@@ -1000,6 +1000,150 @@ export type Database = {
           },
         ]
       }
+      product_order_items: {
+        Row: {
+          id: string
+          price: number
+          product_name: string
+          product_order_id: string
+          quantity: number
+          sku: string | null
+          total: number
+        }
+        Insert: {
+          id?: string
+          price: number
+          product_name: string
+          product_order_id: string
+          quantity?: number
+          sku?: string | null
+          total: number
+        }
+        Update: {
+          id?: string
+          price?: number
+          product_name?: string
+          product_order_id?: string
+          quantity?: number
+          sku?: string | null
+          total?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_order_items_product_order_id_fkey"
+            columns: ["product_order_id"]
+            isOneToOne: false
+            referencedRelation: "product_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_orders: {
+        Row: {
+          company_id: string
+          created_at: string
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          customer_vehicle: string | null
+          estimated_delivery_date: string | null
+          id: string
+          location_id: string | null
+          order_date: string
+          order_number: string
+          ordered_by_email: string
+          ordered_by_name: string
+          payment_method: string | null
+          po_number: string | null
+          shipping_address: string | null
+          shipping_city: string | null
+          shipping_country: string
+          shipping_postal_code: string | null
+          shipping_state: string | null
+          status: Database["public"]["Enums"]["product_order_status"]
+          subtotal: number
+          tax: number
+          total: number
+          tracking_number: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          customer_vehicle?: string | null
+          estimated_delivery_date?: string | null
+          id?: string
+          location_id?: string | null
+          order_date?: string
+          order_number: string
+          ordered_by_email: string
+          ordered_by_name: string
+          payment_method?: string | null
+          po_number?: string | null
+          shipping_address?: string | null
+          shipping_city?: string | null
+          shipping_country?: string
+          shipping_postal_code?: string | null
+          shipping_state?: string | null
+          status?: Database["public"]["Enums"]["product_order_status"]
+          subtotal?: number
+          tax?: number
+          total?: number
+          tracking_number?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          customer_vehicle?: string | null
+          estimated_delivery_date?: string | null
+          id?: string
+          location_id?: string | null
+          order_date?: string
+          order_number?: string
+          ordered_by_email?: string
+          ordered_by_name?: string
+          payment_method?: string | null
+          po_number?: string | null
+          shipping_address?: string | null
+          shipping_city?: string | null
+          shipping_country?: string
+          shipping_postal_code?: string | null
+          shipping_state?: string | null
+          status?: Database["public"]["Enums"]["product_order_status"]
+          subtotal?: number
+          tax?: number
+          total?: number
+          tracking_number?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_orders_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_orders_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_activity: {
         Row: {
           actor_id: string | null
@@ -1868,6 +2012,7 @@ export type Database = {
         | "accessories"
       pricing_group_status: "active" | "inactive"
       pricing_target_type: "brand" | "category" | "product-line"
+      product_order_status: "processing" | "in_transit" | "delivered"
       quote_activity_type: "status_change" | "note" | "quote_sent" | "system"
       quote_line_item_type: "base" | "option" | "custom"
       quote_status:
@@ -2079,6 +2224,7 @@ export const Constants = {
       ],
       pricing_group_status: ["active", "inactive"],
       pricing_target_type: ["brand", "category", "product-line"],
+      product_order_status: ["processing", "in_transit", "delivered"],
       quote_activity_type: ["status_change", "note", "quote_sent", "system"],
       quote_line_item_type: ["base", "option", "custom"],
       quote_status: [

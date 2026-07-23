@@ -183,6 +183,12 @@ export const PRICING_TARGET_TYPE_LABEL: Record<Database['public']['Enums']['pric
   'product-line': 'Product Line',
 }
 
+export const PRODUCT_ORDER_STATUS_LABEL: Record<Database['public']['Enums']['product_order_status'], string> = {
+  processing: 'Processing',
+  in_transit: 'In Transit',
+  delivered: 'Delivered',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount

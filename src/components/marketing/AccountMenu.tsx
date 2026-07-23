@@ -33,7 +33,9 @@ export function AccountMenu({
         <DropdownMenuItem render={<Link href={homeHref} />}>My Account</DropdownMenuItem>
         <DropdownMenuSeparator />
         <form action="/api/auth/logout" method="post" className="contents">
-          <DropdownMenuItem render={<button type="submit" className="w-full text-left" />}>Log out</DropdownMenuItem>
+          <DropdownMenuItem render={<button type="submit" className="w-full text-left" />} nativeButton>
+            Log out
+          </DropdownMenuItem>
         </form>
       </DropdownMenuContent>
     </DropdownMenu>
