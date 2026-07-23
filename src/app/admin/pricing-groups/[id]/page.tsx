@@ -1,19 +1,25 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { PricingGroupInfoForm } from '@/components/admin/PricingGroupInfoForm'
+import { PricingRuleManager } from '@/components/admin/PricingRuleManager'
+import { PricingCalculatorPreview } from '@/components/admin/PricingCalculatorPreview'
+import { PricingGroupDealerAssignment } from '@/components/admin/PricingGroupDealerAssignment'
 
 export default async function AdminPricingGroupDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: group }, { data: rules }, { data: companies }] = await Promise.all([
+  const [{ data: group }, { data: rules }, { data: allCompanies }] = await Promise.all([
     supabase.from('pricing_groups').select('*').eq('id', id).maybeSingle(),
-    supabase.from('pricing_rules').select('*').eq('pricing_group_id', id),
-    supabase.from('companies').select('id, name').eq('pricing_group_id', id),
+    supabase.from('pricing_rules').select('*').eq('pricing_group_id', id).order('target_type'),
+    supabase.from('companies').select('id, name, pricing_group_id').order('name'),
   ])
 
   if (!group) notFound()
+
+  const assignedCompanies = (allCompanies ?? []).filter((c) => c.pricing_group_id === id)
+  const otherCompanies = (allCompanies ?? []).filter((c) => c.pricing_group_id !== id)
 
   return (
     <div className="flex flex-col gap-6">
@@ -24,42 +30,37 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
 
       <Card>
         <CardHeader>
-          <CardTitle>Rules</CardTitle>
+          <CardTitle>Group Information</CardTitle>
         </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Target</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead className="text-right">Discount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(rules ?? []).map((rule) => (
-                <TableRow key={rule.id}>
-                  <TableCell>{rule.display_name}</TableCell>
-                  <TableCell>{rule.target_type}</TableCell>
-                  <TableCell className="text-right">{rule.discount_percent}%</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+        <CardContent>
+          <PricingGroupInfoForm group={group} />
         </CardContent>
       </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>Companies in this group</CardTitle>
+          <CardTitle>Pricing Rules</CardTitle>
         </CardHeader>
-        <CardContent className="text-sm">
-          {(companies ?? []).length > 0 ? (
-            <ul className="flex flex-col gap-1">
-              {(companies ?? []).map((c) => <li key={c.id}>{c.name}</li>)}
-            </ul>
-          ) : (
-            <p className="text-muted-foreground">No companies assigned to this group yet.</p>
-          )}
+        <CardContent>
+          <PricingRuleManager pricingGroupId={group.id} rules={rules ?? []} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Pricing Preview</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PricingCalculatorPreview pricingGroupId={group.id} />
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Dealers</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <PricingGroupDealerAssignment pricingGroupId={group.id} assignedCompanies={assignedCompanies} otherCompanies={otherCompanies} />
         </CardContent>
       </Card>
     </div>

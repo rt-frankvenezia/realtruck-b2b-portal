@@ -1476,6 +1476,18 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      calculate_pricing_discount: {
+        Args: {
+          p_brand?: string
+          p_category?: string
+          p_pricing_group_id: string
+          p_product_line?: string
+        }
+        Returns: {
+          discount_percent: number
+          source: string
+        }[]
+      }
       can_manage_installation: {
         Args: { p_installation_id: string }
         Returns: boolean

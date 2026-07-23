@@ -167,6 +167,22 @@ export const CUSTOMER_FACING_STATUS_VARIANT: Record<Database['public']['Enums'][
   unavailable: 'destructive',
 }
 
+export const PRICING_GROUP_STATUS_LABEL: Record<Database['public']['Enums']['pricing_group_status'], string> = {
+  active: 'Active',
+  inactive: 'Inactive',
+}
+
+export const PRICING_GROUP_STATUS_VARIANT: Record<Database['public']['Enums']['pricing_group_status'], BadgeVariant> = {
+  active: 'default',
+  inactive: 'outline',
+}
+
+export const PRICING_TARGET_TYPE_LABEL: Record<Database['public']['Enums']['pricing_target_type'], string> = {
+  brand: 'Brand',
+  category: 'Category',
+  'product-line': 'Product Line',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount
