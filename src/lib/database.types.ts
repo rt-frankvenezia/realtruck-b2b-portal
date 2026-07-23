@@ -77,6 +77,110 @@ export type Database = {
           },
         ]
       }
+      bank_accounts: {
+        Row: {
+          account_type: string
+          bank_name: string
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          deactivated_at: string | null
+          id: string
+          is_default: boolean
+          last_four: string
+          verification_status: Database["public"]["Enums"]["bank_verification_status"]
+        }
+        Insert: {
+          account_type: string
+          bank_name: string
+          company_id: string
+          created_at?: string
+          created_by_user_id?: string | null
+          deactivated_at?: string | null
+          id?: string
+          is_default?: boolean
+          last_four: string
+          verification_status?: Database["public"]["Enums"]["bank_verification_status"]
+        }
+        Update: {
+          account_type?: string
+          bank_name?: string
+          company_id?: string
+          created_at?: string
+          created_by_user_id?: string | null
+          deactivated_at?: string | null
+          id?: string
+          is_default?: boolean
+          last_four?: string
+          verification_status?: Database["public"]["Enums"]["bank_verification_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bank_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bank_accounts_created_by_user_id_fkey"
+            columns: ["created_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog_products: {
+        Row: {
+          brand: string
+          category_id: string
+          created_at: string
+          dealer_price: number
+          description: string
+          id: string
+          inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
+          map_price: number
+          name: string
+          sku: string
+          specifications: Json
+        }
+        Insert: {
+          brand: string
+          category_id: string
+          created_at?: string
+          dealer_price: number
+          description: string
+          id?: string
+          inventory_status?: Database["public"]["Enums"]["catalog_inventory_status"]
+          map_price: number
+          name: string
+          sku: string
+          specifications?: Json
+        }
+        Update: {
+          brand?: string
+          category_id?: string
+          created_at?: string
+          dealer_price?: number
+          description?: string
+          id?: string
+          inventory_status?: Database["public"]["Enums"]["catalog_inventory_status"]
+          map_price?: number
+          name?: string
+          sku?: string
+          specifications?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           billing_address: string | null
@@ -157,6 +261,493 @@ export type Database = {
             columns: ["pricing_group_id"]
             isOneToOne: false
             referencedRelation: "pricing_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_accounts: {
+        Row: {
+          application_id: string | null
+          available_credit: number | null
+          company_id: string
+          created_at: string
+          credit_hold_message: string | null
+          credit_hold_status: Database["public"]["Enums"]["credit_hold_status"]
+          credit_limit: number
+          effective_date: string | null
+          id: string
+          last_synced_at: string
+          outstanding_balance: number
+          past_due_balance: number
+          payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          pending_payment_amount: number
+          status: Database["public"]["Enums"]["credit_account_status"]
+          unbilled_order_exposure: number
+          updated_at: string
+        }
+        Insert: {
+          application_id?: string | null
+          available_credit?: number | null
+          company_id: string
+          created_at?: string
+          credit_hold_message?: string | null
+          credit_hold_status?: Database["public"]["Enums"]["credit_hold_status"]
+          credit_limit?: number
+          effective_date?: string | null
+          id?: string
+          last_synced_at?: string
+          outstanding_balance?: number
+          past_due_balance?: number
+          payment_terms?:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          pending_payment_amount?: number
+          status?: Database["public"]["Enums"]["credit_account_status"]
+          unbilled_order_exposure?: number
+          updated_at?: string
+        }
+        Update: {
+          application_id?: string | null
+          available_credit?: number | null
+          company_id?: string
+          created_at?: string
+          credit_hold_message?: string | null
+          credit_hold_status?: Database["public"]["Enums"]["credit_hold_status"]
+          credit_limit?: number
+          effective_date?: string | null
+          id?: string
+          last_synced_at?: string
+          outstanding_balance?: number
+          past_due_balance?: number
+          payment_terms?:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          pending_payment_amount?: number
+          status?: Database["public"]["Enums"]["credit_account_status"]
+          unbilled_order_exposure?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_accounts_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "credit_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_accounts_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: true
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_application_documents: {
+        Row: {
+          application_id: string
+          created_at: string
+          document_type: string
+          file_name: string
+          id: string
+          is_required: boolean
+          mime_type: string
+          rejection_reason: string | null
+          size_bytes: number
+          status: Database["public"]["Enums"]["credit_document_status"]
+          storage_path: string | null
+          uploaded_at: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          document_type: string
+          file_name: string
+          id?: string
+          is_required?: boolean
+          mime_type: string
+          rejection_reason?: string | null
+          size_bytes: number
+          status?: Database["public"]["Enums"]["credit_document_status"]
+          storage_path?: string | null
+          uploaded_at?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          document_type?: string
+          file_name?: string
+          id?: string
+          is_required?: boolean
+          mime_type?: string
+          rejection_reason?: string | null
+          size_bytes?: number
+          status?: Database["public"]["Enums"]["credit_document_status"]
+          storage_path?: string | null
+          uploaded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_application_documents_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "credit_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_application_info_requests: {
+        Row: {
+          application_id: string
+          closed_at: string | null
+          dealer_response: string | null
+          id: string
+          requested_at: string
+          requested_items: Json
+          responded_at: string | null
+          status: Database["public"]["Enums"]["info_request_status"]
+        }
+        Insert: {
+          application_id: string
+          closed_at?: string | null
+          dealer_response?: string | null
+          id?: string
+          requested_at?: string
+          requested_items?: Json
+          responded_at?: string | null
+          status?: Database["public"]["Enums"]["info_request_status"]
+        }
+        Update: {
+          application_id?: string
+          closed_at?: string | null
+          dealer_response?: string | null
+          id?: string
+          requested_at?: string
+          requested_items?: Json
+          responded_at?: string | null
+          status?: Database["public"]["Enums"]["info_request_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_application_info_requests_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "credit_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_applications: {
+        Row: {
+          activated_at: string | null
+          ap_contact_email: string | null
+          ap_contact_name: string | null
+          ap_contact_phone: string | null
+          approved_at: string | null
+          approved_credit_limit: number | null
+          approved_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          bank_references: Json
+          billing_address: string | null
+          billing_city: string | null
+          billing_postal_code: string | null
+          billing_state: string | null
+          business_address: string | null
+          business_city: string | null
+          business_match_status: Database["public"]["Enums"]["business_match_status"]
+          business_phone: string | null
+          business_postal_code: string | null
+          business_state: string | null
+          business_type: string | null
+          certified_at: string | null
+          certified_by_name: string | null
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          dba_name: string | null
+          dealer_facing_message: string | null
+          decline_reason: string | null
+          declined_at: string | null
+          duns_number: string | null
+          effective_date: string | null
+          estimated_monthly_purchases: number | null
+          federal_tax_id_last_four: string | null
+          id: string
+          last_saved_at: string
+          legal_business_name: string | null
+          match_confidence: number | null
+          matched_at: string | null
+          matched_legal_name: string | null
+          reference_number: string
+          requested_credit_limit: number | null
+          requested_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          reviewed_at: string | null
+          state_of_registration: string | null
+          status: Database["public"]["Enums"]["credit_application_status"]
+          submitted_at: string | null
+          trade_references: Json
+          website: string | null
+          withdrawn_at: string | null
+          year_established: number | null
+        }
+        Insert: {
+          activated_at?: string | null
+          ap_contact_email?: string | null
+          ap_contact_name?: string | null
+          ap_contact_phone?: string | null
+          approved_at?: string | null
+          approved_credit_limit?: number | null
+          approved_payment_terms?:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          bank_references?: Json
+          billing_address?: string | null
+          billing_city?: string | null
+          billing_postal_code?: string | null
+          billing_state?: string | null
+          business_address?: string | null
+          business_city?: string | null
+          business_match_status?: Database["public"]["Enums"]["business_match_status"]
+          business_phone?: string | null
+          business_postal_code?: string | null
+          business_state?: string | null
+          business_type?: string | null
+          certified_at?: string | null
+          certified_by_name?: string | null
+          company_id: string
+          created_at?: string
+          created_by_user_id?: string | null
+          dba_name?: string | null
+          dealer_facing_message?: string | null
+          decline_reason?: string | null
+          declined_at?: string | null
+          duns_number?: string | null
+          effective_date?: string | null
+          estimated_monthly_purchases?: number | null
+          federal_tax_id_last_four?: string | null
+          id?: string
+          last_saved_at?: string
+          legal_business_name?: string | null
+          match_confidence?: number | null
+          matched_at?: string | null
+          matched_legal_name?: string | null
+          reference_number: string
+          requested_credit_limit?: number | null
+          requested_payment_terms?:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          reviewed_at?: string | null
+          state_of_registration?: string | null
+          status?: Database["public"]["Enums"]["credit_application_status"]
+          submitted_at?: string | null
+          trade_references?: Json
+          website?: string | null
+          withdrawn_at?: string | null
+          year_established?: number | null
+        }
+        Update: {
+          activated_at?: string | null
+          ap_contact_email?: string | null
+          ap_contact_name?: string | null
+          ap_contact_phone?: string | null
+          approved_at?: string | null
+          approved_credit_limit?: number | null
+          approved_payment_terms?:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          bank_references?: Json
+          billing_address?: string | null
+          billing_city?: string | null
+          billing_postal_code?: string | null
+          billing_state?: string | null
+          business_address?: string | null
+          business_city?: string | null
+          business_match_status?: Database["public"]["Enums"]["business_match_status"]
+          business_phone?: string | null
+          business_postal_code?: string | null
+          business_state?: string | null
+          business_type?: string | null
+          certified_at?: string | null
+          certified_by_name?: string | null
+          company_id?: string
+          created_at?: string
+          created_by_user_id?: string | null
+          dba_name?: string | null
+          dealer_facing_message?: string | null
+          decline_reason?: string | null
+          declined_at?: string | null
+          duns_number?: string | null
+          effective_date?: string | null
+          estimated_monthly_purchases?: number | null
+          federal_tax_id_last_four?: string | null
+          id?: string
+          last_saved_at?: string
+          legal_business_name?: string | null
+          match_confidence?: number | null
+          matched_at?: string | null
+          matched_legal_name?: string | null
+          reference_number?: string
+          requested_credit_limit?: number | null
+          requested_payment_terms?:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          reviewed_at?: string | null
+          state_of_registration?: string | null
+          status?: Database["public"]["Enums"]["credit_application_status"]
+          submitted_at?: string | null
+          trade_references?: Json
+          website?: string | null
+          withdrawn_at?: string | null
+          year_established?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_applications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_applications_created_by_user_id_fkey"
+            columns: ["created_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_memos: {
+        Row: {
+          amount: number
+          applied_amount: number
+          company_id: string
+          created_at: string
+          credit_memo_number: string
+          id: string
+          related_invoice_id: string | null
+          remaining_amount: number
+          status: Database["public"]["Enums"]["credit_memo_status"]
+        }
+        Insert: {
+          amount: number
+          applied_amount?: number
+          company_id: string
+          created_at?: string
+          credit_memo_number: string
+          id?: string
+          related_invoice_id?: string | null
+          remaining_amount: number
+          status?: Database["public"]["Enums"]["credit_memo_status"]
+        }
+        Update: {
+          amount?: number
+          applied_amount?: number
+          company_id?: string
+          created_at?: string
+          credit_memo_number?: string
+          id?: string
+          related_invoice_id?: string | null
+          remaining_amount?: number
+          status?: Database["public"]["Enums"]["credit_memo_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_memos_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "credit_memos_related_invoice_id_fkey"
+            columns: ["related_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      financial_notifications: {
+        Row: {
+          company_id: string
+          created_at: string
+          credit_application_id: string | null
+          event: Database["public"]["Enums"]["financial_notification_event"]
+          id: string
+          invoice_id: string | null
+          message: string
+          metadata: Json
+          order_id: string | null
+          payment_id: string | null
+          read_at: string | null
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          credit_application_id?: string | null
+          event: Database["public"]["Enums"]["financial_notification_event"]
+          id?: string
+          invoice_id?: string | null
+          message: string
+          metadata?: Json
+          order_id?: string | null
+          payment_id?: string | null
+          read_at?: string | null
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          credit_application_id?: string | null
+          event?: Database["public"]["Enums"]["financial_notification_event"]
+          id?: string
+          invoice_id?: string | null
+          message?: string
+          metadata?: Json
+          order_id?: string | null
+          payment_id?: string | null
+          read_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financial_notifications_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_notifications_credit_application_id_fkey"
+            columns: ["credit_application_id"]
+            isOneToOne: false
+            referencedRelation: "credit_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_notifications_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "product_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financial_notifications_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
             referencedColumns: ["id"]
           },
         ]
@@ -538,6 +1129,121 @@ export type Database = {
           },
         ]
       }
+      invoice_line_items: {
+        Row: {
+          description: string
+          id: string
+          invoice_id: string
+          quantity: number
+          sku: string | null
+          total: number
+          unit_price: number
+        }
+        Insert: {
+          description: string
+          id?: string
+          invoice_id: string
+          quantity?: number
+          sku?: string | null
+          total: number
+          unit_price: number
+        }
+        Update: {
+          description?: string
+          id?: string
+          invoice_id?: string
+          quantity?: number
+          sku?: string | null
+          total?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_line_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      invoices: {
+        Row: {
+          company_id: string
+          created_at: string
+          document_url: string | null
+          due_date: string
+          id: string
+          invoice_date: string
+          invoice_number: string
+          location_id: string | null
+          order_id: string | null
+          original_amount: number
+          po_number: string | null
+          remaining_balance: number
+          status: Database["public"]["Enums"]["invoice_status"]
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          document_url?: string | null
+          due_date: string
+          id?: string
+          invoice_date?: string
+          invoice_number: string
+          location_id?: string | null
+          order_id?: string | null
+          original_amount: number
+          po_number?: string | null
+          remaining_balance: number
+          status?: Database["public"]["Enums"]["invoice_status"]
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          document_url?: string | null
+          due_date?: string
+          id?: string
+          invoice_date?: string
+          invoice_number?: string
+          location_id?: string | null
+          order_id?: string | null
+          original_amount?: number
+          po_number?: string | null
+          remaining_balance?: number
+          status?: Database["public"]["Enums"]["invoice_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "product_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       locations: {
         Row: {
           address: string | null
@@ -705,6 +1411,121 @@ export type Database = {
             columns: ["quote_id"]
             isOneToOne: false
             referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_allocations: {
+        Row: {
+          amount: number
+          id: string
+          invoice_id: string
+          payment_id: string
+        }
+        Insert: {
+          amount: number
+          id?: string
+          invoice_id: string
+          payment_id: string
+        }
+        Update: {
+          amount?: number
+          id?: string
+          invoice_id?: string
+          payment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_allocations_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_allocations_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          applied_at: string | null
+          bank_account_id: string
+          cancelled_at: string | null
+          company_id: string
+          failed_at: string | null
+          failure_reason: string | null
+          id: string
+          payment_reference: string
+          processor_reference: string | null
+          return_reason: string | null
+          returned_at: string | null
+          settled_at: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          submitted_at: string
+          submitted_by_user_id: string | null
+          total_amount: number
+        }
+        Insert: {
+          applied_at?: string | null
+          bank_account_id: string
+          cancelled_at?: string | null
+          company_id: string
+          failed_at?: string | null
+          failure_reason?: string | null
+          id?: string
+          payment_reference: string
+          processor_reference?: string | null
+          return_reason?: string | null
+          returned_at?: string | null
+          settled_at?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          submitted_at?: string
+          submitted_by_user_id?: string | null
+          total_amount: number
+        }
+        Update: {
+          applied_at?: string | null
+          bank_account_id?: string
+          cancelled_at?: string | null
+          company_id?: string
+          failed_at?: string | null
+          failure_reason?: string | null
+          id?: string
+          payment_reference?: string
+          processor_reference?: string | null
+          return_reason?: string | null
+          returned_at?: string | null
+          settled_at?: string | null
+          status?: Database["public"]["Enums"]["payment_status"]
+          submitted_at?: string
+          submitted_by_user_id?: string | null
+          total_amount?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_bank_account_id_fkey"
+            columns: ["bank_account_id"]
+            isOneToOne: false
+            referencedRelation: "bank_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_submitted_by_user_id_fkey"
+            columns: ["submitted_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -1000,6 +1821,27 @@ export type Database = {
           },
         ]
       }
+      product_categories: {
+        Row: {
+          id: string
+          name: string
+          slug: string
+          sort_order: number
+        }
+        Insert: {
+          id?: string
+          name: string
+          slug: string
+          sort_order?: number
+        }
+        Update: {
+          id?: string
+          name?: string
+          slug?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       product_order_items: {
         Row: {
           id: string
@@ -1063,6 +1905,7 @@ export type Database = {
           status: Database["public"]["Enums"]["product_order_status"]
           subtotal: number
           tax: number
+          terms_credit_account_id: string | null
           total: number
           tracking_number: string | null
         }
@@ -1090,6 +1933,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["product_order_status"]
           subtotal?: number
           tax?: number
+          terms_credit_account_id?: string | null
           total?: number
           tracking_number?: string | null
         }
@@ -1117,6 +1961,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["product_order_status"]
           subtotal?: number
           tax?: number
+          terms_credit_account_id?: string | null
           total?: number
           tracking_number?: string | null
         }
@@ -1140,6 +1985,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_orders_terms_credit_account_id_fkey"
+            columns: ["terms_credit_account_id"]
+            isOneToOne: false
+            referencedRelation: "credit_accounts"
             referencedColumns: ["id"]
           },
         ]
@@ -1347,6 +2199,47 @@ export type Database = {
           title?: string
         }
         Relationships: []
+      }
+      statements: {
+        Row: {
+          company_id: string
+          created_at: string
+          document_url: string | null
+          generated_at: string | null
+          id: string
+          period_end: string
+          period_start: string
+          status: Database["public"]["Enums"]["statement_status"]
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          document_url?: string | null
+          generated_at?: string | null
+          id?: string
+          period_end: string
+          period_start: string
+          status?: Database["public"]["Enums"]["statement_status"]
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          document_url?: string | null
+          generated_at?: string | null
+          id?: string
+          period_end?: string
+          period_start?: string
+          status?: Database["public"]["Enums"]["statement_status"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "statements_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_locations: {
         Row: {
@@ -1615,6 +2508,109 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      advance_credit_application_status: {
+        Args: {
+          p_application_id: string
+          p_approved_credit_limit?: number
+          p_approved_payment_terms?: Database["public"]["Enums"]["payment_terms_code"]
+          p_dealer_facing_message?: string
+          p_decline_reason?: string
+          p_info_requested_items?: Json
+          p_new_status: Database["public"]["Enums"]["credit_application_status"]
+        }
+        Returns: {
+          activated_at: string | null
+          ap_contact_email: string | null
+          ap_contact_name: string | null
+          ap_contact_phone: string | null
+          approved_at: string | null
+          approved_credit_limit: number | null
+          approved_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          bank_references: Json
+          billing_address: string | null
+          billing_city: string | null
+          billing_postal_code: string | null
+          billing_state: string | null
+          business_address: string | null
+          business_city: string | null
+          business_match_status: Database["public"]["Enums"]["business_match_status"]
+          business_phone: string | null
+          business_postal_code: string | null
+          business_state: string | null
+          business_type: string | null
+          certified_at: string | null
+          certified_by_name: string | null
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          dba_name: string | null
+          dealer_facing_message: string | null
+          decline_reason: string | null
+          declined_at: string | null
+          duns_number: string | null
+          effective_date: string | null
+          estimated_monthly_purchases: number | null
+          federal_tax_id_last_four: string | null
+          id: string
+          last_saved_at: string
+          legal_business_name: string | null
+          match_confidence: number | null
+          matched_at: string | null
+          matched_legal_name: string | null
+          reference_number: string
+          requested_credit_limit: number | null
+          requested_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          reviewed_at: string | null
+          state_of_registration: string | null
+          status: Database["public"]["Enums"]["credit_application_status"]
+          submitted_at: string | null
+          trade_references: Json
+          website: string | null
+          withdrawn_at: string | null
+          year_established: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "credit_applications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      advance_payment_status: {
+        Args: {
+          p_new_status: Database["public"]["Enums"]["payment_status"]
+          p_payment_id: string
+          p_reason?: string
+        }
+        Returns: {
+          applied_at: string | null
+          bank_account_id: string
+          cancelled_at: string | null
+          company_id: string
+          failed_at: string | null
+          failure_reason: string | null
+          id: string
+          payment_reference: string
+          processor_reference: string | null
+          return_reason: string | null
+          returned_at: string | null
+          settled_at: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          submitted_at: string
+          submitted_by_user_id: string | null
+          total_amount: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "payments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       approve_location: {
         Args: {
           p_internal_note?: string
@@ -1661,6 +2657,10 @@ export type Database = {
           discount_percent: number
           source: string
         }[]
+      }
+      can_manage_credit_application: {
+        Args: { p_application_id: string }
+        Returns: boolean
       }
       can_manage_installation: {
         Args: { p_installation_id: string }
@@ -1709,6 +2709,37 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      create_payment: {
+        Args: {
+          p_bank_account_id: string
+          p_company_id: string
+          p_invoice_ids: string[]
+        }
+        Returns: {
+          applied_at: string | null
+          bank_account_id: string
+          cancelled_at: string | null
+          company_id: string
+          failed_at: string | null
+          failure_reason: string | null
+          id: string
+          payment_reference: string
+          processor_reference: string | null
+          return_reason: string | null
+          returned_at: string | null
+          settled_at: string | null
+          status: Database["public"]["Enums"]["payment_status"]
+          submitted_at: string
+          submitted_by_user_id: string | null
+          total_amount: number
+        }
+        SetofOptions: {
+          from: "*"
+          to: "payments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       current_company_id: { Args: never; Returns: string }
       current_email: { Args: never; Returns: string }
       current_location_ids: { Args: never; Returns: string[] }
@@ -1753,6 +2784,55 @@ export type Database = {
         Returns: boolean
       }
       is_realtruck_admin: { Args: never; Returns: boolean }
+      place_wholesale_order: {
+        Args: {
+          p_company_id: string
+          p_items: Json
+          p_location_id: string
+          p_payment_method?: string
+          p_po_number?: string
+          p_request_review?: boolean
+          p_shipping_address?: string
+          p_shipping_city?: string
+          p_shipping_postal_code?: string
+          p_shipping_state?: string
+          p_use_terms?: boolean
+        }
+        Returns: {
+          company_id: string
+          created_at: string
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          customer_vehicle: string | null
+          estimated_delivery_date: string | null
+          id: string
+          location_id: string | null
+          order_date: string
+          order_number: string
+          ordered_by_email: string
+          ordered_by_name: string
+          payment_method: string | null
+          po_number: string | null
+          shipping_address: string | null
+          shipping_city: string | null
+          shipping_country: string
+          shipping_postal_code: string | null
+          shipping_state: string | null
+          status: Database["public"]["Enums"]["product_order_status"]
+          subtotal: number
+          tax: number
+          terms_credit_account_id: string | null
+          total: number
+          tracking_number: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "product_orders"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       reassign_quote: {
         Args: { p_new_location_id: string; p_note?: string; p_quote_id: string }
         Returns: {
@@ -1864,6 +2944,25 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      respond_to_credit_info_request: {
+        Args: { p_request_id: string; p_response: string }
+        Returns: {
+          application_id: string
+          closed_at: string | null
+          dealer_response: string | null
+          id: string
+          requested_at: string
+          requested_items: Json
+          responded_at: string | null
+          status: Database["public"]["Enums"]["info_request_status"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "credit_application_info_requests"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       send_quote: {
         Args: { p_quote_id: string }
         Returns: {
@@ -1889,6 +2988,91 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "quotes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_default_bank_account: {
+        Args: { p_bank_account_id: string }
+        Returns: {
+          account_type: string
+          bank_name: string
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          deactivated_at: string | null
+          id: string
+          is_default: boolean
+          last_four: string
+          verification_status: Database["public"]["Enums"]["bank_verification_status"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "bank_accounts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      submit_credit_application: {
+        Args: { p_application_id: string }
+        Returns: {
+          activated_at: string | null
+          ap_contact_email: string | null
+          ap_contact_name: string | null
+          ap_contact_phone: string | null
+          approved_at: string | null
+          approved_credit_limit: number | null
+          approved_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          bank_references: Json
+          billing_address: string | null
+          billing_city: string | null
+          billing_postal_code: string | null
+          billing_state: string | null
+          business_address: string | null
+          business_city: string | null
+          business_match_status: Database["public"]["Enums"]["business_match_status"]
+          business_phone: string | null
+          business_postal_code: string | null
+          business_state: string | null
+          business_type: string | null
+          certified_at: string | null
+          certified_by_name: string | null
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          dba_name: string | null
+          dealer_facing_message: string | null
+          decline_reason: string | null
+          declined_at: string | null
+          duns_number: string | null
+          effective_date: string | null
+          estimated_monthly_purchases: number | null
+          federal_tax_id_last_four: string | null
+          id: string
+          last_saved_at: string
+          legal_business_name: string | null
+          match_confidence: number | null
+          matched_at: string | null
+          matched_legal_name: string | null
+          reference_number: string
+          requested_credit_limit: number | null
+          requested_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          reviewed_at: string | null
+          state_of_registration: string | null
+          status: Database["public"]["Enums"]["credit_application_status"]
+          submitted_at: string | null
+          trade_references: Json
+          website: string | null
+          withdrawn_at: string | null
+          year_established: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "credit_applications"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1984,8 +3168,99 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      validate_order_credit: {
+        Args: { p_company_id: string; p_order_total: number }
+        Returns: Database["public"]["CompositeTypes"]["credit_validation_result"]
+        SetofOptions: {
+          from: "*"
+          to: "credit_validation_result"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      withdraw_credit_application: {
+        Args: { p_application_id: string }
+        Returns: {
+          activated_at: string | null
+          ap_contact_email: string | null
+          ap_contact_name: string | null
+          ap_contact_phone: string | null
+          approved_at: string | null
+          approved_credit_limit: number | null
+          approved_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          bank_references: Json
+          billing_address: string | null
+          billing_city: string | null
+          billing_postal_code: string | null
+          billing_state: string | null
+          business_address: string | null
+          business_city: string | null
+          business_match_status: Database["public"]["Enums"]["business_match_status"]
+          business_phone: string | null
+          business_postal_code: string | null
+          business_state: string | null
+          business_type: string | null
+          certified_at: string | null
+          certified_by_name: string | null
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          dba_name: string | null
+          dealer_facing_message: string | null
+          decline_reason: string | null
+          declined_at: string | null
+          duns_number: string | null
+          effective_date: string | null
+          estimated_monthly_purchases: number | null
+          federal_tax_id_last_four: string | null
+          id: string
+          last_saved_at: string
+          legal_business_name: string | null
+          match_confidence: number | null
+          matched_at: string | null
+          matched_legal_name: string | null
+          reference_number: string
+          requested_credit_limit: number | null
+          requested_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          reviewed_at: string | null
+          state_of_registration: string | null
+          status: Database["public"]["Enums"]["credit_application_status"]
+          submitted_at: string | null
+          trade_references: Json
+          website: string | null
+          withdrawn_at: string | null
+          year_established: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "credit_applications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
+      bank_verification_status:
+        | "pending"
+        | "verified"
+        | "failed"
+        | "deactivated"
+      business_match_status:
+        | "not_started"
+        | "searching"
+        | "matched"
+        | "multiple_matches"
+        | "not_found"
+        | "manual_review"
+      catalog_inventory_status:
+        | "in_stock"
+        | "limited_stock"
+        | "backorder"
+        | "discontinued"
       checklist_item_key:
         | "correct_cap_model"
         | "options_installed"
@@ -1997,6 +3272,35 @@ export type Database = {
         | "answered_questions"
       company_status: "active" | "suspended" | "closed" | "pending_provisioning"
       confirmation_status: "pending" | "confirmed" | "issue_reported"
+      credit_account_status: "inactive" | "active" | "on_hold"
+      credit_application_status:
+        | "draft"
+        | "submitted"
+        | "under_review"
+        | "additional_information_required"
+        | "approved_setup_pending"
+        | "active"
+        | "declined"
+        | "withdrawn"
+      credit_document_status:
+        | "uploading"
+        | "uploaded"
+        | "failed"
+        | "rejected"
+        | "replacement_required"
+      credit_hold_status:
+        | "none"
+        | "past_due"
+        | "manual_review"
+        | "suspended"
+        | "other"
+      credit_memo_status: "unapplied" | "partially_applied" | "applied"
+      credit_validation_outcome:
+        | "approved"
+        | "insufficient_credit"
+        | "pending_review"
+        | "credit_hold"
+        | "service_unavailable"
       customer_facing_status:
         | "order_received"
         | "shipped_to_dealer"
@@ -2021,7 +3325,30 @@ export type Database = {
         | "in_progress"
         | "completed"
         | "cancelled"
+      financial_notification_event:
+        | "application_submitted"
+        | "additional_information_required"
+        | "application_approved"
+        | "account_setup_in_progress"
+        | "credit_terms_activated"
+        | "invoice_available"
+        | "invoice_due_soon"
+        | "invoice_past_due"
+        | "payment_submitted"
+        | "payment_settled_or_applied"
+        | "payment_failed_or_returned"
+        | "order_pending_credit_review"
+        | "order_released"
+        | "credit_hold_applied"
+      info_request_status: "open" | "responded" | "accepted" | "closed"
       installation_tier: "tier-1" | "tier-2" | "tier-3"
+      invoice_status:
+        | "open"
+        | "past_due"
+        | "payment_processing"
+        | "paid"
+        | "disputed"
+        | "void"
       issue_status: "open" | "resolved"
       issue_type:
         | "poor_fitment"
@@ -2032,6 +3359,15 @@ export type Database = {
         | "other"
       location_status: "pending_approval" | "active" | "suspended" | "closed"
       notification_delivery_status: "sent" | "failed"
+      payment_status:
+        | "submitted"
+        | "processing"
+        | "settled"
+        | "applied"
+        | "failed"
+        | "returned"
+        | "cancelled"
+      payment_terms_code: "net_15" | "net_30" | "net_45" | "net_60"
       payout_status: "pending" | "processing" | "paid" | "failed" | "cancelled"
       photo_category:
         | "full_vehicle"
@@ -2042,7 +3378,11 @@ export type Database = {
         | "accessories"
       pricing_group_status: "active" | "inactive"
       pricing_target_type: "brand" | "category" | "product-line"
-      product_order_status: "processing" | "in_transit" | "delivered"
+      product_order_status:
+        | "processing"
+        | "in_transit"
+        | "delivered"
+        | "pending_credit_review"
       quote_activity_type: "status_change" | "note" | "quote_sent" | "system"
       quote_line_item_type: "base" | "option" | "custom"
       quote_status:
@@ -2054,6 +3394,7 @@ export type Database = {
         | "spam"
         | "invalid"
         | "test"
+      statement_status: "generating" | "ready" | "failed"
       status_change_source: "dealer" | "erp" | "rt_admin" | "customer"
       user_role:
         | "realtruck_admin"
@@ -2064,7 +3405,15 @@ export type Database = {
       user_status: "invited" | "active" | "disabled"
     }
     CompositeTypes: {
-      [_ in never]: never
+      credit_validation_result: {
+        outcome: Database["public"]["Enums"]["credit_validation_outcome"] | null
+        order_total: number | null
+        available_credit: number | null
+        amount_over_limit: number | null
+        hold_reason: string | null
+        dealer_message: string | null
+        review_request_allowed: boolean | null
+      }
     }
   }
 }
@@ -2192,6 +3541,26 @@ export const Constants = {
   },
   public: {
     Enums: {
+      bank_verification_status: [
+        "pending",
+        "verified",
+        "failed",
+        "deactivated",
+      ],
+      business_match_status: [
+        "not_started",
+        "searching",
+        "matched",
+        "multiple_matches",
+        "not_found",
+        "manual_review",
+      ],
+      catalog_inventory_status: [
+        "in_stock",
+        "limited_stock",
+        "backorder",
+        "discontinued",
+      ],
       checklist_item_key: [
         "correct_cap_model",
         "options_installed",
@@ -2204,6 +3573,39 @@ export const Constants = {
       ],
       company_status: ["active", "suspended", "closed", "pending_provisioning"],
       confirmation_status: ["pending", "confirmed", "issue_reported"],
+      credit_account_status: ["inactive", "active", "on_hold"],
+      credit_application_status: [
+        "draft",
+        "submitted",
+        "under_review",
+        "additional_information_required",
+        "approved_setup_pending",
+        "active",
+        "declined",
+        "withdrawn",
+      ],
+      credit_document_status: [
+        "uploading",
+        "uploaded",
+        "failed",
+        "rejected",
+        "replacement_required",
+      ],
+      credit_hold_status: [
+        "none",
+        "past_due",
+        "manual_review",
+        "suspended",
+        "other",
+      ],
+      credit_memo_status: ["unapplied", "partially_applied", "applied"],
+      credit_validation_outcome: [
+        "approved",
+        "insufficient_credit",
+        "pending_review",
+        "credit_hold",
+        "service_unavailable",
+      ],
       customer_facing_status: [
         "order_received",
         "shipped_to_dealer",
@@ -2231,7 +3633,32 @@ export const Constants = {
         "completed",
         "cancelled",
       ],
+      financial_notification_event: [
+        "application_submitted",
+        "additional_information_required",
+        "application_approved",
+        "account_setup_in_progress",
+        "credit_terms_activated",
+        "invoice_available",
+        "invoice_due_soon",
+        "invoice_past_due",
+        "payment_submitted",
+        "payment_settled_or_applied",
+        "payment_failed_or_returned",
+        "order_pending_credit_review",
+        "order_released",
+        "credit_hold_applied",
+      ],
+      info_request_status: ["open", "responded", "accepted", "closed"],
       installation_tier: ["tier-1", "tier-2", "tier-3"],
+      invoice_status: [
+        "open",
+        "past_due",
+        "payment_processing",
+        "paid",
+        "disputed",
+        "void",
+      ],
       issue_status: ["open", "resolved"],
       issue_type: [
         "poor_fitment",
@@ -2243,6 +3670,16 @@ export const Constants = {
       ],
       location_status: ["pending_approval", "active", "suspended", "closed"],
       notification_delivery_status: ["sent", "failed"],
+      payment_status: [
+        "submitted",
+        "processing",
+        "settled",
+        "applied",
+        "failed",
+        "returned",
+        "cancelled",
+      ],
+      payment_terms_code: ["net_15", "net_30", "net_45", "net_60"],
       payout_status: ["pending", "processing", "paid", "failed", "cancelled"],
       photo_category: [
         "full_vehicle",
@@ -2254,7 +3691,12 @@ export const Constants = {
       ],
       pricing_group_status: ["active", "inactive"],
       pricing_target_type: ["brand", "category", "product-line"],
-      product_order_status: ["processing", "in_transit", "delivered"],
+      product_order_status: [
+        "processing",
+        "in_transit",
+        "delivered",
+        "pending_credit_review",
+      ],
       quote_activity_type: ["status_change", "note", "quote_sent", "system"],
       quote_line_item_type: ["base", "option", "custom"],
       quote_status: [
@@ -2267,6 +3709,7 @@ export const Constants = {
         "invalid",
         "test",
       ],
+      statement_status: ["generating", "ready", "failed"],
       status_change_source: ["dealer", "erp", "rt_admin", "customer"],
       user_role: [
         "realtruck_admin",

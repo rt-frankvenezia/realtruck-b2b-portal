@@ -208,6 +208,7 @@ export const PRODUCT_ORDER_STATUS_LABEL: Record<Database['public']['Enums']['pro
   processing: 'Processing',
   in_transit: 'In Transit',
   delivered: 'Delivered',
+  pending_credit_review: 'Pending Credit Review',
 }
 
 export function formatCurrency(amount: number | string | null): string {
