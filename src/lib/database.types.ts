@@ -1000,6 +1000,51 @@ export type Database = {
           },
         ]
       }
+      quote_activity: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          is_internal: boolean
+          message: string
+          quote_id: string
+          type: Database["public"]["Enums"]["quote_activity_type"]
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          message: string
+          quote_id: string
+          type: Database["public"]["Enums"]["quote_activity_type"]
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          is_internal?: boolean
+          message?: string
+          quote_id?: string
+          type?: Database["public"]["Enums"]["quote_activity_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quote_activity_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quote_activity_quote_id_fkey"
+            columns: ["quote_id"]
+            isOneToOne: false
+            referencedRelation: "quotes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quote_line_items: {
         Row: {
           description: string
@@ -1321,6 +1366,24 @@ export type Database = {
       }
     }
     Functions: {
+      add_quote_note: {
+        Args: { p_is_internal?: boolean; p_message: string; p_quote_id: string }
+        Returns: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          is_internal: boolean
+          message: string
+          quote_id: string
+          type: Database["public"]["Enums"]["quote_activity_type"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "quote_activity"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       admin_dealer_health: {
         Args: never
         Returns: {
@@ -1338,6 +1401,45 @@ export type Database = {
           sla_compliance_pct: number
           total_user_count: number
         }[]
+      }
+      admin_edit_quote: {
+        Args: {
+          p_customer_email: string
+          p_customer_name: string
+          p_customer_phone?: string
+          p_justification?: string
+          p_quote_id: string
+          p_status?: Database["public"]["Enums"]["quote_status"]
+          p_vehicle_make?: string
+          p_vehicle_model?: string
+          p_vehicle_year?: number
+        }
+        Returns: {
+          bed_length: string | null
+          body_type: string | null
+          company_id: string | null
+          created_at: string
+          customer_address: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          engine: string | null
+          id: string
+          location_id: string | null
+          source: string
+          status: Database["public"]["Enums"]["quote_status"]
+          tax_rate: number
+          updated_at: string
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_year: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "quotes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       approve_location: {
         Args: {
@@ -1378,6 +1480,7 @@ export type Database = {
         Args: { p_installation_id: string }
         Returns: boolean
       }
+      can_manage_quote: { Args: { p_quote_id: string }; Returns: boolean }
       compute_installation_payout_breakdown: {
         Args: { p_installation_id: string }
         Returns: Json
@@ -1440,6 +1543,35 @@ export type Database = {
         Returns: boolean
       }
       is_realtruck_admin: { Args: never; Returns: boolean }
+      reassign_quote: {
+        Args: { p_new_location_id: string; p_note?: string; p_quote_id: string }
+        Returns: {
+          bed_length: string | null
+          body_type: string | null
+          company_id: string | null
+          created_at: string
+          customer_address: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          engine: string | null
+          id: string
+          location_id: string | null
+          source: string
+          status: Database["public"]["Enums"]["quote_status"]
+          tax_rate: number
+          updated_at: string
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_year: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "quotes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       reject_location: {
         Args: { p_location_id: string; p_reason: string }
         Returns: {
@@ -1522,6 +1654,35 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      send_quote: {
+        Args: { p_quote_id: string }
+        Returns: {
+          bed_length: string | null
+          body_type: string | null
+          company_id: string | null
+          created_at: string
+          customer_address: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          engine: string | null
+          id: string
+          location_id: string | null
+          source: string
+          status: Database["public"]["Enums"]["quote_status"]
+          tax_rate: number
+          updated_at: string
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_year: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "quotes"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       submit_installation_verification: {
         Args: { p_installation_id: string; p_note?: string }
         Returns: {
@@ -1576,6 +1737,39 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "installations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      transition_quote_status: {
+        Args: {
+          p_new_status: Database["public"]["Enums"]["quote_status"]
+          p_note?: string
+          p_quote_id: string
+        }
+        Returns: {
+          bed_length: string | null
+          body_type: string | null
+          company_id: string | null
+          created_at: string
+          customer_address: string | null
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          engine: string | null
+          id: string
+          location_id: string | null
+          source: string
+          status: Database["public"]["Enums"]["quote_status"]
+          tax_rate: number
+          updated_at: string
+          vehicle_make: string | null
+          vehicle_model: string | null
+          vehicle_year: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "quotes"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1638,6 +1832,7 @@ export type Database = {
         | "accessories"
       pricing_group_status: "active" | "inactive"
       pricing_target_type: "brand" | "category" | "product-line"
+      quote_activity_type: "status_change" | "note" | "quote_sent" | "system"
       quote_line_item_type: "base" | "option" | "custom"
       quote_status:
         | "new"
@@ -1848,6 +2043,7 @@ export const Constants = {
       ],
       pricing_group_status: ["active", "inactive"],
       pricing_target_type: ["brand", "category", "product-line"],
+      quote_activity_type: ["status_change", "note", "quote_sent", "system"],
       quote_line_item_type: ["base", "option", "custom"],
       quote_status: [
         "new",

@@ -1,25 +1,25 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
+import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { QuoteStatusSelect } from '@/components/dealer/QuoteStatusSelect'
-import { formatCurrency, formatDate } from '@/lib/status-labels'
+import { QuoteStatusActions } from '@/components/dealer/QuoteStatusActions'
+import { QuoteActivityTimeline } from '@/components/dealer/QuoteActivityTimeline'
+import { QuoteLineItemsEditor } from '@/components/dealer/QuoteLineItemsEditor'
+import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT, formatDate } from '@/lib/status-labels'
 
 export default async function QuoteDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const supabase = await createClient()
   const user = await getCurrentUser()
 
-  const [{ data: quote }, { data: lineItems }] = await Promise.all([
-    supabase.from('quotes').select('*').eq('id', id).maybeSingle(),
-    supabase.from('quote_line_items').select('*').eq('quote_id', id),
+  const [{ data: quote }, { data: lineItems }, { data: activity }] = await Promise.all([
+    supabase.from('quotes').select('*, locations(name)').eq('id', id).maybeSingle(),
+    supabase.from('quote_line_items').select('*').eq('quote_id', id).order('type'),
+    supabase.from('quote_activity').select('*, users(name)').eq('quote_id', id).order('created_at', { ascending: false }),
   ])
 
   if (!quote) notFound()
-
-  const canEdit = user?.profile.role === 'dealer_admin' || user?.profile.role === 'location_admin' || user?.profile.role === 'realtruck_admin'
-  const total = (lineItems ?? []).reduce((sum, item) => sum + Number(item.price) * item.quantity, 0)
 
   return (
     <div className="flex flex-col gap-6">
@@ -30,59 +30,63 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
             {[quote.vehicle_year, quote.vehicle_make, quote.vehicle_model].filter(Boolean).join(' ')} · {formatDate(quote.created_at)}
           </p>
         </div>
-        {canEdit && <QuoteStatusSelect quoteId={quote.id} status={quote.status} />}
+        <div className="flex items-center gap-3">
+          <Badge variant={QUOTE_STATUS_VARIANT[quote.status]}>{QUOTE_STATUS_LABEL[quote.status]}</Badge>
+          <QuoteStatusActions quoteId={quote.id} status={quote.status} />
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Customer</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">Email</p>
-            <p>{quote.customer_email}</p>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">Phone</p>
-            <p>{quote.customer_phone ?? '—'}</p>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-muted-foreground">Address</p>
-            <p>{quote.customer_address ?? '—'}</p>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="flex flex-col gap-6 lg:col-span-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Details</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
+              <Field label="Source" value="3D Configurator" />
+              <Field label="Location" value={quote.locations?.name ?? null} />
+              <Field label="Email" value={quote.customer_email} />
+              <Field label="Phone" value={quote.customer_phone} />
+              <Field label="Address" value={quote.customer_address} />
+              <Field label="Bed Length" value={quote.bed_length} />
+              <Field label="Body Type" value={quote.body_type} />
+              <Field label="Engine" value={quote.engine} />
+              <Field label="Tax Rate" value={quote.tax_rate ? `${(Number(quote.tax_rate) * 100).toFixed(2)}%` : null} />
+            </CardContent>
+          </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Line items</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Description</TableHead>
-                <TableHead>SKU</TableHead>
-                <TableHead className="text-right">Qty</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(lineItems ?? []).map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell>{item.sku ?? '—'}</TableCell>
-                  <TableCell className="text-right">{item.quantity}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <div className="flex justify-end border-t p-4 text-sm font-medium">
-            Total: {formatCurrency(total)}
-          </div>
-        </CardContent>
-      </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Line Items</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <QuoteLineItemsEditor quoteId={quote.id} lineItems={lineItems ?? []} />
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Activity & Notes</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <QuoteActivityTimeline
+              quoteId={quote.id}
+              entries={activity ?? []}
+              canAddInternal={user?.profile.role === 'realtruck_admin'}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+function Field({ label, value }: { label: string; value: string | null }) {
+  return (
+    <div>
+      <p className="text-xs font-medium text-muted-foreground">{label}</p>
+      <p>{value || '—'}</p>
     </div>
   )
 }

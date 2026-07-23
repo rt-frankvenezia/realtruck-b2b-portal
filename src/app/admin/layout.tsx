@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { BarChart3, Building2, MapPin, UserCog, Tag, FileText } from 'lucide-react'
+import { BarChart3, Building2, MapPin, UserCog, Tag, FileText, MessageSquareQuote } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
@@ -7,6 +7,7 @@ import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSid
 const iconProps = { size: 20, strokeWidth: 2 }
 const NAV_ITEMS: PortalNavItem[] = [
   { href: '/admin', label: 'Oversight', description: 'Dealer health at a glance', icon: <BarChart3 {...iconProps} />, exact: true },
+  { href: '/admin/quotes', label: 'Quotes', description: 'SLA & orphaned-quote monitoring', icon: <MessageSquareQuote {...iconProps} /> },
   { href: '/admin/companies', label: 'Companies', description: 'Manage dealer organizations', icon: <Building2 {...iconProps} /> },
   { href: '/admin/locations', label: 'Locations', description: 'Manage dealer locations', icon: <MapPin {...iconProps} /> },
   { href: '/admin/users', label: 'Users', description: 'Manage user accounts', icon: <UserCog {...iconProps} /> },
