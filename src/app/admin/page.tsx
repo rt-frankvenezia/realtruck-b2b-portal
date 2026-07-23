@@ -12,8 +12,8 @@ const TIER_LABEL: Record<string, string> = {
   inactive: 'Inactive',
 }
 
-const TIER_VARIANT: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-  healthy: 'default',
+const TIER_VARIANT: Record<string, 'success' | 'secondary' | 'destructive' | 'outline'> = {
+  healthy: 'success',
   needs_attention: 'secondary',
   critical: 'destructive',
   inactive: 'outline',

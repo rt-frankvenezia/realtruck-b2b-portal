@@ -1,6 +1,6 @@
 import type { Database } from '@/lib/database.types'
 
-type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline'
+type BadgeVariant = 'default' | 'success' | 'secondary' | 'destructive' | 'outline'
 
 export const DEALER_STATUS_LABEL: Record<Database['public']['Enums']['dealer_operational_status'], string> = {
   requested: 'Requested',
@@ -21,8 +21,8 @@ export const DEALER_STATUS_VARIANT: Record<Database['public']['Enums']['dealer_o
   scheduled: 'secondary',
   cap_in_transit: 'secondary',
   cap_delivered: 'secondary',
-  in_progress: 'default',
-  completed: 'default',
+  in_progress: 'secondary',
+  completed: 'success',
   cancelled: 'destructive',
 }
 
@@ -41,7 +41,7 @@ export const QUOTE_STATUS_VARIANT: Record<Database['public']['Enums']['quote_sta
   new: 'outline',
   working: 'secondary',
   quote_sent: 'secondary',
-  converted: 'default',
+  converted: 'success',
   lost: 'destructive',
   spam: 'destructive',
   invalid: 'destructive',
@@ -59,7 +59,7 @@ export const PAYOUT_STATUS_LABEL: Record<Database['public']['Enums']['payout_sta
 export const PAYOUT_STATUS_VARIANT: Record<Database['public']['Enums']['payout_status'], BadgeVariant> = {
   pending: 'outline',
   processing: 'secondary',
-  paid: 'default',
+  paid: 'success',
   failed: 'destructive',
   cancelled: 'destructive',
 }
@@ -107,7 +107,7 @@ export const COMPANY_STATUS_LABEL: Record<Database['public']['Enums']['company_s
 }
 
 export const COMPANY_STATUS_VARIANT: Record<Database['public']['Enums']['company_status'], BadgeVariant> = {
-  active: 'default',
+  active: 'success',
   suspended: 'destructive',
   closed: 'destructive',
   pending_provisioning: 'outline',
@@ -122,7 +122,7 @@ export const LOCATION_STATUS_LABEL: Record<Database['public']['Enums']['location
 
 export const LOCATION_STATUS_VARIANT: Record<Database['public']['Enums']['location_status'], BadgeVariant> = {
   pending_approval: 'outline',
-  active: 'default',
+  active: 'success',
   suspended: 'destructive',
   closed: 'destructive',
 }
@@ -164,7 +164,7 @@ export const USER_STATUS_LABEL: Record<Database['public']['Enums']['user_status'
 
 export const USER_STATUS_VARIANT: Record<Database['public']['Enums']['user_status'], BadgeVariant> = {
   invited: 'outline',
-  active: 'default',
+  active: 'success',
   disabled: 'destructive',
 }
 
@@ -184,7 +184,7 @@ export const CUSTOMER_FACING_STATUS_VARIANT: Record<Database['public']['Enums'][
   arrived_at_dealer: 'secondary',
   schedule_installation: 'secondary',
   installation_scheduled: 'secondary',
-  installed: 'default',
+  installed: 'success',
   unavailable: 'destructive',
 }
 
@@ -194,7 +194,7 @@ export const PRICING_GROUP_STATUS_LABEL: Record<Database['public']['Enums']['pri
 }
 
 export const PRICING_GROUP_STATUS_VARIANT: Record<Database['public']['Enums']['pricing_group_status'], BadgeVariant> = {
-  active: 'default',
+  active: 'success',
   inactive: 'outline',
 }
 

@@ -9,8 +9,8 @@ import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT, formatDate } from '@/lib/stat
 type SlaStatus = 'on_time' | 'warning' | 'critical'
 
 const SLA_LABEL: Record<SlaStatus, string> = { on_time: 'On Time', warning: 'Warning', critical: 'Critical' }
-const SLA_VARIANT: Record<SlaStatus, 'default' | 'secondary' | 'destructive'> = {
-  on_time: 'default',
+const SLA_VARIANT: Record<SlaStatus, 'success' | 'secondary' | 'destructive'> = {
+  on_time: 'success',
   warning: 'secondary',
   critical: 'destructive',
 }
