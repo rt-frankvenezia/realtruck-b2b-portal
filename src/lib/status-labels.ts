@@ -147,6 +147,26 @@ export const USER_STATUS_VARIANT: Record<Database['public']['Enums']['user_statu
   disabled: 'destructive',
 }
 
+export const CUSTOMER_FACING_STATUS_LABEL: Record<Database['public']['Enums']['customer_facing_status'], string> = {
+  order_received: 'Order Received',
+  shipped_to_dealer: 'Shipped to Dealer',
+  arrived_at_dealer: 'Arrived at Dealer',
+  schedule_installation: 'Schedule Installation',
+  installation_scheduled: 'Installation Scheduled',
+  installed: 'Installed',
+  unavailable: 'Unavailable',
+}
+
+export const CUSTOMER_FACING_STATUS_VARIANT: Record<Database['public']['Enums']['customer_facing_status'], BadgeVariant> = {
+  order_received: 'outline',
+  shipped_to_dealer: 'secondary',
+  arrived_at_dealer: 'secondary',
+  schedule_installation: 'secondary',
+  installation_scheduled: 'secondary',
+  installed: 'default',
+  unavailable: 'destructive',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount
