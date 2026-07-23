@@ -1546,6 +1546,30 @@ export type Database = {
         Args: { p_installation_id: string }
         Returns: Database["public"]["Enums"]["customer_facing_status"]
       }
+      installation_kpi_metrics: {
+        Args: { p_company_id?: string }
+        Returns: {
+          avg_arrival_to_scheduled: number
+          avg_completed_to_confirmed: number
+          avg_scheduled_to_completed: number
+          awaiting_customer_confirmation: number
+          awaiting_documentation: number
+          awaiting_scheduling: number
+          cap_arrived_overdue: number
+          completed_last_30_days: number
+          customer_confirmation_overdue: number
+          documentation_overdue: number
+          estimated_payout: number
+          issue_rate: number
+          issues_reported: number
+          next_payout_date: string
+          no_scheduling_attempt_overdue: number
+          scheduled_this_week: number
+          todays_installations: number
+          total_installations: number
+          ytd_payouts: number
+        }[]
+      }
       installation_verification_status: {
         Args: { p_installation_id: string }
         Returns: Json

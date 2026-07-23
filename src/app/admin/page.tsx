@@ -3,6 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { InstallationKPIDashboard } from '@/components/shared/InstallationKPIDashboard'
 
 const TIER_LABEL: Record<string, string> = {
   healthy: 'Healthy',
@@ -32,7 +33,11 @@ const FLAG_LABEL: Record<string, string> = {
 
 export default async function AdminOversightPage() {
   const supabase = await createClient()
-  const { data: health } = await supabase.rpc('admin_dealer_health')
+  const [{ data: health }, { data: kpi }] = await Promise.all([
+    supabase.rpc('admin_dealer_health'),
+    supabase.rpc('installation_kpi_metrics'),
+  ])
+  const metrics = kpi?.[0]
 
   const tierOrder = ['critical', 'needs_attention', 'inactive', 'healthy']
   const sorted = [...(health ?? [])].sort((a, b) => tierOrder.indexOf(a.health_tier) - tierOrder.indexOf(b.health_tier))
@@ -42,6 +47,12 @@ export default async function AdminOversightPage() {
       <div>
         <h1 className="text-2xl font-semibold">Dealer Oversight</h1>
         <p className="text-muted-foreground">Health at a glance across every dealer company.</p>
+      </div>
+
+      {metrics && <InstallationKPIDashboard metrics={metrics} showPayouts showMacro />}
+
+      <div>
+        <h2 className="text-lg font-semibold">Quote & Response Health</h2>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
