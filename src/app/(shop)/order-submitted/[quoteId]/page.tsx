@@ -18,7 +18,7 @@ export default async function OrderSubmittedPage({ params }: { params: Promise<{
           <p className="text-muted-foreground">
             Reference: <span className="font-mono">{quoteId}</span>
           </p>
-          <Button render={<Link href="/build" />}>Build another</Button>
+          <Button render={<Link href="/build" />} nativeButton={false}>Build another</Button>
         </CardContent>
       </Card>
     </div>

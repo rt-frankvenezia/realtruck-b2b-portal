@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
+import { Home, MessageSquareQuote, Wrench, DollarSign, ShieldCheck } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { DealerSidebar } from '@/components/dealer/DealerSidebar'
+import { SiteHeader } from '@/components/marketing/SiteHeader'
+import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
 
 const DEALER_ROLES = ['dealer_admin', 'location_admin', 'staff'] as const
 
@@ -11,10 +13,26 @@ export default async function DealerLayout({ children }: { children: React.React
     redirect('/')
   }
 
+  const iconProps = { size: 20, strokeWidth: 2 }
+  const items: PortalNavItem[] = [
+    { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
+    { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
+    { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },
+    ...(user.profile.role !== 'staff'
+      ? [{ href: '/dealer/payouts', label: 'Payouts', description: 'Installation earnings', icon: <DollarSign {...iconProps} /> }]
+      : []),
+    { href: '/dealer/warranties', label: 'Warranties', description: 'Product warranties', icon: <ShieldCheck {...iconProps} /> },
+  ]
+
   return (
-    <div className="flex min-h-screen">
-      <DealerSidebar profile={user.profile} />
-      <main className="flex-1 overflow-x-auto p-8">{children}</main>
+    <div className="min-h-screen bg-white">
+      <SiteHeader variant="dealer" userEmail={user.profile.email} />
+      <div className="mx-auto max-w-[1440px] px-8 py-8">
+        <div className="flex gap-8">
+          <PortalSidebar title="Dealer Portal" items={items} />
+          <main className="min-w-0 flex-1">{children}</main>
+        </div>
+      </div>
     </div>
   )
 }

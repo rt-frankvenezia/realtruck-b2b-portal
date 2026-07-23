@@ -1,7 +1,13 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { Package } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
-import { Button } from '@/components/ui/button'
+import { SiteHeader } from '@/components/marketing/SiteHeader'
+import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
+import { CartProvider } from '@/components/customer/CartContext'
+
+const NAV_ITEMS: PortalNavItem[] = [
+  { href: '/account', label: 'My Orders', description: 'Track orders & installations', icon: <Package size={20} strokeWidth={2} />, exact: true },
+]
 
 export default async function AccountLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
@@ -9,18 +15,16 @@ export default async function AccountLayout({ children }: { children: React.Reac
   if (user.profile.role !== 'customer') redirect('/')
 
   return (
-    <div className="flex min-h-screen flex-col">
-      <header className="flex items-center justify-between border-b px-8 py-4">
-        <Link href="/account" className="font-semibold">
-          My Account
-        </Link>
-        <form action="/api/auth/logout" method="post">
-          <Button type="submit" variant="ghost" size="sm">
-            Log out
-          </Button>
-        </form>
-      </header>
-      <main className="flex-1 p-8">{children}</main>
-    </div>
+    <CartProvider>
+      <div className="min-h-screen bg-white">
+        <SiteHeader variant="customer" userEmail={user.profile.email} />
+        <div className="mx-auto max-w-[1440px] px-8 py-8">
+          <div className="flex gap-8">
+            <PortalSidebar title="My Account" items={NAV_ITEMS} />
+            <main className="min-w-0 flex-1">{children}</main>
+          </div>
+        </div>
+      </div>
+    </CartProvider>
   )
 }

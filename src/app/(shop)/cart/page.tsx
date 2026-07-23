@@ -15,7 +15,7 @@ export default function CartPage() {
       <div className="mx-auto flex max-w-2xl flex-col items-center gap-4 text-center">
         <h1 className="text-2xl font-semibold">Your cart is empty</h1>
         <p className="text-muted-foreground">Build a cap to get started.</p>
-        <Button render={<Link href="/build" />}>Start building</Button>
+        <Button render={<Link href="/build" />} nativeButton={false}>Start building</Button>
       </div>
     )
   }
@@ -55,7 +55,7 @@ export default function CartPage() {
 
       <div className="flex items-center justify-between border-t pt-4">
         <p className="text-lg font-semibold">Subtotal: {formatCurrency(total)}</p>
-        <Button render={<Link href="/checkout" />} size="lg">
+        <Button render={<Link href="/checkout" />} nativeButton={false} size="lg">
           Checkout
         </Button>
       </div>
