@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users } from 'lucide-react'
+import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -60,6 +60,7 @@ export default async function DealerLayout({ children }: { children: React.React
       ? [{ href: '/dealer/payouts', label: 'Payouts', description: 'Installation earnings', icon: <DollarSign {...iconProps} /> }]
       : []),
     { href: '/dealer/warranties', label: 'Warranties', description: 'Product warranties', icon: <ShieldCheck {...iconProps} /> },
+    { href: '/dealer/resources', label: 'Resources & Tools', description: 'Marketing materials', icon: <Layers {...iconProps} /> },
     // company/location/user self-service — dealer_admin gets all three,
     // location_admin gets locations+users (scoped to their assignment),
     // staff and realtruck_admin (no company of their own) get none of

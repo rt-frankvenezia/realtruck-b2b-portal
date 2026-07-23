@@ -1318,6 +1318,36 @@ export type Database = {
           },
         ]
       }
+      resources: {
+        Row: {
+          brand: string
+          category: string
+          created_at: string
+          description: string
+          id: string
+          is_new: boolean
+          title: string
+        }
+        Insert: {
+          brand: string
+          category: string
+          created_at?: string
+          description: string
+          id?: string
+          is_new?: boolean
+          title: string
+        }
+        Update: {
+          brand?: string
+          category?: string
+          created_at?: string
+          description?: string
+          id?: string
+          is_new?: boolean
+          title?: string
+        }
+        Relationships: []
+      }
       user_locations: {
         Row: {
           location_id: string
