@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { InstallationKPIDashboard } from '@/components/shared/InstallationKPIDashboard'
+import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
 
 const TIER_LABEL: Record<string, string> = {
   healthy: 'Healthy',
@@ -35,7 +36,7 @@ export default async function AdminOversightPage() {
   const supabase = await createClient()
   const [{ data: health }, { data: kpi }] = await Promise.all([
     supabase.rpc('admin_dealer_health'),
-    supabase.rpc('installation_kpi_metrics'),
+    INSTALLATIONS_ENABLED ? supabase.rpc('installation_kpi_metrics') : Promise.resolve({ data: null }),
   ])
   const metrics = kpi?.[0]
 
@@ -49,7 +50,7 @@ export default async function AdminOversightPage() {
         <p className="text-muted-foreground">Health at a glance across every dealer company.</p>
       </div>
 
-      {metrics && <InstallationKPIDashboard metrics={metrics} showPayouts showMacro />}
+      {INSTALLATIONS_ENABLED && metrics && <InstallationKPIDashboard metrics={metrics} showPayouts showMacro />}
 
       <div>
         <h2 className="text-lg font-semibold">Quote & Response Health</h2>

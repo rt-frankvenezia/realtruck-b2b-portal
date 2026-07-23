@@ -1,5 +1,6 @@
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -14,6 +15,7 @@ import { StatusHistoryTimeline } from '@/components/dealer/StatusHistoryTimeline
 import { PayoutSummary } from '@/components/dealer/PayoutSummary'
 
 export default async function InstallationDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  if (!INSTALLATIONS_ENABLED) redirect('/dealer')
   const { id } = await params
   const supabase = await createClient()
 

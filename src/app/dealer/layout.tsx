@@ -4,6 +4,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
+import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
 
 // realtruck_admin is allowed in here too (not just dealer_admin/location_admin/
 // staff) so RT admin can reuse the same rich quote/installation detail pages
@@ -55,9 +56,13 @@ export default async function DealerLayout({ children }: { children: React.React
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
     { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
-    { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },
-    ...(role !== 'staff'
-      ? [{ href: '/dealer/payouts', label: 'Payouts', description: 'Installation earnings', icon: <DollarSign {...iconProps} /> }]
+    ...(INSTALLATIONS_ENABLED
+      ? [
+          { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },
+          ...(role !== 'staff'
+            ? [{ href: '/dealer/payouts', label: 'Payouts', description: 'Installation earnings', icon: <DollarSign {...iconProps} /> }]
+            : []),
+        ]
       : []),
     { href: '/dealer/warranties', label: 'Warranties', description: 'Product warranties', icon: <ShieldCheck {...iconProps} /> },
     { href: '/dealer/resources', label: 'Resources & Tools', description: 'Marketing materials', icon: <Layers {...iconProps} /> },

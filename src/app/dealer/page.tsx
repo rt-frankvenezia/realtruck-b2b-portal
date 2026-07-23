@@ -6,13 +6,14 @@ import { Card, CardContent } from '@/components/ui/card'
 import { InstallationKPIDashboard } from '@/components/shared/InstallationKPIDashboard'
 import { OrderProgressStepper } from '@/components/shared/OrderProgressStepper'
 import { formatDate } from '@/lib/status-labels'
+import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
 
 export default async function DealerDashboardPage() {
   const user = await getCurrentUser()
   const supabase = await createClient()
 
   const [{ data: kpi }, { data: recentOrders }] = await Promise.all([
-    supabase.rpc('installation_kpi_metrics'),
+    INSTALLATIONS_ENABLED ? supabase.rpc('installation_kpi_metrics') : Promise.resolve({ data: null }),
     supabase.from('product_orders').select('*').order('order_date', { ascending: false }).limit(3),
   ])
   const metrics = kpi?.[0]
@@ -24,7 +25,7 @@ export default async function DealerDashboardPage() {
         <p className="text-muted-foreground">Here&apos;s what&apos;s happening across your dealership.</p>
       </div>
 
-      {metrics && (
+      {INSTALLATIONS_ENABLED && metrics && (
         <InstallationKPIDashboard
           metrics={metrics}
           showPayouts={user?.profile.role !== 'staff'}
