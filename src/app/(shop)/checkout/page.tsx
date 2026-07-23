@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { formatCurrency } from '@/lib/status-labels'
 import type { Tables } from '@/lib/database.types'
 
-type LocationOption = Pick<Tables<'locations'>, 'id' | 'name' | 'city' | 'state'>
+type LocationOption = Pick<Tables<'location_directory'>, 'id' | 'name' | 'city' | 'state'>
 
 export default function CheckoutPage() {
   const router = useRouter()
@@ -31,9 +31,8 @@ export default function CheckoutPage() {
   useEffect(() => {
     const supabase = createClient()
     supabase
-      .from('locations')
+      .from('location_directory')
       .select('id, name, city, state')
-      .eq('status', 'active')
       .order('name')
       .then(({ data }) => setLocations(data ?? []))
   }, [])

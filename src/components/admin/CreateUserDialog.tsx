@@ -21,28 +21,48 @@ import { USER_ROLE_LABEL } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
 
 type UserRole = Database['public']['Enums']['user_role']
-const ASSIGNABLE_ROLES: UserRole[] = ['realtruck_admin', 'dealer_admin', 'location_admin', 'staff']
+
+// Mirrors the prototype's CreateUserDialog.tsx availableRoles-by-creator
+// logic: realtruck_admin can assign anyone; dealer_admin can assign
+// dealer_admin/location_admin/staff (not realtruck_admin); location_admin
+// can only assign location_admin/staff (not dealer_admin).
+const ASSIGNABLE_ROLES_BY_CREATOR: Record<UserRole, UserRole[]> = {
+  realtruck_admin: ['realtruck_admin', 'dealer_admin', 'location_admin', 'staff'],
+  dealer_admin: ['dealer_admin', 'location_admin', 'staff'],
+  location_admin: ['location_admin', 'staff'],
+  staff: [],
+  customer: [],
+}
 
 export function CreateUserDialog({
+  creatorRole,
   companies,
   locations,
   defaultCompanyId,
+  restrictToLocationIds,
 }: {
+  creatorRole: UserRole
   companies: { id: string; name: string }[]
   locations: { id: string; name: string; company_id: string }[]
   defaultCompanyId?: string
+  /** When set (e.g. for a location_admin creator), only these locations are offered. */
+  restrictToLocationIds?: string[]
 }) {
   const router = useRouter()
+  const assignableRoles = ASSIGNABLE_ROLES_BY_CREATOR[creatorRole]
   const [open, setOpen] = useState(false)
   const [email, setEmail] = useState('')
   const [name, setName] = useState('')
-  const [role, setRole] = useState<UserRole>('staff')
+  const [role, setRole] = useState<UserRole>(assignableRoles[assignableRoles.length - 1] ?? 'staff')
   const [companyId, setCompanyId] = useState(defaultCompanyId ?? '')
   const [locationIds, setLocationIds] = useState<string[]>([])
   const [result, setResult] = useState<{ tempPassword: string } | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  const companyLocations = useMemo(() => locations.filter((l) => l.company_id === companyId), [locations, companyId])
+  const companyLocations = useMemo(() => {
+    const scoped = locations.filter((l) => l.company_id === companyId)
+    return restrictToLocationIds ? scoped.filter((l) => restrictToLocationIds.includes(l.id)) : scoped
+  }, [locations, companyId, restrictToLocationIds])
   const needsCompany = role !== 'realtruck_admin'
 
   function handleCreate() {
@@ -72,7 +92,7 @@ export function CreateUserDialog({
     setOpen(false)
     setEmail('')
     setName('')
-    setRole('staff')
+    setRole(assignableRoles[assignableRoles.length - 1] ?? 'staff')
     setCompanyId(defaultCompanyId ?? '')
     setLocationIds([])
     setResult(null)
@@ -109,7 +129,7 @@ export function CreateUserDialog({
                   <SelectValue>{USER_ROLE_LABEL[role]}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  {ASSIGNABLE_ROLES.map((r) => (
+                  {assignableRoles.map((r) => (
                     <SelectItem key={r} value={r}>
                       {USER_ROLE_LABEL[r]}
                     </SelectItem>

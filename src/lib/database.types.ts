@@ -526,6 +526,13 @@ export type Database = {
             foreignKeyName: "installations_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "installations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
             referencedRelation: "locations"
             referencedColumns: ["id"]
           },
@@ -769,6 +776,13 @@ export type Database = {
             foreignKeyName: "payout_batches_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payout_batches_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
             referencedRelation: "locations"
             referencedColumns: ["id"]
           },
@@ -893,6 +907,13 @@ export type Database = {
             columns: ["installation_id"]
             isOneToOne: false
             referencedRelation: "installations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payouts_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "location_directory"
             referencedColumns: ["id"]
           },
           {
@@ -1096,6 +1117,13 @@ export type Database = {
             foreignKeyName: "quotes_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "quotes_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
             referencedRelation: "locations"
             referencedColumns: ["id"]
           },
@@ -1115,6 +1143,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "user_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "user_locations_location_id_fkey"
             columns: ["location_id"]
@@ -1251,6 +1286,13 @@ export type Database = {
             foreignKeyName: "warranty_registrations_location_id_fkey"
             columns: ["location_id"]
             isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "warranty_registrations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
             referencedRelation: "locations"
             referencedColumns: ["id"]
           },
@@ -1258,7 +1300,25 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      location_directory: {
+        Row: {
+          city: string | null
+          company_id: string | null
+          company_name: string | null
+          id: string | null
+          name: string | null
+          state: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "locations_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       admin_dealer_health: {
@@ -1278,6 +1338,41 @@ export type Database = {
           sla_compliance_pct: number
           total_user_count: number
         }[]
+      }
+      approve_location: {
+        Args: {
+          p_internal_note?: string
+          p_location_code: string
+          p_location_id: string
+        }
+        Returns: {
+          address: string | null
+          city: string | null
+          code: string
+          company_id: string
+          country: string | null
+          created_at: string
+          id: string
+          installation_pricing: Json | null
+          name: string
+          phone_number: string | null
+          postal_code: string | null
+          primary_contact_email: string | null
+          regional_sales_manager: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["location_status"]
+          supported_tiers:
+            | Database["public"]["Enums"]["installation_tier"][]
+            | null
+          updated_at: string
+          use_custom_pricing: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "locations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       can_manage_installation: {
         Args: { p_installation_id: string }
@@ -1345,6 +1440,37 @@ export type Database = {
         Returns: boolean
       }
       is_realtruck_admin: { Args: never; Returns: boolean }
+      reject_location: {
+        Args: { p_location_id: string; p_reason: string }
+        Returns: {
+          address: string | null
+          city: string | null
+          code: string
+          company_id: string
+          country: string | null
+          created_at: string
+          id: string
+          installation_pricing: Json | null
+          name: string
+          phone_number: string | null
+          postal_code: string | null
+          primary_contact_email: string | null
+          regional_sales_manager: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["location_status"]
+          supported_tiers:
+            | Database["public"]["Enums"]["installation_tier"][]
+            | null
+          updated_at: string
+          use_custom_pricing: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "locations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       report_installation_issue: {
         Args: {
           p_description: string

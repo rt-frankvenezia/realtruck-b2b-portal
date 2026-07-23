@@ -3,12 +3,13 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { LocationStatusSelect } from '@/components/admin/LocationStatusSelect'
+import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialog'
 
 export default async function AdminLocationsPage() {
   const supabase = await createClient()
   const { data: locations } = await supabase
     .from('locations')
-    .select('*, companies(id, name)')
+    .select('*, companies(id, name, status)')
     .order('name')
 
   return (
@@ -42,7 +43,11 @@ export default async function AdminLocationsPage() {
                   </TableCell>
                   <TableCell>{[location.city, location.state].filter(Boolean).join(', ') || '—'}</TableCell>
                   <TableCell>
-                    <LocationStatusSelect locationId={location.id} status={location.status} />
+                    {location.status === 'pending_approval' ? (
+                      <LocationApprovalDialog locationId={location.id} companyIsActive={location.companies?.status === 'active'} />
+                    ) : (
+                      <LocationStatusSelect locationId={location.id} status={location.status} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CompanyStatusSelect } from '@/components/admin/CompanyStatusSelect'
 import { LocationStatusSelect } from '@/components/admin/LocationStatusSelect'
+import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialog'
 import { CompanyPricingGroupSelect } from '@/components/admin/CompanyPricingGroupSelect'
 import { CreateLocationDialog } from '@/components/admin/CreateLocationDialog'
 import { CreateUserDialog } from '@/components/admin/CreateUserDialog'
@@ -76,7 +77,11 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
                   <TableCell>{location.code}</TableCell>
                   <TableCell>{[location.city, location.state].filter(Boolean).join(', ') || '—'}</TableCell>
                   <TableCell>
-                    <LocationStatusSelect locationId={location.id} status={location.status} />
+                    {location.status === 'pending_approval' ? (
+                      <LocationApprovalDialog locationId={location.id} companyIsActive={company.status === 'active'} />
+                    ) : (
+                      <LocationStatusSelect locationId={location.id} status={location.status} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
@@ -96,6 +101,7 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
         <CardHeader className="flex items-center justify-between">
           <CardTitle>Users</CardTitle>
           <CreateUserDialog
+            creatorRole="realtruck_admin"
             companies={[{ id: company.id, name: company.name }]}
             locations={(locations ?? []).map((l) => ({ id: l.id, name: l.name, company_id: l.company_id }))}
             defaultCompanyId={company.id}

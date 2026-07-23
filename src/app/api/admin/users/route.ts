@@ -4,7 +4,14 @@ import { createAdminClient } from '@/lib/supabase/admin'
 
 // Creating a real login requires the service role (auth.admin.*), which the
 // browser client can never hold — so this has to be a server route, not a
-// direct RLS-gated table insert like the rest of the admin CRUD.
+// direct RLS-gated table insert like the rest of the admin CRUD. Mirrors
+// enforce_user_role_rules and CreateUserDialog's availableRoles-by-creator.
+const ASSIGNABLE_ROLES_BY_CREATOR: Record<string, string[]> = {
+  realtruck_admin: ['realtruck_admin', 'dealer_admin', 'location_admin', 'staff'],
+  dealer_admin: ['dealer_admin', 'location_admin', 'staff'],
+  location_admin: ['location_admin', 'staff'],
+}
+
 export async function POST(req: NextRequest) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -20,14 +27,24 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'email, name, and role are required' }, { status: 400 })
   }
 
-  // Mirror enforce_user_role_rules: dealer_admin can only create staff in
-  // their own company; only realtruck_admin can create anything else.
-  if (caller.role === 'dealer_admin') {
-    if (role !== 'staff' || companyId !== caller.company_id) {
-      return NextResponse.json({ error: 'dealer_admin can only invite staff within their own company' }, { status: 403 })
-    }
-  } else if (caller.role !== 'realtruck_admin') {
+  const allowedRoles = ASSIGNABLE_ROLES_BY_CREATOR[caller.role]
+  if (!allowedRoles) {
     return NextResponse.json({ error: 'Not authorized to create users' }, { status: 403 })
+  }
+  if (!allowedRoles.includes(role)) {
+    return NextResponse.json({ error: `${caller.role} cannot create a ${role} user` }, { status: 403 })
+  }
+  if (caller.role !== 'realtruck_admin' && companyId !== caller.company_id) {
+    return NextResponse.json({ error: 'You can only create users within your own company' }, { status: 403 })
+  }
+
+  // location_admin can only assign a new user to locations they themselves manage.
+  if (caller.role === 'location_admin' && Array.isArray(locationIds) && locationIds.length > 0) {
+    const { data: ownLocations } = await supabase.from('user_locations').select('location_id').eq('user_id', user.id)
+    const ownLocationIds = new Set((ownLocations ?? []).map((l) => l.location_id))
+    if (locationIds.some((id: string) => !ownLocationIds.has(id))) {
+      return NextResponse.json({ error: 'You can only assign users to your own locations' }, { status: 403 })
+    }
   }
 
   const admin = createAdminClient()

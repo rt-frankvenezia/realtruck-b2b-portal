@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Wrench, DollarSign, ShieldCheck } from 'lucide-react'
+import { Home, MessageSquareQuote, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
@@ -13,15 +13,28 @@ export default async function DealerLayout({ children }: { children: React.React
     redirect('/')
   }
 
+  const role = user.profile.role
   const iconProps = { size: 20, strokeWidth: 2 }
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
     { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },
-    ...(user.profile.role !== 'staff'
+    ...(role !== 'staff'
       ? [{ href: '/dealer/payouts', label: 'Payouts', description: 'Installation earnings', icon: <DollarSign {...iconProps} /> }]
       : []),
     { href: '/dealer/warranties', label: 'Warranties', description: 'Product warranties', icon: <ShieldCheck {...iconProps} /> },
+    // company/location/user management — dealer_admin gets all three,
+    // location_admin gets locations+users (scoped to their assignment),
+    // staff gets none, per RoleContext.tsx's per-role `sections` list.
+    ...(role === 'dealer_admin'
+      ? [{ href: '/dealer/company', label: 'Company', description: 'Your dealership profile', icon: <Building2 {...iconProps} /> }]
+      : []),
+    ...(role !== 'staff'
+      ? [
+          { href: '/dealer/locations', label: 'Locations', description: 'Manage your locations', icon: <MapPin {...iconProps} /> },
+          { href: '/dealer/team', label: 'Team', description: 'Manage your users', icon: <Users {...iconProps} /> },
+        ]
+      : []),
   ]
 
   return (

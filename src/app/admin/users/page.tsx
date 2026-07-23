@@ -21,7 +21,7 @@ export default async function AdminUsersPage() {
           <h1 className="text-2xl font-semibold">Users</h1>
           <p className="text-muted-foreground">Every account across every role.</p>
         </div>
-        <CreateUserDialog companies={companies ?? []} locations={locations ?? []} />
+        <CreateUserDialog creatorRole="realtruck_admin" companies={companies ?? []} locations={locations ?? []} />
       </div>
 
       <Card>
