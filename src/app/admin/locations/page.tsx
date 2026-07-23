@@ -93,7 +93,11 @@ export default async function AdminLocationsPage({ searchParams }: { searchParam
             <TableBody>
               {locations.map((location) => (
                 <TableRow key={location.id}>
-                  <TableCell className="font-medium">{location.name}</TableCell>
+                  <TableCell>
+                    <Link href={`/dealer/locations/${location.id}`} className="font-medium hover:underline">
+                      {location.name}
+                    </Link>
+                  </TableCell>
                   <TableCell>
                     {location.companies && (
                       <Link href={`/admin/companies/${location.companies.id}`} className="hover:underline">

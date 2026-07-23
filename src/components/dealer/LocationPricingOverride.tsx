@@ -12,17 +12,19 @@ import type { Database, Tables } from '@/lib/database.types'
 
 type Tier = Database['public']['Enums']['installation_tier']
 const TIERS: { id: Tier; label: string; description: string }[] = [
-  { id: 'tier-1', label: 'Tier 1', description: 'Cap only, or 2 or fewer accessories' },
-  { id: 'tier-2', label: 'Tier 2', description: 'Cap with electronics, or 3-5 accessories' },
-  { id: 'tier-3', label: 'Tier 3', description: 'Cap with electronics and accessories, or 6+ accessories' },
+  { id: 'tier-1', label: 'Tier 1 - Basic Installation', description: 'Cap only, no electronics, ≤2 accessories' },
+  { id: 'tier-2', label: 'Tier 2 - Standard Installation', description: 'Cap + electronics OR cap + 3-5 accessories' },
+  { id: 'tier-3', label: 'Tier 3 - Advanced Installation', description: 'Cap + electronics + multiple accessories (>5 items)' },
 ]
 
 export function LocationPricingOverride({
   location,
   companyDefaults,
+  companyName,
 }: {
   location: Tables<'locations'>
   companyDefaults: { installation_pricing: Record<string, number>; supported_tiers: Tier[] }
+  companyName: string
 }) {
   const router = useRouter()
   const [useCustom, setUseCustom] = useState(location.use_custom_pricing)
@@ -66,8 +68,9 @@ export function LocationPricingOverride({
       </label>
 
       {!useCustom && (
-        <p className="rounded-md border bg-muted/40 p-3 text-sm text-muted-foreground">
-          Using company default pricing. Check the box above to set location-specific rates.
+        <p className="rounded-md border border-blue-200 bg-blue-50 p-3 text-sm">
+          <span className="font-medium">Using company pricing.</span> This location inherits installation pricing from{' '}
+          {companyName}. Location Admins or Dealer Admins can override these prices by enabling &quot;Use custom pricing&quot; above.
         </p>
       )}
 
@@ -100,7 +103,7 @@ export function LocationPricingOverride({
                 />
               ) : (
                 <p className="w-28 text-right text-sm text-muted-foreground">
-                  {defaultPrice != null ? `${formatCurrency(defaultPrice)} (default)` : '—'}
+                  {defaultPrice != null ? `${formatCurrency(defaultPrice)} (Company Default)` : '—'}
                 </p>
               )}
             </div>

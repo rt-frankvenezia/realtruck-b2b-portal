@@ -12,7 +12,7 @@ export default async function DealerLocationDetailPage({ params }: { params: Pro
   const supabase = await createClient()
 
   const [{ data: location }, { data: assignedAdmins }] = await Promise.all([
-    supabase.from('locations').select('*, companies(installation_pricing, supported_tiers)').eq('id', id).maybeSingle(),
+    supabase.from('locations').select('*, companies(name, installation_pricing, supported_tiers)').eq('id', id).maybeSingle(),
     supabase.from('user_locations').select('users(id, name, email, status)').eq('location_id', id),
   ])
 
@@ -60,7 +60,7 @@ export default async function DealerLocationDetailPage({ params }: { params: Pro
           <CardDescription>Override your company&apos;s default installation pricing for this location.</CardDescription>
         </CardHeader>
         <CardContent>
-          <LocationPricingOverride location={location} companyDefaults={companyDefaults} />
+          <LocationPricingOverride location={location} companyDefaults={companyDefaults} companyName={location.companies?.name ?? 'your company'} />
         </CardContent>
       </Card>
 

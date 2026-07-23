@@ -113,7 +113,11 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
             <TableBody>
               {(locations ?? []).map((location) => (
                 <TableRow key={location.id}>
-                  <TableCell className="font-medium">{location.name}</TableCell>
+                  <TableCell>
+                    <Link href={`/dealer/locations/${location.id}`} className="font-medium hover:underline">
+                      {location.name}
+                    </Link>
+                  </TableCell>
                   <TableCell>{location.code}</TableCell>
                   <TableCell>{[location.city, location.state].filter(Boolean).join(', ') || '—'}</TableCell>
                   <TableCell>
