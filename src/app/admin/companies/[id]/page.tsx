@@ -10,7 +10,10 @@ import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialo
 import { CompanyPricingGroupSelect } from '@/components/admin/CompanyPricingGroupSelect'
 import { CreateLocationDialog } from '@/components/admin/CreateLocationDialog'
 import { CreateUserDialog } from '@/components/admin/CreateUserDialog'
-import { USER_ROLE_LABEL, USER_STATUS_LABEL, USER_STATUS_VARIANT } from '@/lib/status-labels'
+import { NetSuiteIdForm } from '@/components/admin/NetSuiteIdForm'
+import { InternalNotesCard } from '@/components/admin/InternalNotesCard'
+import { DealerActivationPanel } from '@/components/admin/DealerActivationPanel'
+import { USER_ROLE_LABEL, USER_STATUS_LABEL, USER_STATUS_VARIANT, formatDate } from '@/lib/status-labels'
 
 export default async function AdminCompanyDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -25,6 +28,16 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
 
   if (!company) notFound()
 
+  const dealerAdmin = (users ?? []).find((u) => u.id === company.dealer_admin_id)
+  const hasDealerAdmin = (users ?? []).some((u) => u.role === 'dealer_admin')
+
+  const requirements = [
+    { label: 'NetSuite Customer ID assigned', met: Boolean(company.netsuite_customer_id) },
+    { label: 'Pricing Group assigned', met: Boolean(company.pricing_group_id) },
+    { label: 'At least 1 Location created', met: (locations ?? []).length > 0 },
+    { label: 'At least 1 Dealer Admin user exists', met: hasDealerAdmin },
+  ]
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-start justify-between">
@@ -35,9 +48,11 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
         <CompanyStatusSelect companyId={company.id} status={company.status} />
       </div>
 
+      {company.status === 'pending_provisioning' && <DealerActivationPanel companyId={company.id} requirements={requirements} />}
+
       <Card>
         <CardHeader>
-          <CardTitle>Details</CardTitle>
+          <CardTitle>Company Information</CardTitle>
         </CardHeader>
         <CardContent className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
           <div>
@@ -51,6 +66,31 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
           <div>
             <p className="text-xs font-medium text-muted-foreground">Pricing Group</p>
             <CompanyPricingGroupSelect companyId={company.id} pricingGroupId={company.pricing_group_id} pricingGroups={pricingGroups ?? []} />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground">Salesforce Account ID</p>
+            <p>{company.salesforce_account_id || '—'}</p>
+            <p className="text-xs italic text-muted-foreground">Synced from Salesforce (read-only)</p>
+          </div>
+          <div>
+            <p className="mb-2 text-xs font-medium text-muted-foreground">NetSuite Customer ID</p>
+            <NetSuiteIdForm companyId={company.id} netsuiteCustomerId={company.netsuite_customer_id} />
+            <p className="mt-1 text-xs italic text-muted-foreground">Required for activation</p>
+          </div>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground">Dealer Admin (Primary Contact)</p>
+            {dealerAdmin ? (
+              <>
+                <p>{dealerAdmin.name}</p>
+                <p className="text-xs text-muted-foreground">{dealerAdmin.email}</p>
+              </>
+            ) : (
+              <p>—</p>
+            )}
+          </div>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground">Created Date</p>
+            <p>{formatDate(company.created_at)}</p>
           </div>
         </CardContent>
       </Card>
@@ -143,6 +183,8 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
           </Table>
         </CardContent>
       </Card>
+
+      <InternalNotesCard table="companies" id={company.id} notes={company.internal_notes} />
     </div>
   )
 }
