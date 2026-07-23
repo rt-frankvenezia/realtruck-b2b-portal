@@ -1,17 +1,31 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { MessageCircle, Phone, ShoppingCart, MapPin, User } from 'lucide-react'
+import { Bell, ChevronDown, MessageCircle, Phone, ShoppingCart, MapPin, User } from 'lucide-react'
 import { CartBadge } from '@/components/customer/CartBadge'
+import { AccountMenu } from '@/components/marketing/AccountMenu'
 
+// The "My Account" shell (account/dealer/admin) and the public storefront
+// (build/cart/checkout) use the same chrome above a differently-themed white
+// nav row — `context` picks which nav row renders, `variant` picks the
+// role-specific bits (utility bar content, home link, account menu target).
 export function SiteHeader({
   variant = 'customer',
+  context = 'account',
   userEmail,
+  userName,
+  companyName,
+  locationLabel,
 }: {
   variant?: 'customer' | 'dealer' | 'admin'
+  context?: 'storefront' | 'account'
   userEmail?: string
+  userName?: string
+  companyName?: string
+  locationLabel?: string
 }) {
   const isCustomer = variant === 'customer'
-  const homeHref = isCustomer ? '/build' : variant === 'admin' ? '/admin' : '/dealer'
+  const homeHref = isCustomer ? (userEmail ? '/account' : '/build') : variant === 'admin' ? '/admin' : '/dealer'
+  const accountLabel = userName ?? userEmail
 
   return (
     <>
@@ -20,14 +34,19 @@ export function SiteHeader({
       <div className="flex h-[37px] items-center bg-[#1c1c1e]">
         <div className="mx-auto flex w-full max-w-[1440px] items-center justify-end gap-6 px-8 text-sm text-white">
           <span className="hidden sm:inline">Help</span>
+          {context === 'account' && <span className="hidden sm:inline">Order Status</span>}
           {isCustomer ? (
             <span className="flex items-center gap-2 text-[#FFC60B]">
               <MapPin size={14} />
               Boca Raton, FL
             </span>
-          ) : (
-            userEmail && <span className="text-white">{userEmail}</span>
-          )}
+          ) : companyName ? (
+            <span className="flex items-center gap-1.5">
+              {companyName}
+              {locationLabel ? ` | ${locationLabel}` : ''}
+              <ChevronDown size={14} />
+            </span>
+          ) : null}
         </div>
       </div>
 
@@ -45,73 +64,66 @@ export function SiteHeader({
             )}
           </Link>
 
-          {isCustomer && (
-            <div className="max-w-2xl flex-1">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search 1M+ Truck Accessories"
-                  className="h-11 w-full rounded bg-white px-4 pr-12 text-sm text-[#1c1c1e] outline-none"
-                />
-              </div>
+          <div className="max-w-2xl flex-1">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search 1M+ Truck Accessories"
+                className="h-11 w-full rounded bg-white px-4 pr-12 text-sm text-[#1c1c1e] outline-none"
+              />
             </div>
-          )}
+          </div>
 
           <div className="flex items-center gap-6">
-            {isCustomer && (
-              <>
-                <button className="hidden items-center gap-3 text-white transition-colors hover:text-[#FFC60B] sm:flex">
-                  <MessageCircle size={22} className="text-[#FFC60B]" />
-                  <div className="text-left">
-                    <div className="text-sm font-semibold">Live Chat</div>
-                    <div className="text-xs opacity-90">Chat with an Expert</div>
-                  </div>
-                </button>
+            <button type="button" aria-label="Notifications" className="text-white transition-colors hover:text-[#FFC60B]">
+              <Bell size={22} className="text-[#FFC60B]" />
+            </button>
 
-                <button className="hidden items-center gap-3 text-white transition-colors hover:text-[#FFC60B] md:flex">
-                  <Phone size={22} className="text-[#FFC60B]" />
-                  <div className="text-left">
-                    <div className="text-sm font-semibold">877-123-4567</div>
-                    <div className="text-xs opacity-90">Sales and Service Hours</div>
-                  </div>
-                </button>
+            <button className="hidden items-center gap-3 text-white transition-colors hover:text-[#FFC60B] sm:flex">
+              <MessageCircle size={22} className="text-[#FFC60B]" />
+              <div className="text-left">
+                <div className="text-sm font-semibold">Live Chat</div>
+                <div className="text-xs opacity-90">Chat with an Expert</div>
+              </div>
+            </button>
 
-                <Link href={userEmail ? '/account' : '/login'} className="flex items-center gap-2 text-white transition-colors hover:text-[#FFC60B]">
-                  <User size={22} className="text-[#FFC60B]" />
-                  <div className="text-left">
-                    <div className="text-sm font-semibold">My Account</div>
-                    <div className="text-xs opacity-90">{userEmail ?? 'Log in'}</div>
-                  </div>
-                </Link>
+            <button className="hidden items-center gap-3 text-white transition-colors hover:text-[#FFC60B] md:flex">
+              <Phone size={22} className="text-[#FFC60B]" />
+              <div className="text-left">
+                <div className="text-sm font-semibold">877-123-4567</div>
+                <div className="text-xs opacity-90">Sales and Service Hours</div>
+              </div>
+            </button>
 
-                <Link href="/cart" className="relative text-white transition-colors hover:text-[#FFC60B]">
-                  <ShoppingCart size={22} className="text-[#FFC60B]" />
-                  <CartBadge />
-                </Link>
+            <AccountMenu homeHref={homeHref} accountLabel={accountLabel} loggedIn={Boolean(userEmail)}>
+              <div className="flex items-center gap-2 text-white transition-colors hover:text-[#FFC60B]">
+                <User size={22} className="text-[#FFC60B]" />
+                <div className="text-left">
+                  <div className="text-sm font-semibold">My Account</div>
+                  <div className="text-xs opacity-90">{accountLabel ?? 'Log in'}</div>
+                </div>
+              </div>
+            </AccountMenu>
 
-                {userEmail && (
-                  <form action="/api/auth/logout" method="post">
-                    <button type="submit" className="text-sm text-white transition-colors hover:text-[#FFC60B]">
-                      Log out
-                    </button>
-                  </form>
-                )}
-              </>
-            )}
-
-            {!isCustomer && (
-              <form action="/api/auth/logout" method="post">
-                <button type="submit" className="flex items-center gap-2 text-white transition-colors hover:text-[#FFC60B]">
-                  <User size={22} className="text-[#FFC60B]" />
-                  <span className="text-sm font-semibold">Log out</span>
-                </button>
-              </form>
+            {/* The cart is the customer 3D-configurator cart (CartContext) — it
+                has no dealer/admin equivalent yet, so show the icon for visual
+                parity without wiring it to that unrelated cart. Revisit once
+                dealer product-ordering (Order History) exists. */}
+            {isCustomer ? (
+              <Link href="/cart" className="relative text-white transition-colors hover:text-[#FFC60B]">
+                <ShoppingCart size={22} className="text-[#FFC60B]" />
+                <CartBadge />
+              </Link>
+            ) : (
+              <span className="text-white/60">
+                <ShoppingCart size={22} className="text-[#FFC60B]/60" />
+              </span>
             )}
           </div>
         </div>
       </div>
 
-      {isCustomer && (
+      {context === 'storefront' ? (
         <div className="h-[53px] border-b border-[#f3f3f3] bg-white">
           <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between px-8">
             <nav className="flex h-full items-center gap-6 text-sm font-bold text-[#1c1c1e]">
@@ -127,6 +139,20 @@ export function SiteHeader({
               <div className="text-sm font-bold text-[#1c1c1e]">Build a cap</div>
               <div className="text-xs text-[#1c1c1e]/80">for your truck</div>
             </div>
+          </div>
+        </div>
+      ) : (
+        <div className="h-[53px] border-b border-[#f3f3f3] bg-white">
+          <div className="mx-auto flex h-full max-w-[1440px] items-center gap-6 px-8 text-sm font-bold text-[#1c1c1e]">
+            <span className="flex items-center gap-1">
+              Categories
+              <ChevronDown size={14} />
+            </span>
+            <span className="text-[#1c1c1e]/60">Brands</span>
+            <span className="text-[#1c1c1e]/60">SKU Lookup</span>
+            <span className="text-[#1c1c1e]/60">New Products</span>
+            <span className="text-[#1c1c1e]/60">Promos</span>
+            <span className="text-[#1c1c1e]/60">RealTruck Builder</span>
           </div>
         </div>
       )}

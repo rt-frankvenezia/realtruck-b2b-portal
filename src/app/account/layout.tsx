@@ -17,7 +17,7 @@ export default async function AccountLayout({ children }: { children: React.Reac
   return (
     <CartProvider>
       <div className="min-h-screen bg-white">
-        <SiteHeader variant="customer" userEmail={user.profile.email} />
+        <SiteHeader variant="customer" context="account" userEmail={user.profile.email} userName={user.profile.name} />
         <div className="mx-auto max-w-[1440px] px-8 py-8">
           <div className="flex gap-8">
             <PortalSidebar title="My Account" items={NAV_ITEMS} />

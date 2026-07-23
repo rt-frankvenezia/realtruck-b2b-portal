@@ -8,7 +8,14 @@ import { cn } from '@/lib/utils'
 // component reference — React elements are plain serializable objects and
 // can cross the Server → Client Component boundary; bare component/function
 // references cannot.
-export type PortalNavItem = { href: string; label: string; description: string; icon: React.ReactNode; exact?: boolean }
+export type PortalNavItem = {
+  href: string
+  label: string
+  description: string
+  icon: React.ReactNode
+  exact?: boolean
+  badge?: number
+}
 
 export function PortalSidebar({ title, items }: { title: string; items: PortalNavItem[] }) {
   const pathname = usePathname()
@@ -33,7 +40,14 @@ export function PortalSidebar({ title, items }: { title: string; items: PortalNa
               >
                 <span className="mt-0.5 shrink-0">{item.icon}</span>
                 <div className="flex-1 text-left">
-                  <div className="text-sm font-semibold">{item.label}</div>
+                  <div className="flex items-center gap-2 text-sm font-semibold">
+                    {item.label}
+                    {Boolean(item.badge) && (
+                      <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-xs font-bold text-white">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
                   <div className="mt-0.5 text-xs opacity-80">{item.description}</div>
                 </div>
               </Link>

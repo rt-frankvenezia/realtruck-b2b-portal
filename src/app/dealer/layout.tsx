@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { Home, MessageSquareQuote, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
+import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
 
@@ -19,6 +20,37 @@ export default async function DealerLayout({ children }: { children: React.React
 
   const role = user.profile.role
   const iconProps = { size: 20, strokeWidth: 2 }
+
+  // Header company/location context — realtruck_admin has no company of
+  // their own, so this stays undefined for them.
+  let companyName: string | undefined
+  let locationLabel: string | undefined
+  if (role !== 'realtruck_admin' && user.profile.company_id) {
+    const supabase = await createClient()
+    const { data: company } = await supabase.from('companies').select('name').eq('id', user.profile.company_id).maybeSingle()
+    companyName = company?.name ?? undefined
+
+    if (role === 'location_admin') {
+      const { data: assignment } = await supabase
+        .from('user_locations')
+        .select('locations(city, state)')
+        .eq('user_id', user.authId)
+        .limit(1)
+        .maybeSingle()
+      const loc = assignment?.locations
+      if (loc) locationLabel = [loc.city, loc.state].filter(Boolean).join(', ')
+    } else {
+      const { data: loc } = await supabase
+        .from('locations')
+        .select('city, state')
+        .eq('company_id', user.profile.company_id)
+        .eq('status', 'active')
+        .order('name')
+        .limit(1)
+        .maybeSingle()
+      if (loc) locationLabel = [loc.city, loc.state].filter(Boolean).join(', ')
+    }
+  }
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
@@ -44,10 +76,16 @@ export default async function DealerLayout({ children }: { children: React.React
 
   return (
     <div className="min-h-screen bg-white">
-      <SiteHeader variant={role === 'realtruck_admin' ? 'admin' : 'dealer'} userEmail={user.profile.email} />
+      <SiteHeader
+        variant={role === 'realtruck_admin' ? 'admin' : 'dealer'}
+        userEmail={user.profile.email}
+        userName={user.profile.name}
+        companyName={companyName}
+        locationLabel={locationLabel}
+      />
       <div className="mx-auto max-w-[1440px] px-8 py-8">
         <div className="flex gap-8">
-          <PortalSidebar title={role === 'realtruck_admin' ? 'Admin Portal' : 'Dealer Portal'} items={items} />
+          <PortalSidebar title="My Account" items={items} />
           <main className="min-w-0 flex-1">{children}</main>
         </div>
       </div>
