@@ -127,6 +127,27 @@ export const LOCATION_STATUS_VARIANT: Record<Database['public']['Enums']['locati
   closed: 'destructive',
 }
 
+export const ROLE_PERMISSIONS: Record<Database['public']['Enums']['user_role'], { title: string; description: string }[]> = {
+  realtruck_admin: [
+    { title: 'Full Platform Access', description: 'Manage every dealer company, location, user, quote, and installation across the network.' },
+  ],
+  dealer_admin: [
+    { title: 'Company Management', description: "Manage your dealership's locations, billing, and users." },
+    { title: 'Quote Management', description: 'Access and respond to quotes across all of your locations.' },
+    { title: 'Installation Management', description: 'Track, verify, and manage payouts for installations at any of your locations.' },
+  ],
+  location_admin: [
+    { title: 'Location Management', description: 'Manage users assigned to your location.' },
+    { title: 'Quote Management', description: 'Access and respond to quotes for your assigned location.' },
+    { title: 'Installation Management', description: 'Track and verify installations at your assigned location.' },
+  ],
+  staff: [
+    { title: 'Quote Management', description: 'Access and respond to quotes for your assigned location.' },
+    { title: 'Installation Management', description: 'Track and verify installations at your assigned location.' },
+  ],
+  customer: [{ title: 'Order Tracking', description: 'View your own orders and confirm installation completion.' }],
+}
+
 export const USER_ROLE_LABEL: Record<Database['public']['Enums']['user_role'], string> = {
   realtruck_admin: 'RealTruck Admin',
   dealer_admin: 'Dealer Admin',
