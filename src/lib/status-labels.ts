@@ -225,6 +225,51 @@ export const CATALOG_INVENTORY_STATUS_VARIANT: Record<Database['public']['Enums'
   discontinued: 'secondary',
 }
 
+export const CREDIT_APPLICATION_STATUS_LABEL: Record<Database['public']['Enums']['credit_application_status'], string> = {
+  draft: 'Draft',
+  submitted: 'Submitted',
+  under_review: 'Under Review',
+  additional_information_required: 'Additional Information Required',
+  approved_setup_pending: 'Approved — Setup in Progress',
+  active: 'Active',
+  declined: 'Declined',
+  withdrawn: 'Withdrawn',
+}
+
+export const CREDIT_APPLICATION_STATUS_VARIANT: Record<Database['public']['Enums']['credit_application_status'], BadgeVariant> = {
+  draft: 'secondary',
+  submitted: 'outline',
+  under_review: 'outline',
+  additional_information_required: 'destructive',
+  approved_setup_pending: 'outline',
+  active: 'success',
+  declined: 'destructive',
+  withdrawn: 'secondary',
+}
+
+export const CREDIT_DOCUMENT_STATUS_LABEL: Record<Database['public']['Enums']['credit_document_status'], string> = {
+  uploading: 'Uploading',
+  uploaded: 'Uploaded',
+  failed: 'Failed',
+  rejected: 'Rejected',
+  replacement_required: 'Replacement Required',
+}
+
+export const CREDIT_DOCUMENT_STATUS_VARIANT: Record<Database['public']['Enums']['credit_document_status'], BadgeVariant> = {
+  uploading: 'outline',
+  uploaded: 'success',
+  failed: 'destructive',
+  rejected: 'destructive',
+  replacement_required: 'destructive',
+}
+
+export const PAYMENT_TERMS_LABEL: Record<Database['public']['Enums']['payment_terms_code'], string> = {
+  net_15: 'Net 15',
+  net_30: 'Net 30',
+  net_45: 'Net 45',
+  net_60: 'Net 60',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount

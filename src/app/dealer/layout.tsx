@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers } from 'lucide-react'
+import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, CreditCard } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
 import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
+import { hasFinancialPermission } from '@/lib/financial-permissions'
 
 // realtruck_admin is allowed in here too (not just dealer_admin/location_admin/
 // staff) so RT admin can reuse the same rich quote/installation detail pages
@@ -60,6 +61,13 @@ export default async function DealerLayout({ children }: { children: React.React
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
     { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
+    // Financial visibility follows financial-permissions.ts, not role
+    // directly — currently only dealer_admin has submit_credit_application/
+    // view_credit_status, but gating on the capability keeps this correct
+    // if that mapping ever changes.
+    ...(hasFinancialPermission(role, 'submit_credit_application') || hasFinancialPermission(role, 'view_credit_status')
+      ? [{ href: '/dealer/credit', label: 'Credit Application', description: 'Apply for payment terms', icon: <CreditCard {...iconProps} /> }]
+      : []),
     ...(INSTALLATIONS_ENABLED
       ? [
           { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },

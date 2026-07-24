@@ -3045,6 +3045,78 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      start_credit_application: {
+        Args: { p_company_id: string }
+        Returns: {
+          activated_at: string | null
+          ap_contact_email: string | null
+          ap_contact_name: string | null
+          ap_contact_phone: string | null
+          approved_at: string | null
+          approved_credit_limit: number | null
+          approved_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          bank_references: Json
+          billing_address: string | null
+          billing_city: string | null
+          billing_postal_code: string | null
+          billing_state: string | null
+          business_address: string | null
+          business_city: string | null
+          business_match_status: Database["public"]["Enums"]["business_match_status"]
+          business_phone: string | null
+          business_postal_code: string | null
+          business_state: string | null
+          certified_at: string | null
+          certified_by_name: string | null
+          certified_by_title: string | null
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          dba_name: string | null
+          dealer_facing_message: string | null
+          decline_reason: string | null
+          declined_at: string | null
+          duns_number: string | null
+          effective_date: string | null
+          estimated_monthly_purchases: number | null
+          federal_tax_id_last_four: string | null
+          id: string
+          last_saved_at: string
+          legal_business_name: string | null
+          legal_structure: string | null
+          match_confidence: number | null
+          matched_at: string | null
+          matched_legal_name: string | null
+          officers: Json
+          personal_guarantee_acknowledged_at: string | null
+          personal_guarantee_required: boolean
+          purchase_brand: string | null
+          reference_number: string
+          referral_source: string | null
+          requested_credit_limit: number | null
+          requested_payment_terms:
+            | Database["public"]["Enums"]["payment_terms_code"]
+            | null
+          resale_number: string | null
+          reviewed_at: string | null
+          state_of_registration: string | null
+          status: Database["public"]["Enums"]["credit_application_status"]
+          submitted_at: string | null
+          trade_references: Json
+          type_of_business: string | null
+          website: string | null
+          withdrawn_at: string | null
+          year_established: number | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "credit_applications"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       submit_credit_application: {
         Args: { p_application_id: string }
         Returns: {
