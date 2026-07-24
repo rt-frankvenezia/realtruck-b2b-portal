@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers } from 'lucide-react'
+import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, ShoppingBag } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -55,6 +55,11 @@ export default async function DealerLayout({ children }: { children: React.React
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
+    // Placing an order is a company-scoped concern with no equivalent for
+    // realtruck_admin (no company_id of their own to order against).
+    ...(role !== 'realtruck_admin'
+      ? [{ href: '/dealer/shop', label: 'Shop', description: 'Order from RealTruck', icon: <ShoppingBag {...iconProps} /> }]
+      : []),
     { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
     ...(INSTALLATIONS_ENABLED
       ? [

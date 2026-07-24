@@ -211,6 +211,20 @@ export const PRODUCT_ORDER_STATUS_LABEL: Record<Database['public']['Enums']['pro
   pending_credit_review: 'Pending Credit Review',
 }
 
+export const CATALOG_INVENTORY_STATUS_LABEL: Record<Database['public']['Enums']['catalog_inventory_status'], string> = {
+  in_stock: 'In Stock',
+  limited_stock: 'Limited Stock',
+  backorder: 'Backordered',
+  discontinued: 'Discontinued',
+}
+
+export const CATALOG_INVENTORY_STATUS_VARIANT: Record<Database['public']['Enums']['catalog_inventory_status'], BadgeVariant> = {
+  in_stock: 'success',
+  limited_stock: 'outline',
+  backorder: 'destructive',
+  discontinued: 'secondary',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount
