@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, ShoppingBag } from 'lucide-react'
+import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -26,10 +26,14 @@ export default async function DealerLayout({ children }: { children: React.React
   // their own, so this stays undefined for them.
   let companyName: string | undefined
   let locationLabel: string | undefined
+  let shopCategories: { name: string; slug: string }[] | undefined
   if (role !== 'realtruck_admin' && user.profile.company_id) {
     const supabase = await createClient()
     const { data: company } = await supabase.from('companies').select('name').eq('id', user.profile.company_id).maybeSingle()
     companyName = company?.name ?? undefined
+
+    const { data: categories } = await supabase.from('product_categories').select('name, slug').order('sort_order')
+    shopCategories = categories ?? []
 
     if (role === 'location_admin') {
       const { data: assignment } = await supabase
@@ -55,11 +59,6 @@ export default async function DealerLayout({ children }: { children: React.React
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
-    // Placing an order is a company-scoped concern with no equivalent for
-    // realtruck_admin (no company_id of their own to order against).
-    ...(role !== 'realtruck_admin'
-      ? [{ href: '/dealer/shop', label: 'Shop', description: 'Order from RealTruck', icon: <ShoppingBag {...iconProps} /> }]
-      : []),
     { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
     ...(INSTALLATIONS_ENABLED
       ? [
@@ -94,6 +93,7 @@ export default async function DealerLayout({ children }: { children: React.React
         userName={user.profile.name}
         companyName={companyName}
         locationLabel={locationLabel}
+        shopCategories={shopCategories}
       />
       <div className="mx-auto max-w-[1440px] px-8 py-8">
         <div className="flex gap-8">

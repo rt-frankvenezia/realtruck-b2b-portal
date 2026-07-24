@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Bell, ChevronDown, MessageCircle, Phone, ShoppingCart, MapPin, User } from 'lucide-react'
 import { CartBadge } from '@/components/customer/CartBadge'
 import { AccountMenu } from '@/components/marketing/AccountMenu'
+import { ShopCategoriesMenu } from '@/components/marketing/ShopCategoriesMenu'
 
 // The "My Account" shell (account/dealer/admin) and the public storefront
 // (build/cart/checkout) use the same chrome above a differently-themed white
@@ -15,6 +16,7 @@ export function SiteHeader({
   userName,
   companyName,
   locationLabel,
+  shopCategories,
 }: {
   variant?: 'customer' | 'dealer' | 'admin'
   context?: 'storefront' | 'account'
@@ -22,6 +24,7 @@ export function SiteHeader({
   userName?: string
   companyName?: string
   locationLabel?: string
+  shopCategories?: { name: string; slug: string }[]
 }) {
   const isCustomer = variant === 'customer'
   const homeHref = isCustomer ? (userEmail ? '/account' : '/build') : variant === 'admin' ? '/admin' : '/dealer'
@@ -144,10 +147,14 @@ export function SiteHeader({
       ) : (
         <div className="h-[53px] border-b border-[#f3f3f3] bg-white">
           <div className="mx-auto flex h-full max-w-[1440px] items-center gap-6 px-8 text-sm font-bold text-[#1c1c1e]">
-            <span className="flex items-center gap-1">
-              Categories
-              <ChevronDown size={14} />
-            </span>
+            {shopCategories ? (
+              <ShopCategoriesMenu categories={shopCategories} />
+            ) : (
+              <span className="flex items-center gap-1">
+                Categories
+                <ChevronDown size={14} />
+              </span>
+            )}
             <span className="text-[#1c1c1e]/60">Brands</span>
             <span className="text-[#1c1c1e]/60">SKU Lookup</span>
             <span className="text-[#1c1c1e]/60">New Products</span>
