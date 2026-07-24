@@ -144,8 +144,11 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       )}
 
       {eligible && hasFinancialPermission(user.profile.role, 'pay_invoices') && (
-        <div className="rounded-lg border bg-muted/40 p-4 text-sm text-muted-foreground">
-          This invoice is eligible for payment. Invoice payments will be available in a future update.
+        <div className="flex items-center justify-between rounded-lg border bg-muted/40 p-4">
+          <p className="text-sm text-muted-foreground">This invoice is eligible for payment.</p>
+          <Button size="sm" render={<Link href={`/dealer/financial/payments/new?invoice=${invoice.id}`} />} nativeButton={false}>
+            Pay This Invoice
+          </Button>
         </div>
       )}
     </div>

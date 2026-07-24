@@ -308,6 +308,50 @@ export const CREDIT_HOLD_STATUS_LABEL: Record<Database['public']['Enums']['credi
   other: 'Other',
 }
 
+export const PAYMENT_STATUS_LABEL: Record<Database['public']['Enums']['payment_status'], string> = {
+  submitted: 'Submitted',
+  processing: 'Processing',
+  settled: 'Settled',
+  applied: 'Applied',
+  failed: 'Failed',
+  returned: 'Returned',
+  cancelled: 'Cancelled',
+}
+
+export const PAYMENT_STATUS_VARIANT: Record<Database['public']['Enums']['payment_status'], BadgeVariant> = {
+  submitted: 'outline',
+  processing: 'outline',
+  settled: 'outline',
+  applied: 'success',
+  failed: 'destructive',
+  returned: 'destructive',
+  cancelled: 'secondary',
+}
+
+export const PAYMENT_STATUS_MESSAGE: Record<Database['public']['Enums']['payment_status'], string> = {
+  submitted: 'Payment request received.',
+  processing: 'ACH is still processing.',
+  settled: 'Funds have settled but may not yet be applied to invoices.',
+  applied: 'Payment has been applied to the selected invoices.',
+  failed: 'Payment could not be processed.',
+  returned: 'A previously submitted payment was returned.',
+  cancelled: 'Payment was cancelled before completion.',
+}
+
+export const BANK_VERIFICATION_STATUS_LABEL: Record<Database['public']['Enums']['bank_verification_status'], string> = {
+  pending: 'Pending Verification',
+  verified: 'Verified',
+  failed: 'Verification Failed',
+  deactivated: 'Deactivated',
+}
+
+export const BANK_VERIFICATION_STATUS_VARIANT: Record<Database['public']['Enums']['bank_verification_status'], BadgeVariant> = {
+  pending: 'outline',
+  verified: 'success',
+  failed: 'destructive',
+  deactivated: 'secondary',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount

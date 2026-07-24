@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { AlertTriangle, Clock, CreditCard, FileText, Receipt } from 'lucide-react'
+import { AlertTriangle, Clock, CreditCard, FileText, Landmark, Receipt, Wallet } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
@@ -139,6 +139,33 @@ export default async function FinancialOverviewPage() {
             <div className="text-xs text-muted-foreground">Open, past-due, and paid invoices</div>
           </div>
         </Button>
+        {hasFinancialPermission(user.profile.role, 'pay_invoices') && (
+          <Button variant="outline" className="h-auto justify-start gap-3 p-4" render={<Link href="/dealer/financial/payments/new" />} nativeButton={false}>
+            <Wallet size={20} />
+            <div className="text-left">
+              <div className="font-semibold">Make a Payment</div>
+              <div className="text-xs text-muted-foreground">Pay open invoices by ACH</div>
+            </div>
+          </Button>
+        )}
+        {hasFinancialPermission(user.profile.role, 'view_payments') && (
+          <Button variant="outline" className="h-auto justify-start gap-3 p-4" render={<Link href="/dealer/financial/payments" />} nativeButton={false}>
+            <Receipt size={20} />
+            <div className="text-left">
+              <div className="font-semibold">Payment History</div>
+              <div className="text-xs text-muted-foreground">Track submitted, processing, and applied payments</div>
+            </div>
+          </Button>
+        )}
+        {hasFinancialPermission(user.profile.role, 'manage_bank_accounts') && (
+          <Button variant="outline" className="h-auto justify-start gap-3 p-4" render={<Link href="/dealer/financial/bank-accounts" />} nativeButton={false}>
+            <Landmark size={20} />
+            <div className="text-left">
+              <div className="font-semibold">Bank Accounts</div>
+              <div className="text-xs text-muted-foreground">Manage accounts used for ACH payments</div>
+            </div>
+          </Button>
+        )}
         <Button variant="outline" className="h-auto justify-start gap-3 p-4" render={<Link href="/dealer/financial/statements" />} nativeButton={false}>
           <FileText size={20} />
           <div className="text-left">
