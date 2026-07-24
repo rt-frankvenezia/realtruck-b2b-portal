@@ -443,6 +443,7 @@ function RepeatingRows<T>({
           <Button
             variant="ghost"
             size="icon-sm"
+            aria-label="Remove row"
             onClick={() => setRows(rows.filter((_, i) => i !== idx))}
             disabled={rows.length === 1}
           >

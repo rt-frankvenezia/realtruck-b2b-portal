@@ -45,6 +45,7 @@ export default function CartPage() {
                         <Button
                           variant="outline"
                           size="icon-sm"
+                          aria-label="Decrease quantity"
                           disabled={item.quantity <= 1}
                           onClick={() => updateQuantity(item.productId, item.quantity - 1)}
                         >
@@ -53,11 +54,17 @@ export default function CartPage() {
                         <Input
                           type="number"
                           min={1}
+                          aria-label={`Quantity for ${item.name}`}
                           value={item.quantity}
                           onChange={(e) => updateQuantity(item.productId, parseInt(e.target.value) || 1)}
                           className="w-16 text-center"
                         />
-                        <Button variant="outline" size="icon-sm" onClick={() => updateQuantity(item.productId, item.quantity + 1)}>
+                        <Button
+                          variant="outline"
+                          size="icon-sm"
+                          aria-label="Increase quantity"
+                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                        >
                           +
                         </Button>
                       </div>
