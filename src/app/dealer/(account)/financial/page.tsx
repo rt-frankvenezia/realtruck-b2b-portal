@@ -1,12 +1,14 @@
+import type { ReactNode } from 'react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { AlertTriangle, Clock, CreditCard, FileText, Landmark, Receipt, Wallet } from 'lucide-react'
+import { AlertTriangle, Clock, CreditCard, FileText, Info, Landmark, Receipt, Wallet } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { formatCurrency, formatDate, PAYMENT_TERMS_LABEL, CREDIT_HOLD_STATUS_LABEL } from '@/lib/status-labels'
 
 export default async function FinancialOverviewPage() {
@@ -103,7 +105,19 @@ export default async function FinancialOverviewPage() {
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <SummaryCard label="Available Credit" value={formatCurrency(availableCredit)} emphasis={insufficientCredit ? 'destructive' : 'default'} />
+        <SummaryCard
+          label="Available Credit"
+          value={formatCurrency(availableCredit)}
+          emphasis={insufficientCredit ? 'destructive' : 'default'}
+          tooltip={
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between gap-4"><span>Credit limit</span><span>{formatCurrency(account.credit_limit)}</span></div>
+              <div className="flex justify-between gap-4"><span>Less: open invoice balance</span><span>−{formatCurrency(account.outstanding_balance)}</span></div>
+              <div className="flex justify-between gap-4"><span>Less: unbilled order exposure</span><span>−{formatCurrency(account.unbilled_order_exposure)}</span></div>
+              <div className="flex justify-between gap-4 border-t border-border/50 pt-1 font-semibold"><span>Available credit</span><span>{formatCurrency(availableCredit)}</span></div>
+            </div>
+          }
+        />
         <SummaryCard label="Credit Limit" value={formatCurrency(account.credit_limit)} />
         <SummaryCard label="Outstanding Balance" value={formatCurrency(account.outstanding_balance)} />
         <SummaryCard label="Past-Due Balance" value={formatCurrency(account.past_due_balance)} emphasis={pastDue ? 'destructive' : 'default'} />
@@ -118,15 +132,6 @@ export default async function FinancialOverviewPage() {
             <DetailRow label="Pending Payments" value={formatCurrency(account.pending_payment_amount)} />
             <DetailRow label="Credit Hold Status" value={CREDIT_HOLD_STATUS_LABEL[account.credit_hold_status]} />
             <DetailRow label="Effective Date" value={formatDate(account.effective_date)} />
-          </div>
-          <div className="rounded-md border bg-muted/40 p-4 text-sm">
-            <div className="mb-2 font-semibold">How available credit is calculated</div>
-            <div className="flex flex-col gap-1 text-muted-foreground">
-              <div className="flex justify-between"><span>Credit limit</span><span>{formatCurrency(account.credit_limit)}</span></div>
-              <div className="flex justify-between"><span>Less: open invoice balance</span><span>−{formatCurrency(account.outstanding_balance)}</span></div>
-              <div className="flex justify-between"><span>Less: unbilled order exposure</span><span>−{formatCurrency(account.unbilled_order_exposure)}</span></div>
-              <div className="flex justify-between border-t pt-1 font-semibold text-foreground"><span>Available credit</span><span>{formatCurrency(availableCredit)}</span></div>
-            </div>
           </div>
         </CardContent>
       </Card>
@@ -178,11 +183,36 @@ export default async function FinancialOverviewPage() {
   )
 }
 
-function SummaryCard({ label, value, emphasis = 'default' }: { label: string; value: string; emphasis?: 'default' | 'destructive' }) {
+function SummaryCard({
+  label,
+  value,
+  emphasis = 'default',
+  tooltip,
+}: {
+  label: string
+  value: string
+  emphasis?: 'default' | 'destructive'
+  tooltip?: ReactNode
+}) {
   return (
     <Card>
       <CardContent className="pt-6">
-        <div className="text-xs font-semibold uppercase text-muted-foreground">{label}</div>
+        <div className="flex items-center gap-1.5 text-xs font-semibold uppercase text-muted-foreground">
+          {label}
+          {tooltip && (
+            <Tooltip>
+              <TooltipTrigger
+                className="inline-flex text-muted-foreground/70 hover:text-foreground"
+                aria-label={`How ${label.toLowerCase()} is calculated`}
+              >
+                <Info size={13} />
+              </TooltipTrigger>
+              <TooltipContent side="top" align="start" className="normal-case">
+                {tooltip}
+              </TooltipContent>
+            </Tooltip>
+          )}
+        </div>
         <div className={`mt-1 text-2xl font-bold ${emphasis === 'destructive' ? 'text-destructive' : ''}`}>{value}</div>
       </CardContent>
     </Card>
