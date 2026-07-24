@@ -4,7 +4,6 @@ import { Package } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { ProductCard } from '@/components/dealer/ProductCard'
-import { ShopCartLink } from '@/components/dealer/ShopCartLink'
 import { CATALOG_INVENTORY_STATUS_LABEL } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
 
@@ -57,14 +56,11 @@ export default async function CategoryPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">{category.name}</h1>
-          <p className="text-muted-foreground">
-            {filtered.length} product{filtered.length === 1 ? '' : 's'} available
-          </p>
-        </div>
-        <ShopCartLink />
+      <div>
+        <h1 className="text-2xl font-semibold">{category.name}</h1>
+        <p className="text-muted-foreground">
+          {filtered.length} product{filtered.length === 1 ? '' : 's'} available
+        </p>
       </div>
 
       <div className="flex gap-8">

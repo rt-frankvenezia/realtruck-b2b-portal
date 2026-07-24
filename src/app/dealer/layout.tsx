@@ -1,11 +1,8 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, CreditCard, Wallet, Receipt } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
-import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
-import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
-import { hasFinancialPermission } from '@/lib/financial-permissions'
+import { DealerCartProvider } from '@/components/dealer/DealerCartContext'
 
 // realtruck_admin is allowed in here too (not just dealer_admin/location_admin/
 // staff) so RT admin can reuse the same rich quote/installation detail pages
@@ -13,6 +10,13 @@ import { hasFinancialPermission } from '@/lib/financial-permissions'
 // gives realtruck_admin full visibility regardless of company scoping.
 const DEALER_ROLES = ['dealer_admin', 'location_admin', 'staff', 'realtruck_admin'] as const
 
+// Outer shell: auth + header only. The "My Account" sidebar is added by the
+// nested (account) route group's own layout — /dealer/shop/** deliberately
+// sits outside that group so shopping pages render full-width, matching
+// the storefront rather than the account area (per user feedback: the
+// left nav is only for My Account pages, not categories/products/cart/
+// checkout). DealerCartProvider lives here (not just under shop/) so the
+// header's cart icon can show a live item count from any dealer page.
 export default async function DealerLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
   if (!user) redirect('/login')
@@ -21,7 +25,6 @@ export default async function DealerLayout({ children }: { children: React.React
   }
 
   const role = user.profile.role
-  const iconProps = { size: 20, strokeWidth: 2 }
 
   // Header company/location context — realtruck_admin has no company of
   // their own, so this stays undefined for them.
@@ -57,68 +60,21 @@ export default async function DealerLayout({ children }: { children: React.React
       if (loc) locationLabel = [loc.city, loc.state].filter(Boolean).join(', ')
     }
   }
-  const items: PortalNavItem[] = [
-    { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
-    { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
-    { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
-    // Financial visibility follows financial-permissions.ts, not role
-    // directly — currently only dealer_admin has submit_credit_application/
-    // view_credit_status, but gating on the capability keeps this correct
-    // if that mapping ever changes.
-    ...(hasFinancialPermission(role, 'submit_credit_application') || hasFinancialPermission(role, 'view_credit_status')
-      ? [{ href: '/dealer/credit', label: 'Credit Application', description: 'Apply for payment terms', icon: <CreditCard {...iconProps} /> }]
-      : []),
-    // A user with the full financial-overview capability gets the
-    // Overview hub (which itself links to Invoices/Statements); a user
-    // who can only view invoices (location_admin) gets a direct Invoices
-    // link instead of a hub page they're not allowed to see, so they're
-    // never left with no way into the invoices they ARE scoped to.
-    ...(hasFinancialPermission(role, 'view_credit_summary')
-      ? [{ href: '/dealer/financial', label: 'Financial Overview', description: 'Credit, invoices & statements', icon: <Wallet {...iconProps} /> }]
-      : hasFinancialPermission(role, 'view_invoices')
-        ? [{ href: '/dealer/financial/invoices', label: 'Invoices', description: 'Invoices for your location', icon: <Receipt {...iconProps} /> }]
-        : []),
-    ...(INSTALLATIONS_ENABLED
-      ? [
-          { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },
-          ...(role !== 'staff'
-            ? [{ href: '/dealer/payouts', label: 'Payouts', description: 'Installation earnings', icon: <DollarSign {...iconProps} /> }]
-            : []),
-        ]
-      : []),
-    { href: '/dealer/warranties', label: 'Warranties', description: 'Product warranties', icon: <ShieldCheck {...iconProps} /> },
-    { href: '/dealer/resources', label: 'Resources & Tools', description: 'Marketing materials', icon: <Layers {...iconProps} /> },
-    // company/location/user self-service — dealer_admin gets all three,
-    // location_admin gets locations+users (scoped to their assignment),
-    // staff and realtruck_admin (no company of their own) get none of
-    // these here — RT admin manages every dealer from /admin instead.
-    ...(role === 'dealer_admin'
-      ? [{ href: '/dealer/company', label: 'Company', description: 'Your dealership profile', icon: <Building2 {...iconProps} /> }]
-      : []),
-    ...(role === 'dealer_admin' || role === 'location_admin'
-      ? [
-          { href: '/dealer/locations', label: 'Locations', description: 'Manage your locations', icon: <MapPin {...iconProps} /> },
-          { href: '/dealer/team', label: 'Team', description: 'Manage your users', icon: <Users {...iconProps} /> },
-        ]
-      : []),
-  ]
 
   return (
     <div className="min-h-screen bg-white">
-      <SiteHeader
-        variant={role === 'realtruck_admin' ? 'admin' : 'dealer'}
-        userEmail={user.profile.email}
-        userName={user.profile.name}
-        companyName={companyName}
-        locationLabel={locationLabel}
-        shopCategories={shopCategories}
-      />
-      <div className="mx-auto max-w-[1440px] px-8 py-8">
-        <div className="flex gap-8">
-          <PortalSidebar title="My Account" items={items} />
-          <main className="min-w-0 flex-1">{children}</main>
-        </div>
-      </div>
+      <DealerCartProvider>
+        <SiteHeader
+          variant={role === 'realtruck_admin' ? 'admin' : 'dealer'}
+          userEmail={user.profile.email}
+          userName={user.profile.name}
+          companyName={companyName}
+          locationLabel={locationLabel}
+          shopCategories={shopCategories}
+          showDealerCart={role !== 'realtruck_admin'}
+        />
+        <div className="mx-auto max-w-[1440px] px-8 py-8">{children}</div>
+      </DealerCartProvider>
     </div>
   )
 }

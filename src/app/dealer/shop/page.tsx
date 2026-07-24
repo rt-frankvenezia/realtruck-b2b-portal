@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { Package } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
-import { ShopCartLink } from '@/components/dealer/ShopCartLink'
 
 export default async function ShopPage() {
   const supabase = await createClient()
@@ -10,12 +9,9 @@ export default async function ShopPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-semibold">Shop RealTruck Wholesale</h1>
-          <p className="text-muted-foreground">Browse the catalog and place an order at your dealer pricing.</p>
-        </div>
-        <ShopCartLink />
+      <div>
+        <h1 className="text-2xl font-semibold">Shop RealTruck Wholesale</h1>
+        <p className="text-muted-foreground">Browse the catalog and place an order at your dealer pricing.</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

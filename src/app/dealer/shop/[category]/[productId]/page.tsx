@@ -5,7 +5,6 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { AddToCartButton } from '@/components/dealer/AddToCartButton'
 import { ProductCard } from '@/components/dealer/ProductCard'
-import { ShopCartLink } from '@/components/dealer/ShopCartLink'
 import { formatCurrency, CATALOG_INVENTORY_STATUS_LABEL, CATALOG_INVENTORY_STATUS_VARIANT } from '@/lib/status-labels'
 
 export default async function ProductDetailPage({
@@ -33,19 +32,16 @@ export default async function ProductDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Link href="/dealer/shop" className="hover:text-foreground">
-            Shop
-          </Link>
-          <span>/</span>
-          <Link href={`/dealer/shop/${categorySlug}`} className="hover:text-foreground">
-            {category.name}
-          </Link>
-          <span>/</span>
-          <span className="font-medium text-foreground">{product.name}</span>
-        </div>
-        <ShopCartLink />
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <Link href="/dealer/shop" className="hover:text-foreground">
+          Shop
+        </Link>
+        <span>/</span>
+        <Link href={`/dealer/shop/${categorySlug}`} className="hover:text-foreground">
+          {category.name}
+        </Link>
+        <span>/</span>
+        <span className="font-medium text-foreground">{product.name}</span>
       </div>
 
       <div className="flex flex-col gap-8 lg:flex-row">

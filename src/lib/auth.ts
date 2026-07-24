@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { createClient } from '@/lib/supabase/server'
 import type { Tables } from '@/lib/database.types'
 
@@ -7,7 +8,9 @@ export type CurrentUser = {
   profile: Tables<'users'>
 }
 
-export async function getCurrentUser(): Promise<CurrentUser | null> {
+// Cached per-request: the dealer route tree calls this from two nested
+// layouts (outer auth/header, inner account sidebar) plus the page itself.
+export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return null
@@ -16,7 +19,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   if (!profile) return null
 
   return { authId: user.id, email: user.email ?? profile.email, profile }
-}
+})
 
 export function portalPathForRole(role: Tables<'users'>['role']): string {
   switch (role) {

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Bell, ChevronDown, MessageCircle, Phone, ShoppingCart, MapPin, User } from 'lucide-react'
 import { CartBadge } from '@/components/customer/CartBadge'
+import { DealerCartBadge } from '@/components/dealer/DealerCartBadge'
 import { AccountMenu } from '@/components/marketing/AccountMenu'
 import { ShopCategoriesMenu } from '@/components/marketing/ShopCategoriesMenu'
 
@@ -17,6 +18,7 @@ export function SiteHeader({
   companyName,
   locationLabel,
   shopCategories,
+  showDealerCart,
 }: {
   variant?: 'customer' | 'dealer' | 'admin'
   context?: 'storefront' | 'account'
@@ -25,6 +27,7 @@ export function SiteHeader({
   companyName?: string
   locationLabel?: string
   shopCategories?: { name: string; slug: string }[]
+  showDealerCart?: boolean
 }) {
   const isCustomer = variant === 'customer'
   const homeHref = isCustomer ? (userEmail ? '/account' : '/build') : variant === 'admin' ? '/admin' : '/dealer'
@@ -108,14 +111,21 @@ export function SiteHeader({
               </div>
             </AccountMenu>
 
-            {/* The cart is the customer 3D-configurator cart (CartContext) — it
-                has no dealer/admin equivalent yet, so show the icon for visual
-                parity without wiring it to that unrelated cart. Revisit once
-                dealer product-ordering (Order History) exists. */}
+            {/* Customer variant links the 3D-configurator cart (CartContext);
+                dealer variant links the wholesale-ordering cart
+                (DealerCartContext) — two separate product domains, same as
+                everywhere else this session keeps them apart. realtruck_admin
+                has no cart of their own (no company to order for), so it
+                stays a plain decorative icon for them. */}
             {isCustomer ? (
               <Link href="/cart" className="relative text-white transition-colors hover:text-[#FFC60B]">
                 <ShoppingCart size={22} className="text-[#FFC60B]" />
                 <CartBadge />
+              </Link>
+            ) : showDealerCart ? (
+              <Link href="/dealer/shop/cart" className="relative text-white transition-colors hover:text-[#FFC60B]">
+                <ShoppingCart size={22} className="text-[#FFC60B]" />
+                <DealerCartBadge />
               </Link>
             ) : (
               <span className="text-white/60">
