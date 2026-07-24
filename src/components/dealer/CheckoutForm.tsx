@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { AlertTriangle, Building2, Lock, Receipt, Truck } from 'lucide-react'
+import { AlertTriangle, Building2, CheckCircle2, Loader2, Lock, Receipt, RotateCcw, ShieldAlert, Truck } from 'lucide-react'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { useDealerCart } from '@/components/dealer/DealerCartContext'
@@ -13,9 +13,11 @@ import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { formatCurrency } from '@/lib/status-labels'
+import type { Database } from '@/lib/database.types'
 
 type Location = { id: string; name: string; address: string | null; city: string | null; state: string | null; postal_code: string | null }
 type CreditAccount = { status: string; available_credit: number | null; payment_terms: string | null } | null
+type ValidationResult = Database['public']['CompositeTypes']['credit_validation_result']
 
 const TAX_RATE = 0.0835
 const SHIPPING_COST: Record<string, number> = { standard: 0, expedited: 75 }
@@ -40,13 +42,50 @@ export function CheckoutForm({
   const [shippingMethod, setShippingMethod] = useState<'standard' | 'expedited'>('standard')
   const [paymentTab, setPaymentTab] = useState<'card' | 'ach' | 'terms'>('card')
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
-  const [reviewEligible, setReviewEligible] = useState(false)
+
+  const [preview, setPreview] = useState<ValidationResult | null>(null)
+  const [previewLoading, setPreviewLoading] = useState(false)
+  const [previewNonce, setPreviewNonce] = useState(0)
 
   const shipping = SHIPPING_COST[shippingMethod]
   const tax = Math.round(subtotal * TAX_RATE * 100) / 100
   const total = subtotal + shipping + tax
 
   const selectedLocation = locations.find((l) => l.id === locationId)
+
+  // Docs 02 §13: "Display available credit before submission, when
+  // appropriate" — check credit as soon as the terms tab is active rather
+  // than waiting for a failed submit to tell the dealer what will happen.
+  useEffect(() => {
+    if (paymentTab !== 'terms' || !creditAccount || total <= 0) {
+      setPreview(null)
+      return
+    }
+    let cancelled = false
+    setPreviewLoading(true)
+    const supabase = createClient()
+    supabase.rpc('validate_order_credit', { p_company_id: companyId, p_order_total: total }).then(({ data, error }) => {
+      if (cancelled) return
+      setPreviewLoading(false)
+      if (error) {
+        setPreview({
+          outcome: 'service_unavailable',
+          order_total: total,
+          available_credit: null,
+          amount_over_limit: null,
+          hold_reason: null,
+          dealer_message: null,
+          review_request_allowed: false,
+        })
+        return
+      }
+      setPreview(data)
+    })
+    return () => {
+      cancelled = true
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paymentTab, total, companyId, previewNonce])
 
   function submitOrder(requestReview: boolean) {
     setCheckoutError(null)
@@ -68,7 +107,6 @@ export function CheckoutForm({
 
       if (error) {
         setCheckoutError(error.message)
-        setReviewEligible(!requestReview && (error.message.includes('insufficient_credit') || error.message.includes('credit_hold')))
         return
       }
 
@@ -78,7 +116,12 @@ export function CheckoutForm({
     })
   }
 
-  const canSubmit = items.length > 0 && !!locationId && !isPending
+  const termsOutcome = paymentTab === 'terms' ? preview?.outcome : null
+  const canSubmit =
+    items.length > 0 &&
+    !!locationId &&
+    !isPending &&
+    (paymentTab !== 'terms' || (!previewLoading && termsOutcome === 'approved'))
 
   return (
     <div className="flex flex-col gap-6">
@@ -200,27 +243,99 @@ export function CheckoutForm({
                               <h4 className="text-sm font-bold">
                                 Credit Account — {creditAccount.payment_terms?.replace('_', '-').toUpperCase() ?? 'Terms'}
                               </h4>
-                              <p className="text-xs text-muted-foreground">Payment due per your assigned terms from invoice date.</p>
+                              <p className="text-xs text-muted-foreground">
+                                Payment due per your assigned terms from invoice date. This order will be invoiced, not
+                                charged immediately.
+                              </p>
                             </div>
-                          </div>
-                          <div className="mt-3 grid grid-cols-2 gap-3">
-                            <div className="rounded-md bg-background p-3">
-                              <div className="text-xs font-semibold uppercase text-muted-foreground">Available Credit</div>
-                              <div className={`text-base font-bold ${(creditAccount.available_credit ?? 0) >= total ? 'text-green-600' : 'text-destructive'}`}>
-                                {formatCurrency(creditAccount.available_credit ?? 0)}
-                              </div>
-                            </div>
-                            {creditAccount.status === 'on_hold' && (
-                              <div className="col-span-2 flex items-center gap-2 rounded-md bg-destructive/10 p-3 text-xs text-destructive">
-                                <AlertTriangle size={14} />
-                                This account is currently on credit hold.
-                              </div>
-                            )}
                           </div>
                         </div>
-                        <p className="text-xs text-muted-foreground">
-                          Credit is checked against your available balance when the order is submitted.
-                        </p>
+
+                        {previewLoading && (
+                          <div className="flex items-center gap-2 rounded-md border p-4 text-sm text-muted-foreground">
+                            <Loader2 size={16} className="animate-spin" />
+                            Checking available credit…
+                          </div>
+                        )}
+
+                        {!previewLoading && preview?.outcome === 'approved' && (
+                          <div className="flex items-start gap-3 rounded-md border border-green-200 bg-green-50 p-4">
+                            <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-green-600" />
+                            <div>
+                              <div className="text-sm font-semibold text-green-900">Order approved on terms</div>
+                              <div className="mt-1 text-xs text-green-800">
+                                Available credit: {formatCurrency(preview.available_credit)}. Your order will follow the
+                                normal fulfillment path and be invoiced per your terms.
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {!previewLoading && preview?.outcome === 'insufficient_credit' && (
+                          <div className="flex flex-col gap-3 rounded-md border border-destructive/30 bg-destructive/5 p-4">
+                            <div className="flex items-start gap-3">
+                              <AlertTriangle size={18} className="mt-0.5 shrink-0 text-destructive" />
+                              <div>
+                                <div className="text-sm font-semibold text-destructive">Insufficient available credit</div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                  This order cannot be placed on terms as-is. You can return to your cart, pay down open
+                                  invoices to free up credit, or request a manual review.
+                                </p>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-3 gap-3 text-sm">
+                              <StatTile label="Order Total" value={formatCurrency(preview.order_total)} />
+                              <StatTile label="Available Credit" value={formatCurrency(preview.available_credit)} />
+                              <StatTile label="Amount Over Limit" value={formatCurrency(preview.amount_over_limit)} emphasis />
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <Button variant="outline" size="sm" render={<Link href="/dealer/shop/cart" />} nativeButton={false}>
+                                Return to Cart
+                              </Button>
+                              <Button variant="outline" size="sm" render={<Link href="/dealer/financial/invoices?status=open" />} nativeButton={false}>
+                                View and Pay Invoices
+                              </Button>
+                            </div>
+                          </div>
+                        )}
+
+                        {!previewLoading && preview?.outcome === 'credit_hold' && (
+                          <div className="flex flex-col gap-3 rounded-md border border-destructive/30 bg-destructive/5 p-4">
+                            <div className="flex items-start gap-3">
+                              <ShieldAlert size={18} className="mt-0.5 shrink-0 text-destructive" />
+                              <div>
+                                <div className="text-sm font-semibold text-destructive">This account cannot currently place orders on terms</div>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                  {preview.hold_reason ?? preview.dealer_message ?? 'This account is on credit hold.'}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <Button variant="outline" size="sm" render={<Link href="/dealer/financial/invoices?status=past_due" />} nativeButton={false}>
+                                View Past-Due Invoices
+                              </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              Contact your RealTruck sales representative or support at 877-123-4567 to resolve this hold.
+                            </p>
+                          </div>
+                        )}
+
+                        {!previewLoading && preview?.outcome === 'service_unavailable' && (
+                          <div className="flex flex-col gap-3 rounded-md border bg-muted/40 p-4">
+                            <div className="flex items-start gap-3">
+                              <AlertTriangle size={18} className="mt-0.5 shrink-0 text-muted-foreground" />
+                              <p className="text-sm">
+                                We could not validate the account&apos;s available credit. The order has not been
+                                submitted. Please try again.
+                              </p>
+                            </div>
+                            <Button variant="outline" size="sm" className="w-fit" onClick={() => setPreviewNonce((n) => n + 1)}>
+                              <RotateCcw size={14} />
+                              Retry
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     </TabsContent>
                   )}
@@ -230,23 +345,20 @@ export function CheckoutForm({
 
             {checkoutError && (
               <Alert variant="destructive">
-                <AlertDescription>
-                  {checkoutError}
-                  {reviewEligible && (
-                    <div className="mt-3">
-                      <Button size="sm" variant="outline" onClick={() => submitOrder(true)} disabled={isPending}>
-                        Request Manual Review Instead
-                      </Button>
-                    </div>
-                  )}
-                </AlertDescription>
+                <AlertDescription>{checkoutError}</AlertDescription>
               </Alert>
             )}
 
-            <Button size="lg" className="w-full" disabled={!canSubmit} onClick={() => submitOrder(false)}>
-              <Lock size={16} />
-              Submit Order
-            </Button>
+            {paymentTab === 'terms' && (termsOutcome === 'insufficient_credit' || termsOutcome === 'credit_hold') && preview?.review_request_allowed ? (
+              <Button size="lg" className="w-full" disabled={isPending} onClick={() => submitOrder(true)}>
+                Request Manual Review
+              </Button>
+            ) : (
+              <Button size="lg" className="w-full" disabled={!canSubmit} onClick={() => submitOrder(false)}>
+                <Lock size={16} />
+                Submit Order
+              </Button>
+            )}
           </div>
 
           <div className="lg:col-span-5">
@@ -291,6 +403,15 @@ export function CheckoutForm({
           </div>
         </div>
       )}
+    </div>
+  )
+}
+
+function StatTile({ label, value, emphasis }: { label: string; value: string; emphasis?: boolean }) {
+  return (
+    <div className="rounded-md bg-background p-3">
+      <div className="text-xs font-semibold uppercase text-muted-foreground">{label}</div>
+      <div className={`text-base font-bold ${emphasis ? 'text-destructive' : ''}`}>{value}</div>
     </div>
   )
 }
