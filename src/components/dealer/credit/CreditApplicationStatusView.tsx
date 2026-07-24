@@ -205,6 +205,9 @@ export async function CreditApplicationStatusView({
               <div className="font-semibold">{formatDate(application.effective_date)}</div>
             </div>
           </div>
+          <Button variant="outline" size="sm" className="w-fit" render={<Link href="/dealer/financial" />} nativeButton={false}>
+            View Financial Overview
+          </Button>
         </CardContent>
       </Card>
     )

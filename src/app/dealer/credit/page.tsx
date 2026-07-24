@@ -64,7 +64,7 @@ export default async function CreditApplicationPage() {
           <p className="text-muted-foreground">Reference {application.reference_number}</p>
         </div>
         {application.status === 'active' && (
-          <Button variant="outline" size="sm" render={<Link href="/dealer" />} nativeButton={false}>
+          <Button variant="outline" size="sm" render={<Link href="/dealer/financial" />} nativeButton={false}>
             <CheckCircle size={16} />
             Terms Active
           </Button>

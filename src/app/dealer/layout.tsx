@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, CreditCard } from 'lucide-react'
+import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, CreditCard, Wallet, Receipt } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -68,6 +68,16 @@ export default async function DealerLayout({ children }: { children: React.React
     ...(hasFinancialPermission(role, 'submit_credit_application') || hasFinancialPermission(role, 'view_credit_status')
       ? [{ href: '/dealer/credit', label: 'Credit Application', description: 'Apply for payment terms', icon: <CreditCard {...iconProps} /> }]
       : []),
+    // A user with the full financial-overview capability gets the
+    // Overview hub (which itself links to Invoices/Statements); a user
+    // who can only view invoices (location_admin) gets a direct Invoices
+    // link instead of a hub page they're not allowed to see, so they're
+    // never left with no way into the invoices they ARE scoped to.
+    ...(hasFinancialPermission(role, 'view_credit_summary')
+      ? [{ href: '/dealer/financial', label: 'Financial Overview', description: 'Credit, invoices & statements', icon: <Wallet {...iconProps} /> }]
+      : hasFinancialPermission(role, 'view_invoices')
+        ? [{ href: '/dealer/financial/invoices', label: 'Invoices', description: 'Invoices for your location', icon: <Receipt {...iconProps} /> }]
+        : []),
     ...(INSTALLATIONS_ENABLED
       ? [
           { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },

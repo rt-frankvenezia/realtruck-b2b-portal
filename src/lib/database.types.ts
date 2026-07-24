@@ -2779,6 +2779,29 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      generate_statement: {
+        Args: {
+          p_company_id: string
+          p_period_end: string
+          p_period_start: string
+        }
+        Returns: {
+          company_id: string
+          created_at: string
+          document_url: string | null
+          generated_at: string | null
+          id: string
+          period_end: string
+          period_start: string
+          status: Database["public"]["Enums"]["statement_status"]
+        }
+        SetofOptions: {
+          from: "*"
+          to: "statements"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_customer_facing_status: {
         Args: { p_installation_id: string }
         Returns: Database["public"]["Enums"]["customer_facing_status"]

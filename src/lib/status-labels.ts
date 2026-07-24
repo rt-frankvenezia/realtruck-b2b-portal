@@ -270,6 +270,44 @@ export const PAYMENT_TERMS_LABEL: Record<Database['public']['Enums']['payment_te
   net_60: 'Net 60',
 }
 
+export const INVOICE_STATUS_LABEL: Record<Database['public']['Enums']['invoice_status'], string> = {
+  open: 'Open',
+  past_due: 'Past Due',
+  payment_processing: 'Payment Processing',
+  paid: 'Paid',
+  disputed: 'Disputed',
+  void: 'Void',
+}
+
+export const INVOICE_STATUS_VARIANT: Record<Database['public']['Enums']['invoice_status'], BadgeVariant> = {
+  open: 'outline',
+  past_due: 'destructive',
+  payment_processing: 'outline',
+  paid: 'success',
+  disputed: 'destructive',
+  void: 'secondary',
+}
+
+export const STATEMENT_STATUS_LABEL: Record<Database['public']['Enums']['statement_status'], string> = {
+  generating: 'Generating',
+  ready: 'Ready',
+  failed: 'Failed',
+}
+
+export const STATEMENT_STATUS_VARIANT: Record<Database['public']['Enums']['statement_status'], BadgeVariant> = {
+  generating: 'outline',
+  ready: 'success',
+  failed: 'destructive',
+}
+
+export const CREDIT_HOLD_STATUS_LABEL: Record<Database['public']['Enums']['credit_hold_status'], string> = {
+  none: 'None',
+  past_due: 'Past Due',
+  manual_review: 'Manual Review',
+  suspended: 'Suspended',
+  other: 'Other',
+}
+
 export function formatCurrency(amount: number | string | null): string {
   if (amount === null) return '—'
   const n = typeof amount === 'string' ? parseFloat(amount) : amount
