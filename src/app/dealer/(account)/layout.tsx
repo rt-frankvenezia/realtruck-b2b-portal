@@ -32,27 +32,44 @@ export default async function DealerAccountLayout({ children }: { children: Reac
     hasCreditTerms = Boolean(account)
   }
 
+  // Single nav entry covering both "apply for terms" and "manage active
+  // terms" — collapses what used to be two separate items (Credit
+  // Application + Financial Overview/Invoices) that could both appear at
+  // once and both point at the same "apply for terms" CTA for a company
+  // with no credit account yet. Destination/label depend on financial
+  // permission + hasCreditTerms; the destination pages themselves already
+  // handle every state correctly (CreditApplicationStatusView covers every
+  // application status, Financial Overview shows the apply-CTA empty
+  // state) — this only fixes which single item points at them.
+  const canSeeCreditSummary = hasFinancialPermission(role, 'view_credit_summary')
+  const canApplyOrSeeStatus = hasFinancialPermission(role, 'submit_credit_application') || hasFinancialPermission(role, 'view_credit_status')
+  const canSeeInvoicesOnly = hasFinancialPermission(role, 'view_invoices')
+
+  const creditInvoicesNavItem: PortalNavItem | null = canSeeCreditSummary
+    ? {
+        href: hasCreditTerms ? '/dealer/financial' : '/dealer/credit',
+        label: 'Credit & Invoices',
+        description: hasCreditTerms ? 'Credit, invoices & statements' : 'Apply for payment terms',
+        icon: <Wallet {...iconProps} />,
+      }
+    : canApplyOrSeeStatus
+      ? { href: '/dealer/credit', label: 'Credit & Invoices', description: 'Apply for payment terms', icon: <CreditCard {...iconProps} /> }
+      : canSeeInvoicesOnly
+        // Not gated on hasCreditTerms: that check queries credit_accounts
+        // under the user's own session, and credit_accounts_select RLS
+        // only allows dealer_admin/realtruck_admin to read it at all — for
+        // location_admin the query silently returns no rows regardless of
+        // the real account status, so hasCreditTerms is unreliable here.
+        // location_admin always gets the Invoices destination when they
+        // have the permission, same as before this nav consolidation.
+        ? { href: '/dealer/financial/invoices', label: 'Credit & Invoices', description: 'Invoices for your location', icon: <Receipt {...iconProps} /> }
+        : null
+
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
     { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
-    // Financial visibility follows financial-permissions.ts, not role
-    // directly — currently only dealer_admin has submit_credit_application/
-    // view_credit_status, but gating on the capability keeps this correct
-    // if that mapping ever changes.
-    ...(!hasCreditTerms && (hasFinancialPermission(role, 'submit_credit_application') || hasFinancialPermission(role, 'view_credit_status'))
-      ? [{ href: '/dealer/credit', label: 'Credit Application', description: 'Apply for payment terms', icon: <CreditCard {...iconProps} /> }]
-      : []),
-    // A user with the full financial-overview capability gets the
-    // Overview hub (which itself links to Invoices/Statements); a user
-    // who can only view invoices (location_admin) gets a direct Invoices
-    // link instead of a hub page they're not allowed to see, so they're
-    // never left with no way into the invoices they ARE scoped to.
-    ...(hasFinancialPermission(role, 'view_credit_summary')
-      ? [{ href: '/dealer/financial', label: 'Financial Overview', description: 'Credit, invoices & statements', icon: <Wallet {...iconProps} /> }]
-      : hasFinancialPermission(role, 'view_invoices')
-        ? [{ href: '/dealer/financial/invoices', label: 'Invoices', description: 'Invoices for your location', icon: <Receipt {...iconProps} /> }]
-        : []),
+    ...(creditInvoicesNavItem ? [creditInvoicesNavItem] : []),
     ...(INSTALLATIONS_ENABLED
       ? [
           { href: '/dealer/installations', label: 'Installations', description: 'Track & verify installs', icon: <Wrench {...iconProps} /> },
