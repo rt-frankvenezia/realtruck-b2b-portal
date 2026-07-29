@@ -18,6 +18,8 @@ import type { Database } from '@/lib/database.types'
 type Location = { id: string; name: string; address: string | null; city: string | null; state: string | null; postal_code: string | null }
 type CreditAccount = { status: string; available_credit: number | null; payment_terms: string | null } | null
 type ValidationResult = Database['public']['CompositeTypes']['credit_validation_result']
+type BankAccountOption = { id: string; bank_name: string; last_four: string; is_default: boolean }
+type PaymentCardOption = { id: string; card_brand: string; last_four: string; is_default: boolean }
 
 const TAX_RATE = 0.0835
 const SHIPPING_COST: Record<string, number> = { standard: 0, expedited: 75 }
@@ -27,11 +29,15 @@ export function CheckoutForm({
   companyName,
   locations,
   creditAccount,
+  bankAccounts,
+  paymentCards,
 }: {
   companyId: string
   companyName: string
   locations: Location[]
   creditAccount: CreditAccount
+  bankAccounts: BankAccountOption[]
+  paymentCards: PaymentCardOption[]
 }) {
   const router = useRouter()
   const { items, subtotal, clear } = useDealerCart()
@@ -43,6 +49,8 @@ export function CheckoutForm({
   // this is a fixed boolean, not a tab the dealer can switch away from.
   const usingTerms = Boolean(creditAccount)
   const [cardOrAch, setCardOrAch] = useState<'card' | 'ach'>('card')
+  const [selectedCardId, setSelectedCardId] = useState(paymentCards.find((c) => c.is_default)?.id ?? paymentCards[0]?.id ?? '')
+  const [selectedBankAccountId, setSelectedBankAccountId] = useState(bankAccounts.find((a) => a.is_default)?.id ?? bankAccounts[0]?.id ?? '')
 
   const [locationId, setLocationId] = useState(locations[0]?.id ?? '')
   const [poNumber, setPoNumber] = useState('')
@@ -93,6 +101,16 @@ export function CheckoutForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usingTerms, total, companyId, previewNonce])
 
+  function paymentMethodDescription(): string | undefined {
+    if (usingTerms) return undefined
+    if (cardOrAch === 'card') {
+      const card = paymentCards.find((c) => c.id === selectedCardId)
+      return card ? `Card — ${card.card_brand} •••• ${card.last_four}` : 'Credit Card (mock)'
+    }
+    const account = bankAccounts.find((a) => a.id === selectedBankAccountId)
+    return account ? `ACH — ${account.bank_name} •••• ${account.last_four}` : 'Business Checking (mock)'
+  }
+
   function submitOrder(requestReview: boolean) {
     setCheckoutError(null)
     startTransition(async () => {
@@ -102,7 +120,7 @@ export function CheckoutForm({
         p_location_id: locationId,
         p_items: items.map((i) => ({ product_id: i.productId, quantity: i.quantity })),
         p_po_number: poNumber || undefined,
-        p_payment_method: usingTerms ? undefined : cardOrAch === 'card' ? 'Credit Card (mock)' : 'Business Checking (mock)',
+        p_payment_method: paymentMethodDescription(),
         p_use_terms: usingTerms,
         p_request_review: requestReview,
         p_shipping_address: selectedLocation?.address ?? undefined,
@@ -230,14 +248,60 @@ export function CheckoutForm({
                       <TabsTrigger value="ach">ACH</TabsTrigger>
                     </TabsList>
                     <TabsContent value="card" className="mt-4">
-                      <p className="text-sm text-muted-foreground">
-                        A saved card payment method would be selected here. This prototype does not process real card payments.
-                      </p>
+                      {paymentCards.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          No saved cards yet.{' '}
+                          <Link href="/dealer/payment-methods" className="font-semibold underline">
+                            Add a card
+                          </Link>{' '}
+                          to pay by card at checkout.
+                        </p>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          {paymentCards.map((card) => (
+                            <label key={card.id} className="flex cursor-pointer items-center gap-3 rounded-md border p-3 hover:bg-muted/50">
+                              <input
+                                type="radio"
+                                name="payment-card"
+                                checked={selectedCardId === card.id}
+                                onChange={() => setSelectedCardId(card.id)}
+                              />
+                              <span className="text-sm font-semibold">
+                                {card.card_brand} •••• {card.last_four}
+                              </span>
+                              {card.is_default && <span className="text-xs text-muted-foreground">Default</span>}
+                            </label>
+                          ))}
+                        </div>
+                      )}
                     </TabsContent>
                     <TabsContent value="ach" className="mt-4">
-                      <p className="text-sm text-muted-foreground">
-                        A saved ACH bank account would be selected here. This prototype does not process real ACH debits.
-                      </p>
+                      {bankAccounts.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">
+                          No saved bank accounts yet.{' '}
+                          <Link href="/dealer/payment-methods" className="font-semibold underline">
+                            Add a bank account
+                          </Link>{' '}
+                          to pay by ACH at checkout.
+                        </p>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          {bankAccounts.map((account) => (
+                            <label key={account.id} className="flex cursor-pointer items-center gap-3 rounded-md border p-3 hover:bg-muted/50">
+                              <input
+                                type="radio"
+                                name="payment-bank-account"
+                                checked={selectedBankAccountId === account.id}
+                                onChange={() => setSelectedBankAccountId(account.id)}
+                              />
+                              <span className="text-sm font-semibold">
+                                {account.bank_name} •••• {account.last_four}
+                              </span>
+                              {account.is_default && <span className="text-xs text-muted-foreground">Default</span>}
+                            </label>
+                          ))}
+                        </div>
+                      )}
                     </TabsContent>
                   </Tabs>
                 ) : (

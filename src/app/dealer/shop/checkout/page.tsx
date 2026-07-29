@@ -20,12 +20,36 @@ export default async function CheckoutPage() {
       .maybeSingle(),
   ])
 
+  // Only needed for the Card/ACH branch — a terms account never sees
+  // those tabs, so skip fetching stored methods entirely in that case.
+  const usingTerms = Boolean(creditAccount)
+  const [{ data: bankAccounts }, { data: paymentCards }] = await Promise.all([
+    usingTerms
+      ? Promise.resolve({ data: null })
+      : supabase
+          .from('bank_accounts')
+          .select('id, bank_name, last_four, is_default')
+          .eq('company_id', user.profile.company_id)
+          .eq('verification_status', 'verified')
+          .order('is_default', { ascending: false }),
+    usingTerms
+      ? Promise.resolve({ data: null })
+      : supabase
+          .from('payment_cards')
+          .select('id, card_brand, last_four, is_default')
+          .eq('company_id', user.profile.company_id)
+          .eq('status', 'active')
+          .order('is_default', { ascending: false }),
+  ])
+
   return (
     <CheckoutForm
       companyId={user.profile.company_id}
       companyName={company?.name ?? ''}
       locations={locations ?? []}
       creditAccount={creditAccount ?? null}
+      bankAccounts={bankAccounts ?? []}
+      paymentCards={paymentCards ?? []}
     />
   )
 }

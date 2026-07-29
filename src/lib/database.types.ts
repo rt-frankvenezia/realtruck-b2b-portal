@@ -1475,6 +1475,63 @@ export type Database = {
           },
         ]
       }
+      payment_cards: {
+        Row: {
+          card_brand: string
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          deactivated_at: string | null
+          expiry_month: number
+          expiry_year: number
+          id: string
+          is_default: boolean
+          last_four: string
+          status: string
+        }
+        Insert: {
+          card_brand: string
+          company_id: string
+          created_at?: string
+          created_by_user_id?: string | null
+          deactivated_at?: string | null
+          expiry_month: number
+          expiry_year: number
+          id?: string
+          is_default?: boolean
+          last_four: string
+          status?: string
+        }
+        Update: {
+          card_brand?: string
+          company_id?: string
+          created_at?: string
+          created_by_user_id?: string | null
+          deactivated_at?: string | null
+          expiry_month?: number
+          expiry_year?: number
+          id?: string
+          is_default?: boolean
+          last_four?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_cards_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_cards_created_by_user_id_fkey"
+            columns: ["created_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payments: {
         Row: {
           applied_at: string | null
@@ -3064,6 +3121,28 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "bank_accounts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_default_payment_card: {
+        Args: { p_payment_card_id: string }
+        Returns: {
+          card_brand: string
+          company_id: string
+          created_at: string
+          created_by_user_id: string | null
+          deactivated_at: string | null
+          expiry_month: number
+          expiry_year: number
+          id: string
+          is_default: boolean
+          last_four: string
+          status: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "payment_cards"
           isOneToOne: true
           isSetofReturn: false
         }
