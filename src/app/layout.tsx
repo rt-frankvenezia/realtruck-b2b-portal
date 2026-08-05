@@ -16,6 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "RealTruck B2B Portal",
   description: "Dealer, admin, and customer portal for RealTruck installations.",
+  robots: { index: false, follow: false, nocache: true },
 };
 
 export default function RootLayout({
