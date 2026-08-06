@@ -31,6 +31,10 @@ export function SiteHeader({
 }) {
   const isCustomer = variant === 'customer'
   const homeHref = isCustomer ? (userEmail ? '/account' : '/build') : variant === 'admin' ? '/admin' : '/dealer'
+  // The logo always goes to the homepage for dealer/admin — homeHref itself
+  // stays pointed at the role's own dashboard since it's also used by
+  // AccountMenu's "My Account" item, which should keep going there.
+  const logoHref = isCustomer ? homeHref : '/'
   const accountLabel = userName ?? userEmail
 
   return (
@@ -58,7 +62,7 @@ export function SiteHeader({
 
       <div className="h-20 bg-[#2a2a2a]">
         <div className="mx-auto flex h-full max-w-[1440px] items-center justify-between gap-8 px-8">
-          <Link href={homeHref} className="flex items-center gap-3">
+          <Link href={logoHref} className="flex items-center gap-3">
             <Image src="/realtruck-logo.png" alt="RealTruck" width={140} height={24} className="h-10 w-auto" priority />
             {!isCustomer && (
               <>
