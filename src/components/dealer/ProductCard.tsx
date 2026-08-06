@@ -6,12 +6,15 @@ import { formatCurrency } from '@/lib/status-labels'
 import { CATALOG_INVENTORY_STATUS_LABEL, CATALOG_INVENTORY_STATUS_VARIANT } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
 
-type Product = Pick<
-  Database['public']['Tables']['catalog_products']['Row'],
-  'id' | 'name' | 'brand' | 'sku' | 'dealer_price' | 'map_price' | 'inventory_status'
->
+type Product = Pick<Database['public']['Tables']['catalog_products']['Row'], 'id' | 'name' | 'brand' | 'sku' | 'map_price' | 'inventory_status'> & {
+  dealer_price?: number | null
+}
 
-export function ProductCard({ product, categorySlug }: { product: Product; categorySlug: string }) {
+// showDealerPricing: false for anonymous visitors (browsing is public, but
+// dealer pricing and purchasing require login) — shows MAP/retail pricing
+// as the displayed price instead, with a login prompt in place of the
+// dealer-price line.
+export function ProductCard({ product, categorySlug, showDealerPricing }: { product: Product; categorySlug: string; showDealerPricing: boolean }) {
   return (
     <Link href={`/dealer/shop/${categorySlug}/${product.id}`} className="group">
       <Card className="h-full overflow-hidden transition-shadow group-hover:shadow-md">
@@ -23,8 +26,17 @@ export function ProductCard({ product, categorySlug }: { product: Product; categ
           <h3 className="line-clamp-2 min-h-10 text-sm font-semibold">{product.name}</h3>
           <p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
           <div className="mt-1">
-            <div className="text-xl font-bold">{formatCurrency(product.dealer_price)}</div>
-            <div className="text-xs text-muted-foreground">MAP: {formatCurrency(product.map_price)}</div>
+            {showDealerPricing && product.dealer_price != null ? (
+              <>
+                <div className="text-xl font-bold">{formatCurrency(product.dealer_price)}</div>
+                <div className="text-xs text-muted-foreground">MAP: {formatCurrency(product.map_price)}</div>
+              </>
+            ) : (
+              <>
+                <div className="text-xl font-bold">{formatCurrency(product.map_price)}</div>
+                <div className="text-xs text-muted-foreground">Log in for dealer pricing</div>
+              </>
+            )}
           </div>
           <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT[product.inventory_status]} className="mt-1 w-fit">
             {CATALOG_INVENTORY_STATUS_LABEL[product.inventory_status]}

@@ -10,34 +10,35 @@ import { DealerCartProvider } from '@/components/dealer/DealerCartContext'
 // gives realtruck_admin full visibility regardless of company scoping.
 const DEALER_ROLES = ['dealer_admin', 'location_admin', 'staff', 'realtruck_admin'] as const
 
-// Outer shell: auth + header only. The "My Account" sidebar is added by the
-// nested (account) route group's own layout — /dealer/shop/** deliberately
-// sits outside that group so shopping pages render full-width, matching
-// the storefront rather than the account area (per user feedback: the
-// left nav is only for My Account pages, not categories/products/cart/
-// checkout). DealerCartProvider lives here (not just under shop/) so the
-// header's cart icon can show a live item count from any dealer page.
+// Outer shell: header only, auth is now OPTIONAL here — /dealer/shop/**
+// (category/product browsing) is deliberately public, matching a real
+// storefront, with dealer pricing/purchasing gated behind login on those
+// pages themselves. This is safe to loosen at this level because every
+// *other* /dealer/* page lives under the (account) route group, which has
+// its own independent auth guard in dealer/(account)/layout.tsx — nothing
+// but shop/** actually loses protection here.
 export default async function DealerLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
-  if (!user) redirect('/login')
-  if (!DEALER_ROLES.includes(user.profile.role as (typeof DEALER_ROLES)[number])) {
+  if (user && !DEALER_ROLES.includes(user.profile.role as (typeof DEALER_ROLES)[number])) {
     redirect('/')
   }
 
-  const role = user.profile.role
+  const role = user?.profile.role
 
-  // Header company/location context — realtruck_admin has no company of
-  // their own, so this stays undefined for them.
+  // Header company/location context — realtruck_admin and anonymous
+  // visitors have no company of their own, so this stays undefined.
   let companyName: string | undefined
   let locationLabel: string | undefined
-  let shopCategories: { name: string; slug: string }[] | undefined
-  if (role !== 'realtruck_admin' && user.profile.company_id) {
-    const supabase = await createClient()
+  const supabase = await createClient()
+
+  // Public regardless of auth state (product_categories_select_public RLS
+  // policy) — the header's Categories dropdown works the same for everyone.
+  const { data: categories } = await supabase.from('product_categories').select('name, slug').order('sort_order')
+  const shopCategories = categories ?? []
+
+  if (user && role !== 'realtruck_admin' && user.profile.company_id) {
     const { data: company } = await supabase.from('companies').select('name').eq('id', user.profile.company_id).maybeSingle()
     companyName = company?.name ?? undefined
-
-    const { data: categories } = await supabase.from('product_categories').select('name, slug').order('sort_order')
-    shopCategories = categories ?? []
 
     if (role === 'location_admin') {
       const { data: assignment } = await supabase
@@ -66,12 +67,12 @@ export default async function DealerLayout({ children }: { children: React.React
       <DealerCartProvider>
         <SiteHeader
           variant={role === 'realtruck_admin' ? 'admin' : 'dealer'}
-          userEmail={user.profile.email}
-          userName={user.profile.name}
+          userEmail={user?.profile.email}
+          userName={user?.profile.name}
           companyName={companyName}
           locationLabel={locationLabel}
           shopCategories={shopCategories}
-          showDealerCart={role !== 'realtruck_admin'}
+          showDealerCart={Boolean(user) && role !== 'realtruck_admin'}
         />
         <div className="mx-auto max-w-[1440px] px-8 py-8">{children}</div>
       </DealerCartProvider>

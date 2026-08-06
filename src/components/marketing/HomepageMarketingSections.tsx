@@ -46,61 +46,36 @@ export function WhyChooseUsSection() {
   )
 }
 
-export const STATIC_CATEGORIES = [
-  'Truck Bed Covers',
-  'Floor Liners',
-  'Lift Kits',
-  'Bumpers',
-  'Towing',
-  'Exterior Accessories',
-  'Interior Accessories',
-] as const
+type LiveCategory = { id: string; name: string; slug: string; catalog_products_public: { count: number }[] }
 
-type LiveCategory = { id: string; name: string; slug: string; catalog_products: { count: number }[] }
-
-// Two modes: logged-out visitors get static, non-linked tiles (there's
-// nothing to link to without a session) that jump to the embedded login
-// form; logged-in dealer-side roles get the real catalog with live counts
-// linking straight into the shop.
-export function CategoriesSection({ categories }: { categories?: LiveCategory[] }) {
+// Categories/counts are public (catalog_products_public + a permissive RLS
+// policy on product_categories) — anonymous visitors get the same real,
+// clickable tiles as logged-in dealers, just without dealer pricing further
+// down the funnel. No more static placeholder fallback.
+export function CategoriesSection({ categories }: { categories: LiveCategory[] }) {
   return (
     <section className="bg-neutral-50 py-14">
       <div className="mx-auto max-w-[1440px] px-8">
         <h2 className="mb-8 text-center text-2xl font-bold text-[#1c1c1e]">Popular Categories</h2>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {categories ? (
-            categories.map((category) => {
-              const count = category.catalog_products[0]?.count ?? 0
-              return (
-                <Link key={category.id} href={`/dealer/shop/${category.slug}`} className="group">
-                  <Card className="h-full transition-shadow group-hover:shadow-md">
-                    <CardContent className="flex flex-col items-center gap-3 pt-6 text-center">
-                      <div className="flex size-14 items-center justify-center rounded-full bg-white">
-                        <Package size={24} className="text-muted-foreground" />
-                      </div>
-                      <h3 className="font-semibold">{category.name}</h3>
-                      <p className="text-xs text-muted-foreground">
-                        {count} product{count === 1 ? '' : 's'}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </Link>
-              )
-            })
-          ) : (
-            STATIC_CATEGORIES.map((name) => (
-              <a key={name} href="#login" className="group">
+          {categories.map((category) => {
+            const count = category.catalog_products_public[0]?.count ?? 0
+            return (
+              <Link key={category.id} href={`/dealer/shop/${category.slug}`} className="group">
                 <Card className="h-full transition-shadow group-hover:shadow-md">
                   <CardContent className="flex flex-col items-center gap-3 pt-6 text-center">
                     <div className="flex size-14 items-center justify-center rounded-full bg-white">
                       <Package size={24} className="text-muted-foreground" />
                     </div>
-                    <h3 className="font-semibold">{name}</h3>
+                    <h3 className="font-semibold">{category.name}</h3>
+                    <p className="text-xs text-muted-foreground">
+                      {count} product{count === 1 ? '' : 's'}
+                    </p>
                   </CardContent>
                 </Card>
-              </a>
-            ))
-          )}
+              </Link>
+            )
+          })}
         </div>
       </div>
     </section>

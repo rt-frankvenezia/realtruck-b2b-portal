@@ -5,7 +5,8 @@ import { CheckoutForm } from '@/components/dealer/CheckoutForm'
 
 export default async function CheckoutPage() {
   const user = await getCurrentUser()
-  if (!user || !user.profile.company_id) redirect('/dealer/shop')
+  if (!user) redirect('/login')
+  if (!user.profile.company_id) redirect('/dealer/shop')
 
   const supabase = await createClient()
 

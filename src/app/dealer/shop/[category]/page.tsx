@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Package } from 'lucide-react'
+import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { ProductCard } from '@/components/dealer/ProductCard'
@@ -20,15 +21,18 @@ export default async function CategoryPage({
   const { category: categorySlug } = await params
   const { brand, availability } = await searchParams
 
+  const user = await getCurrentUser()
+  const showDealerPricing = Boolean(user)
   const supabase = await createClient()
   const { data: category } = await supabase.from('product_categories').select('*').eq('slug', categorySlug).maybeSingle()
   if (!category) notFound()
 
-  const { data: allProducts } = await supabase
-    .from('catalog_products')
-    .select('*')
-    .eq('category_id', category.id)
-    .order('name')
+  // Anonymous browsing is public — catalog_products_public excludes
+  // dealer_price, so a logged-out visitor only ever sees MAP/retail
+  // pricing, never the real dealer cost.
+  const { data: allProducts } = await (showDealerPricing
+    ? supabase.from('catalog_products').select('*').eq('category_id', category.id).order('name')
+    : supabase.from('catalog_products_public').select('*').eq('category_id', category.id).order('name'))
 
   const products = allProducts ?? []
   const availableBrands = Array.from(new Set(products.map((p) => p.brand))).sort()
@@ -114,7 +118,7 @@ export default async function CategoryPage({
           ) : (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((product) => (
-                <ProductCard key={product.id} product={product} categorySlug={categorySlug} />
+                <ProductCard key={product.id} product={product} categorySlug={categorySlug} showDealerPricing={showDealerPricing} />
               ))}
             </div>
           )}

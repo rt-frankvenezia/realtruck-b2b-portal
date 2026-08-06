@@ -20,17 +20,59 @@ export default async function HomePage() {
     redirect('/account')
   }
 
-  if (!user) {
-    return <LoggedOutHome />
+  const isRealtruckAdmin = user?.profile.role === 'realtruck_admin'
+  const showDealerPricing = Boolean(user)
+  const supabase = await createClient()
+
+  // Public regardless of auth state (product_categories_select_public RLS
+  // policy) — the header's Categories dropdown works the same for everyone,
+  // logged in or not.
+  const { data: categoriesForHeader } = await supabase.from('product_categories').select('name, slug').order('sort_order')
+  const shopCategories = categoriesForHeader ?? []
+
+  // realtruck_admin has no wholesale-catalog context of their own (no
+  // company placing orders), so the catalog section is skipped for them
+  // exactly as before — everyone else (including anonymous visitors, now
+  // that browsing is public) gets it.
+  let categories: Parameters<typeof CategoriesSection>[0]['categories'] = []
+  let newestProducts: Awaited<ReturnType<typeof fetchNewestProducts>> = []
+  if (!isRealtruckAdmin) {
+    const [cats, products] = await Promise.all([fetchCategoriesWithCounts(supabase), fetchNewestProducts(supabase, showDealerPricing)])
+    categories = cats
+    newestProducts = products
   }
 
-  return <LoggedInHome user={user} />
+  if (!user) {
+    return <LoggedOutHome shopCategories={shopCategories} categories={categories} newestProducts={newestProducts} />
+  }
+
+  return (
+    <LoggedInHome
+      user={user}
+      shopCategories={shopCategories}
+      categories={categories}
+      newestProducts={newestProducts}
+      showDealerPricing={showDealerPricing}
+    />
+  )
 }
 
-function LoggedOutHome() {
+type HeaderCategory = { name: string; slug: string }
+type CatalogCategories = Parameters<typeof CategoriesSection>[0]['categories']
+type NewestProducts = Awaited<ReturnType<typeof fetchNewestProducts>>
+
+function LoggedOutHome({
+  shopCategories,
+  categories,
+  newestProducts,
+}: {
+  shopCategories: HeaderCategory[]
+  categories: CatalogCategories
+  newestProducts: NewestProducts
+}) {
   return (
     <div className="min-h-screen bg-white">
-      <SiteHeader variant="dealer" context="account" />
+      <SiteHeader variant="dealer" context="account" shopCategories={shopCategories} />
 
       <div className="bg-[#1c1c1e] py-20 text-white">
         <div className="mx-auto grid max-w-[1440px] gap-10 px-8 lg:grid-cols-[1.3fr_1fr] lg:items-center">
@@ -53,8 +95,9 @@ function LoggedOutHome() {
         </div>
       </div>
 
+      <CategoriesSection categories={categories} />
+      <NewestArrivalsSection products={newestProducts} showDealerPricing={false} />
       <WhyChooseUsSection />
-      <CategoriesSection />
       <FaqSection />
     </div>
   )
@@ -86,27 +129,33 @@ const ADMIN_QUICK_LINKS: QuickLink[] = [
   { href: '/admin/pricing-groups', label: 'Pricing Groups', icon: DollarSign },
 ]
 
-async function LoggedInHome({ user }: { user: CurrentUser }) {
+async function LoggedInHome({
+  user,
+  shopCategories,
+  categories,
+  newestProducts,
+  showDealerPricing,
+}: {
+  user: CurrentUser
+  shopCategories: HeaderCategory[]
+  categories: CatalogCategories
+  newestProducts: NewestProducts
+  showDealerPricing: boolean
+}) {
   const role = user.profile.role
   const isRealtruckAdmin = role === 'realtruck_admin'
   const supabase = await createClient()
 
   let companyName: string | undefined
-  let categories: Parameters<typeof CategoriesSection>[0]['categories']
-  let newestProducts: Awaited<ReturnType<typeof fetchNewestProducts>> = []
   let hasCreditTerms = false
 
   if (!isRealtruckAdmin && user.profile.company_id) {
     const companyId = user.profile.company_id
-    const [{ data: company }, { data: cats }, products, { data: creditAccount }] = await Promise.all([
+    const [{ data: company }, { data: creditAccount }] = await Promise.all([
       supabase.from('companies').select('name').eq('id', companyId).maybeSingle(),
-      supabase.from('product_categories').select('id, name, slug, catalog_products(count)').order('sort_order'),
-      fetchNewestProducts(supabase),
       supabase.from('credit_accounts').select('id').eq('company_id', companyId).in('status', ['active', 'on_hold']).maybeSingle(),
     ])
     companyName = company?.name ?? undefined
-    categories = cats ?? []
-    newestProducts = products
     hasCreditTerms = Boolean(creditAccount)
   }
 
@@ -120,6 +169,7 @@ async function LoggedInHome({ user }: { user: CurrentUser }) {
         userEmail={user.profile.email}
         userName={user.profile.name}
         companyName={companyName}
+        shopCategories={shopCategories}
       />
 
       <div className="bg-[#1c1c1e] py-14 text-white">
@@ -140,16 +190,7 @@ async function LoggedInHome({ user }: { user: CurrentUser }) {
       {!isRealtruckAdmin && (
         <>
           <CategoriesSection categories={categories} />
-          {newestProducts.length > 0 && (
-            <section className="mx-auto max-w-[1440px] px-8 py-14">
-              <h2 className="mb-6 text-2xl font-bold text-[#1c1c1e]">Newest Arrivals</h2>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                {newestProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} categorySlug={product.product_categories?.slug ?? ''} />
-                ))}
-              </div>
-            </section>
-          )}
+          <NewestArrivalsSection products={newestProducts} showDealerPricing={showDealerPricing} />
         </>
       )}
 
@@ -159,11 +200,36 @@ async function LoggedInHome({ user }: { user: CurrentUser }) {
   )
 }
 
-async function fetchNewestProducts(supabase: Awaited<ReturnType<typeof createClient>>) {
-  const { data } = await supabase
-    .from('catalog_products')
-    .select('*, product_categories(slug)')
-    .order('created_at', { ascending: false })
-    .limit(3)
+function NewestArrivalsSection({ products, showDealerPricing }: { products: NewestProducts; showDealerPricing: boolean }) {
+  if (products.length === 0) return null
+  return (
+    <section className="mx-auto max-w-[1440px] px-8 py-14">
+      <h2 className="mb-6 text-2xl font-bold text-[#1c1c1e]">Newest Arrivals</h2>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+            categorySlug={product.product_categories?.slug ?? ''}
+            showDealerPricing={showDealerPricing}
+          />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+async function fetchCategoriesWithCounts(supabase: Awaited<ReturnType<typeof createClient>>) {
+  // catalog_products_public works for both anonymous and authenticated
+  // sessions and the count itself isn't sensitive, so this query doesn't
+  // need to branch on auth state the way pricing does.
+  const { data } = await supabase.from('product_categories').select('id, name, slug, catalog_products_public(count)').order('sort_order')
+  return data ?? []
+}
+
+async function fetchNewestProducts(supabase: Awaited<ReturnType<typeof createClient>>, showDealerPricing: boolean) {
+  const { data } = await (showDealerPricing
+    ? supabase.from('catalog_products').select('*, product_categories(slug)').order('created_at', { ascending: false }).limit(3)
+    : supabase.from('catalog_products_public').select('*, product_categories(slug)').order('created_at', { ascending: false }).limit(3))
   return data ?? []
 }

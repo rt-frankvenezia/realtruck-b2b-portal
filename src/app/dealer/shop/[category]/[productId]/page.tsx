@@ -1,8 +1,10 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Package } from 'lucide-react'
+import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { AddToCartButton } from '@/components/dealer/AddToCartButton'
 import { ProductCard } from '@/components/dealer/ProductCard'
 import { formatCurrency, CATALOG_INVENTORY_STATUS_LABEL, CATALOG_INVENTORY_STATUS_VARIANT } from '@/lib/status-labels'
@@ -14,21 +16,26 @@ export default async function ProductDetailPage({
 }) {
   const { category: categorySlug, productId } = await params
 
+  const user = await getCurrentUser()
+  const showDealerPricing = Boolean(user)
   const supabase = await createClient()
   const { data: category } = await supabase.from('product_categories').select('*').eq('slug', categorySlug).maybeSingle()
   if (!category) notFound()
 
-  const { data: product } = await supabase.from('catalog_products').select('*').eq('id', productId).maybeSingle()
+  // Anonymous browsing is public — catalog_products_public excludes
+  // dealer_price, so a logged-out visitor only ever sees MAP/retail
+  // pricing, never the real dealer cost.
+  const { data: product } = await (showDealerPricing
+    ? supabase.from('catalog_products').select('*').eq('id', productId).maybeSingle()
+    : supabase.from('catalog_products_public').select('*').eq('id', productId).maybeSingle())
   if (!product || product.category_id !== category.id) notFound()
 
-  const { data: related } = await supabase
-    .from('catalog_products')
-    .select('*')
-    .eq('category_id', category.id)
-    .neq('id', product.id)
-    .limit(3)
+  const { data: related } = await (showDealerPricing
+    ? supabase.from('catalog_products').select('*').eq('category_id', category.id).neq('id', product.id).limit(3)
+    : supabase.from('catalog_products_public').select('*').eq('category_id', category.id).neq('id', product.id).limit(3))
 
   const specifications = (product.specifications ?? {}) as Record<string, string>
+  const dealerPrice: number | null = showDealerPricing && 'dealer_price' in product ? (product as { dealer_price: number }).dealer_price : null
 
   return (
     <div className="flex flex-col gap-6">
@@ -74,7 +81,7 @@ export default async function ProductDetailPage({
               <h2 className="text-xl font-semibold">Related Products</h2>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
                 {related.map((p) => (
-                  <ProductCard key={p.id} product={p} categorySlug={categorySlug} />
+                  <ProductCard key={p.id} product={p} categorySlug={categorySlug} showDealerPricing={showDealerPricing} />
                 ))}
               </div>
             </div>
@@ -89,26 +96,42 @@ export default async function ProductDetailPage({
               <p className="mt-1 text-xs text-muted-foreground">SKU: {product.sku}</p>
             </div>
 
-            <div className="border-t pt-4">
-              <p className="text-sm text-muted-foreground">Your Dealer Price</p>
-              <p className="text-3xl font-bold">{formatCurrency(product.dealer_price)}</p>
-              <p className="mt-1 text-sm text-muted-foreground">MAP: {formatCurrency(product.map_price)}</p>
-            </div>
+            {dealerPrice != null ? (
+              <div className="border-t pt-4">
+                <p className="text-sm text-muted-foreground">Your Dealer Price</p>
+                <p className="text-3xl font-bold">{formatCurrency(dealerPrice)}</p>
+                <p className="mt-1 text-sm text-muted-foreground">MAP: {formatCurrency(product.map_price)}</p>
+              </div>
+            ) : (
+              <div className="border-t pt-4">
+                <p className="text-sm text-muted-foreground">Price</p>
+                <p className="text-3xl font-bold">{formatCurrency(product.map_price)}</p>
+              </div>
+            )}
 
             <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT[product.inventory_status]} className="w-fit">
               {CATALOG_INVENTORY_STATUS_LABEL[product.inventory_status]}
             </Badge>
 
             <div className="border-t pt-4">
-              <AddToCartButton
-                productId={product.id}
-                name={product.name}
-                brand={product.brand}
-                sku={product.sku}
-                unitPrice={product.dealer_price}
-                categorySlug={categorySlug}
-                disabled={product.inventory_status === 'discontinued'}
-              />
+              {dealerPrice != null ? (
+                <AddToCartButton
+                  productId={product.id}
+                  name={product.name}
+                  brand={product.brand}
+                  sku={product.sku}
+                  unitPrice={dealerPrice}
+                  categorySlug={categorySlug}
+                  disabled={product.inventory_status === 'discontinued'}
+                />
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <p className="text-sm text-muted-foreground">Log in to see your dealer price and place an order.</p>
+                  <Button render={<Link href="/login" />} nativeButton={false}>
+                    Log In
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>

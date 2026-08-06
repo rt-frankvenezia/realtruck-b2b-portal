@@ -2493,6 +2493,29 @@ export type Database = {
       }
     }
     Views: {
+      catalog_products_public: {
+        Row: {
+          brand: string
+          category_id: string
+          created_at: string
+          description: string
+          id: string
+          inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
+          map_price: number
+          name: string
+          sku: string
+          specifications: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       location_directory: {
         Row: {
           city: string | null

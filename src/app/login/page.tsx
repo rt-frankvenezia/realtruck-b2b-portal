@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import Image from 'next/image'
+import Link from 'next/link'
 import { getCurrentUser } from '@/lib/auth'
 import { LoginForm } from '@/components/marketing/LoginForm'
 
@@ -15,7 +16,9 @@ export default async function LoginPage() {
       <div className="h-[37px] bg-[#1c1c1e]" />
       <div className="flex h-20 items-center bg-[#2a2a2a]">
         <div className="mx-auto w-full max-w-[1440px] px-8">
-          <Image src="/realtruck-logo.png" alt="RealTruck" width={140} height={24} className="h-10 w-auto" priority />
+          <Link href="/">
+            <Image src="/realtruck-logo.png" alt="RealTruck" width={140} height={24} className="h-10 w-auto" priority />
+          </Link>
         </div>
       </div>
 
