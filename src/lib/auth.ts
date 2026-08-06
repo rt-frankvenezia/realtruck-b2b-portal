@@ -20,16 +20,3 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
 
   return { authId: user.id, email: user.email ?? profile.email, profile }
 })
-
-export function portalPathForRole(role: Tables<'users'>['role']): string {
-  switch (role) {
-    case 'realtruck_admin':
-      return '/admin'
-    case 'dealer_admin':
-    case 'location_admin':
-    case 'staff':
-      return '/dealer'
-    case 'customer':
-      return '/account'
-  }
-}
