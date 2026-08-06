@@ -1,11 +1,18 @@
 import * as React from "react"
-import { Input as InputPrimitive } from "@base-ui/react/input"
 
 import { cn } from "@/lib/utils"
 
+// Deliberately a plain native <input>, not base-ui's Field.Control-backed
+// Input primitive — that primitive is designed to run inside a <Field.Root>
+// (for validation/labeling wiring) and defines its own onChange/value
+// handling geared toward that context. This app never uses <Field.Root>
+// anywhere, and every call site here passes plain React value/onChange —
+// under that mismatch, base-ui's internal onChange handling corrupted fast
+// real keystrokes and dropped focus (reproduced live: typing a full email
+// address produced garbled input and jumped focus to the next field).
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
-    <InputPrimitive
+    <input
       type={type}
       data-slot="input"
       className={cn(

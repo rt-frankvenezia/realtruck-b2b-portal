@@ -4,5 +4,5 @@ import { redirect } from 'next/navigation'
 // (see src/app/page.tsx's LoggedOutHome), so this route is just a shim for
 // existing redirect('/login') call sites elsewhere in the app.
 export default function LoginPage() {
-  redirect('/')
+  redirect('/#login')
 }
