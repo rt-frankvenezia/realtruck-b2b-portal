@@ -131,6 +131,45 @@ export type Database = {
           },
         ]
       }
+      catalog_product_inventory: {
+        Row: {
+          catalog_product_id: string
+          fulfillment_location_id: string
+          id: string
+          quantity_on_hand: number
+          updated_at: string
+        }
+        Insert: {
+          catalog_product_id: string
+          fulfillment_location_id: string
+          id?: string
+          quantity_on_hand?: number
+          updated_at?: string
+        }
+        Update: {
+          catalog_product_id?: string
+          fulfillment_location_id?: string
+          id?: string
+          quantity_on_hand?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_product_inventory_catalog_product_id_fkey"
+            columns: ["catalog_product_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_product_inventory_fulfillment_location_id_fkey"
+            columns: ["fulfillment_location_id"]
+            isOneToOne: false
+            referencedRelation: "fulfillment_locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       catalog_products: {
         Row: {
           brand: string
@@ -138,6 +177,7 @@ export type Database = {
           created_at: string
           dealer_price: number
           description: string
+          highlights: string[]
           id: string
           inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price: number
@@ -151,6 +191,7 @@ export type Database = {
           created_at?: string
           dealer_price: number
           description: string
+          highlights?: string[]
           id?: string
           inventory_status?: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price: number
@@ -164,6 +205,7 @@ export type Database = {
           created_at?: string
           dealer_price?: number
           description?: string
+          highlights?: string[]
           id?: string
           inventory_status?: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price?: number
@@ -775,6 +817,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      fulfillment_locations: {
+        Row: {
+          city: string
+          id: string
+          name: string
+          sort_order: number
+          state: string
+          supports_rapid_ship: boolean
+        }
+        Insert: {
+          city: string
+          id?: string
+          name: string
+          sort_order?: number
+          state: string
+          supports_rapid_ship?: boolean
+        }
+        Update: {
+          city?: string
+          id?: string
+          name?: string
+          sort_order?: number
+          state?: string
+          supports_rapid_ship?: boolean
+        }
+        Relationships: []
       }
       installation_checklist_items: {
         Row: {
@@ -2499,6 +2568,7 @@ export type Database = {
           category_id: string
           created_at: string
           description: string
+          highlights: string[]
           id: string
           inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price: number

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Package } from 'lucide-react'
+import { CheckCircle2, Package, ShieldCheck, Zap } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
@@ -34,8 +34,20 @@ export default async function ProductDetailPage({
     ? supabase.from('catalog_products').select('*').eq('category_id', category.id).neq('id', product.id).limit(3)
     : supabase.from('catalog_products_public').select('*').eq('category_id', category.id).neq('id', product.id).limit(3))
 
+  // Fulfillment availability is public browsing-tier info, same as the
+  // rest of the catalog now is — no auth branch needed here.
+  const { data: inventory } = await supabase
+    .from('catalog_product_inventory')
+    .select('quantity_on_hand, fulfillment_locations(name, city, state, supports_rapid_ship, sort_order)')
+    .eq('catalog_product_id', product.id)
+    .order('sort_order', { referencedTable: 'fulfillment_locations' })
+
+  const availability = inventory ?? []
+  const rapidShipEligible = availability.some((row) => row.quantity_on_hand > 0 && row.fulfillment_locations?.supports_rapid_ship)
+
   const specifications = (product.specifications ?? {}) as Record<string, string>
   const dealerPrice: number | null = showDealerPricing && 'dealer_price' in product ? (product as { dealer_price: number }).dealer_price : null
+  const warranty = specifications.warranty
 
   return (
     <div className="flex flex-col gap-6">
@@ -57,6 +69,20 @@ export default async function ProductDetailPage({
             <Package size={96} className="text-muted-foreground/40" />
           </div>
 
+          {product.highlights.length > 0 && (
+            <div className="mt-10 flex flex-col gap-3">
+              <h2 className="text-xl font-semibold">Product Highlights</h2>
+              <ul className="flex flex-col gap-2">
+                {product.highlights.map((highlight) => (
+                  <li key={highlight} className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground">
+                    <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-primary" />
+                    {highlight}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className="mt-10 flex flex-col gap-3">
             <h2 className="text-xl font-semibold">Description</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">{product.description}</p>
@@ -72,6 +98,21 @@ export default async function ProductDetailPage({
                     <span className="text-right text-sm">{value}</span>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {warranty && (
+            <div className="mt-10 flex flex-col gap-3">
+              <h2 className="text-xl font-semibold">Warranty</h2>
+              <div className="flex items-start gap-3 rounded-lg border p-4">
+                <ShieldCheck size={20} className="mt-0.5 shrink-0 text-muted-foreground" />
+                <div className="text-sm">
+                  <p className="text-muted-foreground">{warranty}, backed by RealTruck.</p>
+                  <Link href="/dealer/warranties" className="mt-1 inline-block font-semibold text-primary hover:underline">
+                    View warranty details
+                  </Link>
+                </div>
               </div>
             </div>
           )}
@@ -109,9 +150,17 @@ export default async function ProductDetailPage({
               </div>
             )}
 
-            <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT[product.inventory_status]} className="w-fit">
-              {CATALOG_INVENTORY_STATUS_LABEL[product.inventory_status]}
-            </Badge>
+            <div className="flex flex-wrap gap-2">
+              <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT[product.inventory_status]} className="w-fit">
+                {CATALOG_INVENTORY_STATUS_LABEL[product.inventory_status]}
+              </Badge>
+              {rapidShipEligible && (
+                <Badge variant="success" className="w-fit gap-1">
+                  <Zap size={12} />
+                  Rapid Ship Eligible
+                </Badge>
+              )}
+            </div>
 
             <div className="border-t pt-4">
               {dealerPrice != null ? (
@@ -133,6 +182,38 @@ export default async function ProductDetailPage({
                 </div>
               )}
             </div>
+
+            {availability.length > 0 && (
+              <div className="border-t pt-4">
+                <p className="mb-2 text-sm font-semibold">Fulfillment Availability</p>
+                <div className="flex flex-col divide-y rounded-md border">
+                  {availability.map((row) => {
+                    const loc = row.fulfillment_locations
+                    if (!loc) return null
+                    const inStock = row.quantity_on_hand > 0
+                    return (
+                      <div key={loc.name} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+                        <div>
+                          <div className="font-medium">{loc.name}</div>
+                          <div className="text-xs text-muted-foreground">
+                            {loc.city}, {loc.state}
+                            {loc.supports_rapid_ship ? ' · Rapid Ship hub' : ''}
+                          </div>
+                        </div>
+                        <span className={inStock ? 'font-semibold text-green-700' : 'text-muted-foreground'}>
+                          {inStock ? `${row.quantity_on_hand} in stock` : 'Out of stock'}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <p className="mt-2 text-xs text-muted-foreground">
+                  {rapidShipEligible
+                    ? 'Ships from a Rapid Ship location — arrives faster.'
+                    : 'Ships from a standard fulfillment location.'}
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>
