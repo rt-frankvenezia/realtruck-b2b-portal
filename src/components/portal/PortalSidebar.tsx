@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // icon is a rendered element (e.g. <Home size={20} strokeWidth={2} />), not a
@@ -35,14 +34,11 @@ export function PortalSidebar({ title, items }: { title: string; items: PortalNa
           {items.map((item) => {
             if (item.external) {
               return (
-                <div key={item.href} className="flex items-start gap-3 px-4 py-3 text-[#333333]" title="Opens the separate order portal (not part of this prototype)">
-                  <span className="mt-0.5 shrink-0 opacity-60">{item.icon}</span>
+                <div key={item.href} className="flex items-start gap-3 px-4 py-3 text-[#333333]">
+                  <span className="mt-0.5 shrink-0">{item.icon}</span>
                   <div className="flex-1 text-left">
-                    <div className="flex items-center gap-1.5 text-sm font-semibold opacity-60">
-                      {item.label}
-                      <ExternalLink size={12} />
-                    </div>
-                    <div className="mt-0.5 text-xs opacity-50">{item.description}</div>
+                    <div className="text-sm font-semibold">{item.label}</div>
+                    <div className="mt-0.5 text-xs opacity-80">{item.description}</div>
                   </div>
                 </div>
               )
