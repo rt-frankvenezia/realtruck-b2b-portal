@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, CreditCard, Wallet, Receipt, Landmark } from 'lucide-react'
+import { Home, MessageSquareQuote, Package, Wrench, DollarSign, ShieldCheck, Building2, MapPin, Users, Layers, CreditCard, Wallet, Receipt, Landmark, ShoppingBag } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { PortalSidebar, type PortalNavItem } from '@/components/portal/PortalSidebar'
@@ -21,15 +21,15 @@ export default async function DealerAccountLayout({ children }: { children: Reac
   // or on-hold credit account exists, same condition Part A's checkout
   // uses to decide whether to offer Pay on Terms at all.
   let hasCreditTerms = false
+  let isAreDealer = false
   if (role !== 'realtruck_admin' && user.profile.company_id) {
     const supabase = await createClient()
-    const { data: account } = await supabase
-      .from('credit_accounts')
-      .select('id')
-      .eq('company_id', user.profile.company_id)
-      .in('status', ['active', 'on_hold'])
-      .maybeSingle()
+    const [{ data: account }, { data: company }] = await Promise.all([
+      supabase.from('credit_accounts').select('id').eq('company_id', user.profile.company_id).in('status', ['active', 'on_hold']).maybeSingle(),
+      supabase.from('companies').select('is_are_dealer').eq('id', user.profile.company_id).maybeSingle(),
+    ])
     hasCreditTerms = Boolean(account)
+    isAreDealer = Boolean(company?.is_are_dealer)
   }
 
   // Single nav entry covering both "apply for terms" and "manage active
@@ -67,6 +67,12 @@ export default async function DealerAccountLayout({ children }: { children: Reac
 
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
+    // A.R.E. dealers order custom caps through a separate order-portal
+    // site, not this app — represented here so the nav matches what an
+    // A.R.E. dealer actually sees, but not wired to a real destination.
+    ...(isAreDealer
+      ? [{ href: '/dealer/order-portal', label: 'Order Portal', description: 'Order a custom cap', icon: <ShoppingBag {...iconProps} />, external: true }]
+      : []),
     { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
     { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
     ...(creditInvoicesNavItem ? [creditInvoicesNavItem] : []),

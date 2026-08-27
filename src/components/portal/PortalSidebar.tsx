@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // icon is a rendered element (e.g. <Home size={20} strokeWidth={2} />), not a
@@ -15,6 +16,10 @@ export type PortalNavItem = {
   icon: React.ReactNode
   exact?: boolean
   badge?: number
+  // Represents a link to a real destination outside this app (e.g. a
+  // separate order-portal site) that isn't wired up in the prototype —
+  // rendered so the nav item exists visually, but not as a clickable Link.
+  external?: boolean
 }
 
 export function PortalSidebar({ title, items }: { title: string; items: PortalNavItem[] }) {
@@ -28,6 +33,20 @@ export function PortalSidebar({ title, items }: { title: string; items: PortalNa
         </div>
         <nav className="space-y-1 py-1">
           {items.map((item) => {
+            if (item.external) {
+              return (
+                <div key={item.href} className="flex items-start gap-3 px-4 py-3 text-[#333333]" title="Opens the separate order portal (not part of this prototype)">
+                  <span className="mt-0.5 shrink-0 opacity-60">{item.icon}</span>
+                  <div className="flex-1 text-left">
+                    <div className="flex items-center gap-1.5 text-sm font-semibold opacity-60">
+                      {item.label}
+                      <ExternalLink size={12} />
+                    </div>
+                    <div className="mt-0.5 text-xs opacity-50">{item.description}</div>
+                  </div>
+                </div>
+              )
+            }
             const active = item.exact ? pathname === item.href : pathname.startsWith(item.href)
             return (
               <Link
