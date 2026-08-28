@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { getRecentlyViewedIds } from '@/lib/recently-viewed'
+import { getRecentlyViewedIds, seedRecentlyViewed } from '@/lib/recently-viewed'
 import { ProductCard } from '@/components/dealer/ProductCard'
 
 type ViewedProduct = {
@@ -17,28 +17,48 @@ type ViewedProduct = {
   product_categories: { slug: string } | null
 }
 
-export function RecentlyViewedSection({ showDealerPricing }: { showDealerPricing: boolean }) {
+// Shown the first time a user has no real history yet, so the section
+// isn't empty — persisted via seedRecentlyViewed so it then behaves exactly
+// like a real recorded list (bumps to the front on an actual view, ages
+// out past MAX_ITEMS as the user browses more).
+const FAKE_SEED_COUNT = 4
+
+export function RecentlyViewedSection({ userId, showDealerPricing }: { userId: string; showDealerPricing: boolean }) {
   const [products, setProducts] = useState<ViewedProduct[] | null>(null)
 
   useEffect(() => {
-    const ids = getRecentlyViewedIds()
+    let cancelled = false
     const supabase = createClient()
-    // Route the empty case through the same .then() as the real query
-    // (rather than an early setState) so state only ever updates from an
-    // async callback, not synchronously within the effect body.
-    const query =
-      ids.length === 0
-        ? Promise.resolve({ data: [] as ViewedProduct[] })
-        : showDealerPricing
+
+    async function load() {
+      const ids = getRecentlyViewedIds(userId)
+
+      if (ids && ids.length > 0) {
+        const { data } = await (showDealerPricing
           ? supabase.from('catalog_products').select('*, product_categories(slug)').in('id', ids)
-          : supabase.from('catalog_products_public').select('*, product_categories(slug)').in('id', ids)
-    query.then(({ data }) => {
-      const rows = (data ?? []) as ViewedProduct[]
-      // Preserve most-recently-viewed-first order — .in() doesn't guarantee it.
-      const byId = new Map(rows.map((p) => [p.id, p]))
-      setProducts(ids.map((id) => byId.get(id)).filter((p): p is ViewedProduct => Boolean(p)))
-    })
-  }, [showDealerPricing])
+          : supabase.from('catalog_products_public').select('*, product_categories(slug)').in('id', ids))
+        const rows = (data ?? []) as ViewedProduct[]
+        // Preserve most-recently-viewed-first order — .in() doesn't guarantee it.
+        const byId = new Map(rows.map((p) => [p.id, p]))
+        const ordered = ids.map((id) => byId.get(id)).filter((p): p is ViewedProduct => Boolean(p))
+        if (!cancelled) setProducts(ordered)
+        return
+      }
+
+      const { data: pool } = await (showDealerPricing
+        ? supabase.from('catalog_products').select('*, product_categories(slug)').order('id')
+        : supabase.from('catalog_products_public').select('*, product_categories(slug)').order('id'))
+      const rows = (pool ?? []) as ViewedProduct[]
+      const picked = pickDeterministicSample(rows, userId, FAKE_SEED_COUNT)
+      seedRecentlyViewed(userId, picked.map((p) => p.id))
+      if (!cancelled) setProducts(picked)
+    }
+
+    load()
+    return () => {
+      cancelled = true
+    }
+  }, [userId, showDealerPricing])
 
   // Avoid a flash of the empty state before localStorage has been read.
   if (products === null) return null
@@ -65,4 +85,18 @@ export function RecentlyViewedSection({ showDealerPricing }: { showDealerPricing
       )}
     </section>
   )
+}
+
+function pickDeterministicSample<T>(pool: T[], seed: string, count: number): T[] {
+  const n = pool.length
+  if (n === 0) return []
+  const start = hashString(seed) % n
+  const size = Math.min(count, n)
+  return Array.from({ length: size }, (_, i) => pool[(start + i) % n])
+}
+
+function hashString(s: string): number {
+  let h = 5381
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) >>> 0
+  return h
 }

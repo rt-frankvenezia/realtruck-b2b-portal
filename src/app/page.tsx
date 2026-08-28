@@ -226,7 +226,7 @@ async function LoggedInHome({
 
       {!isRealtruckAdmin && (
         <>
-          <RecentlyViewedSection showDealerPricing={showDealerPricing} />
+          <RecentlyViewedSection userId={user.profile.id} showDealerPricing={showDealerPricing} />
           <CategoriesSection categories={categories} />
         </>
       )}
