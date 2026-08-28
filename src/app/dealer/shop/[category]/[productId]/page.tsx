@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { AddToCartButton } from '@/components/dealer/AddToCartButton'
 import { ProductCard } from '@/components/dealer/ProductCard'
+import { RecordRecentlyViewed } from '@/components/dealer/RecordRecentlyViewed'
 import { formatCurrency, CATALOG_INVENTORY_STATUS_LABEL, CATALOG_INVENTORY_STATUS_VARIANT } from '@/lib/status-labels'
 
 export default async function ProductDetailPage({
@@ -51,6 +52,7 @@ export default async function ProductDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
+      <RecordRecentlyViewed productId={product.id} />
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Link href="/dealer/shop" className="hover:text-foreground">
           Shop
