@@ -6,9 +6,11 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { AddToCartButton } from '@/components/dealer/AddToCartButton'
+import { VolumePricingPanel } from '@/components/dealer/VolumePricingPanel'
 import { ProductCard } from '@/components/dealer/ProductCard'
 import { RecordRecentlyViewed } from '@/components/dealer/RecordRecentlyViewed'
 import { formatCurrency, CATALOG_INVENTORY_STATUS_LABEL, CATALOG_INVENTORY_STATUS_VARIANT } from '@/lib/status-labels'
+import type { PricingTier } from '@/lib/pricing'
 
 export default async function ProductDetailPage({
   params,
@@ -23,32 +25,57 @@ export default async function ProductDetailPage({
   const { data: category } = await supabase.from('product_categories').select('*').eq('slug', categorySlug).maybeSingle()
   if (!category) notFound()
 
-  // Anonymous browsing is public — catalog_products_public excludes
-  // dealer_price, so a logged-out visitor only ever sees MAP/retail
-  // pricing, never the real dealer cost.
-  const { data: product } = await (showDealerPricing
-    ? supabase.from('catalog_products').select('*').eq('id', productId).maybeSingle()
-    : supabase.from('catalog_products_public').select('*').eq('id', productId).maybeSingle())
+  // Parallel fetch: product + related + inventory + (if logged in) company
+  const [productRes, relatedRes, inventoryRes, companyRes] = await Promise.all([
+    showDealerPricing
+      ? supabase.from('catalog_products').select('*').eq('id', productId).maybeSingle()
+      : supabase.from('catalog_products_public').select('*').eq('id', productId).maybeSingle(),
+    showDealerPricing
+      ? supabase.from('catalog_products').select('*').eq('category_id', category.id).neq('id', productId).limit(3)
+      : supabase.from('catalog_products_public').select('*').eq('category_id', category.id).neq('id', productId).limit(3),
+    supabase
+      .from('catalog_product_inventory')
+      .select('quantity_on_hand, fulfillment_locations(name, city, state, supports_rapid_ship, sort_order)')
+      .eq('catalog_product_id', productId)
+      .order('sort_order', { referencedTable: 'fulfillment_locations' }),
+    showDealerPricing && user?.profile.company_id
+      ? supabase.from('companies').select('pricing_group_id').eq('id', user.profile.company_id).maybeSingle()
+      : Promise.resolve({ data: null }),
+  ])
+
+  const product = productRes.data
   if (!product || product.category_id !== category.id) notFound()
 
-  const { data: related } = await (showDealerPricing
-    ? supabase.from('catalog_products').select('*').eq('category_id', category.id).neq('id', product.id).limit(3)
-    : supabase.from('catalog_products_public').select('*').eq('category_id', category.id).neq('id', product.id).limit(3))
-
-  // Fulfillment availability is public browsing-tier info, same as the
-  // rest of the catalog now is — no auth branch needed here.
-  const { data: inventory } = await supabase
-    .from('catalog_product_inventory')
-    .select('quantity_on_hand, fulfillment_locations(name, city, state, supports_rapid_ship, sort_order)')
-    .eq('catalog_product_id', product.id)
-    .order('sort_order', { referencedTable: 'fulfillment_locations' })
-
-  const availability = inventory ?? []
+  const availability = inventoryRes.data ?? []
   const rapidShipEligible = availability.some((row) => row.quantity_on_hand > 0 && row.fulfillment_locations?.supports_rapid_ship)
-
   const specifications = (product.specifications ?? {}) as Record<string, string>
-  const dealerPrice: number | null = showDealerPricing && 'dealer_price' in product ? (product as { dealer_price: number }).dealer_price : null
   const warranty = specifications.warranty
+
+  const dealerPrice: number | null =
+    showDealerPricing && 'dealer_price' in product ? (product as { dealer_price: number }).dealer_price : null
+
+  // Pricing group schedule — fetched only for logged-in dealers with an assigned group
+  const pricingGroupId = companyRes.data?.pricing_group_id ?? null
+  let pricingTiers: PricingTier[] | null = null
+
+  if (pricingGroupId && showDealerPricing) {
+    const productLine = (product as { product_line?: string | null }).product_line ?? undefined
+    const { data: schedule } = await supabase.rpc('get_pricing_schedule', {
+      p_pricing_group_id: pricingGroupId,
+      p_brand: product.brand,
+      p_category: categorySlug,
+      p_product_line: productLine,
+    })
+    if (schedule && schedule.length > 0) {
+      pricingTiers = schedule.map((row) => ({
+        minQty: row.min_quantity,
+        discountPercent: Number(row.discount_percent),
+      }))
+    }
+  }
+
+  // mapPrice is the base for group-discounted dealer pricing
+  const mapPrice = product.map_price
 
   return (
     <div className="flex flex-col gap-6">
@@ -119,11 +146,11 @@ export default async function ProductDetailPage({
             </div>
           )}
 
-          {related && related.length > 0 && (
+          {relatedRes.data && relatedRes.data.length > 0 && (
             <div className="mt-10 flex flex-col gap-3">
               <h2 className="text-xl font-semibold">Related Products</h2>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-                {related.map((p) => (
+                {relatedRes.data.map((p) => (
                   <ProductCard key={p.id} product={p} categorySlug={categorySlug} showDealerPricing={showDealerPricing} />
                 ))}
               </div>
@@ -139,19 +166,6 @@ export default async function ProductDetailPage({
               <p className="mt-1 text-xs text-muted-foreground">SKU: {product.sku}</p>
             </div>
 
-            {dealerPrice != null ? (
-              <div className="border-t pt-4">
-                <p className="text-sm text-muted-foreground">Your Dealer Price</p>
-                <p className="text-3xl font-bold">{formatCurrency(dealerPrice)}</p>
-                <p className="mt-1 text-sm text-muted-foreground">MAP: {formatCurrency(product.map_price)}</p>
-              </div>
-            ) : (
-              <div className="border-t pt-4">
-                <p className="text-sm text-muted-foreground">Price</p>
-                <p className="text-3xl font-bold">{formatCurrency(product.map_price)}</p>
-              </div>
-            )}
-
             <div className="flex flex-wrap gap-2">
               <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT[product.inventory_status]} className="w-fit">
                 {CATALOG_INVENTORY_STATUS_LABEL[product.inventory_status]}
@@ -164,26 +178,56 @@ export default async function ProductDetailPage({
               )}
             </div>
 
-            <div className="border-t pt-4">
-              {dealerPrice != null ? (
-                <AddToCartButton
-                  productId={product.id}
-                  name={product.name}
-                  brand={product.brand}
-                  sku={product.sku}
-                  unitPrice={dealerPrice}
-                  categorySlug={categorySlug}
-                  disabled={product.inventory_status === 'discontinued'}
-                />
-              ) : (
-                <div className="flex flex-col gap-2">
-                  <p className="text-sm text-muted-foreground">Log in to see your dealer price and place an order.</p>
-                  <Button render={<Link href="/login" />} nativeButton={false}>
-                    Log In
-                  </Button>
+            {/* Pricing + Add to Cart */}
+            {pricingTiers ? (
+              // Dealer with a pricing group — show volume pricing panel
+              <VolumePricingPanel
+                productId={product.id}
+                name={product.name}
+                brand={product.brand}
+                sku={product.sku}
+                categorySlug={categorySlug}
+                mapPrice={mapPrice}
+                pricingTiers={pricingTiers}
+                disabled={product.inventory_status === 'discontinued'}
+              />
+            ) : dealerPrice != null ? (
+              // Dealer without a pricing group — static dealer_price
+              <>
+                <div className="border-t pt-4">
+                  <p className="text-sm text-muted-foreground">Your Dealer Price</p>
+                  <p className="text-3xl font-bold">{formatCurrency(dealerPrice)}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">MAP: {formatCurrency(mapPrice)}</p>
                 </div>
-              )}
-            </div>
+                <div className="border-t pt-4">
+                  <AddToCartButton
+                    productId={product.id}
+                    name={product.name}
+                    brand={product.brand}
+                    sku={product.sku}
+                    unitPrice={dealerPrice}
+                    categorySlug={categorySlug}
+                    disabled={product.inventory_status === 'discontinued'}
+                  />
+                </div>
+              </>
+            ) : (
+              // Anonymous visitor
+              <>
+                <div className="border-t pt-4">
+                  <p className="text-sm text-muted-foreground">Price</p>
+                  <p className="text-3xl font-bold">{formatCurrency(mapPrice)}</p>
+                </div>
+                <div className="border-t pt-4">
+                  <div className="flex flex-col gap-2">
+                    <p className="text-sm text-muted-foreground">Log in to see your dealer price and place an order.</p>
+                    <Button render={<Link href="/login" />} nativeButton={false}>
+                      Log In
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
 
             {availability.length > 0 && (
               <div className="border-t pt-4">

@@ -1,22 +1,25 @@
 'use client'
 
-// Wholesale ordering cart — separate from the customer-facing CartContext
-// (a different product domain: cap-builder configurations vs. wholesale
-// accessory SKUs) and deliberately not shared with it, same architectural
-// separation the original prototype kept between its dealer and customer
-// flows. Snapshots product fields at add-time (rather than storing just a
-// product_id and re-fetching) since there's no static catalog import to
-// resolve prices from client-side the way the customer cart resolves
-// against catalog.ts — catalog_products lives in the database.
+// Wholesale ordering cart — separate from the customer-facing CartContext.
+// Snapshots product fields at add-time. When an item has a pricingTiers
+// schedule, unitPrice is recomputed from that schedule whenever the quantity
+// changes; items without tiers (no pricing group assigned) keep the static
+// dealer_price snapshot.
 
 import { createContext, useContext, useEffect, useState } from 'react'
+import { resolveEffectivePrice, type PricingTier } from '@/lib/pricing'
 
 export type DealerCartItem = {
   productId: string
   name: string
   brand: string
   sku: string
+  /** Effective unit price at the current quantity (recomputed on qty change when tiers are set). */
   unitPrice: number
+  /** MAP price — needed to recompute unitPrice from tiers. Null for legacy static-price items. */
+  mapPrice: number | null
+  /** Volume tier schedule from the dealer's pricing group. Null when no pricing group is assigned. */
+  pricingTiers: PricingTier[] | null
   categorySlug: string
   quantity: number
 }
@@ -58,7 +61,16 @@ export function DealerCartProvider({ children }: { children: React.ReactNode }) 
     setItems((prev) => {
       const existing = prev.find((i) => i.productId === item.productId)
       if (existing) {
-        return prev.map((i) => (i.productId === item.productId ? { ...i, quantity: i.quantity + quantity } : i))
+        const newQty = existing.quantity + quantity
+        const newUnitPrice =
+          existing.pricingTiers && existing.mapPrice != null
+            ? resolveEffectivePrice(existing.mapPrice, existing.pricingTiers, newQty)
+            : existing.unitPrice
+        return prev.map((i) =>
+          i.productId === item.productId
+            ? { ...i, quantity: newQty, unitPrice: newUnitPrice }
+            : i,
+        )
       }
       return [...prev, { ...item, quantity }]
     })
@@ -66,7 +78,16 @@ export function DealerCartProvider({ children }: { children: React.ReactNode }) 
 
   function updateQuantity(productId: string, quantity: number) {
     if (quantity < 1) return
-    setItems((prev) => prev.map((i) => (i.productId === productId ? { ...i, quantity } : i)))
+    setItems((prev) =>
+      prev.map((i) => {
+        if (i.productId !== productId) return i
+        const newUnitPrice =
+          i.pricingTiers && i.mapPrice != null
+            ? resolveEffectivePrice(i.mapPrice, i.pricingTiers, quantity)
+            : i.unitPrice
+        return { ...i, quantity, unitPrice: newUnitPrice }
+      }),
+    )
   }
 
   function removeItem(productId: string) {

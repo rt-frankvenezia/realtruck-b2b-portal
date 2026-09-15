@@ -10,10 +10,15 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: group }, { data: rules }, { data: allCompanies }] = await Promise.all([
+  const [{ data: group }, { data: rules }, { data: allCompanies }, { data: baseTiers }] = await Promise.all([
     supabase.from('pricing_groups').select('*').eq('id', id).maybeSingle(),
-    supabase.from('pricing_rules').select('*').eq('pricing_group_id', id).order('target_type'),
+    supabase
+      .from('pricing_rules')
+      .select('*, pricing_rule_tiers(*)')
+      .eq('pricing_group_id', id)
+      .order('target_type'),
     supabase.from('companies').select('id, name, pricing_group_id').order('name'),
+    supabase.from('pricing_group_base_tiers').select('*').eq('pricing_group_id', id).order('min_quantity'),
   ])
 
   if (!group) notFound()
@@ -33,7 +38,7 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
           <CardTitle>Group Information</CardTitle>
         </CardHeader>
         <CardContent>
-          <PricingGroupInfoForm group={group} />
+          <PricingGroupInfoForm group={group} baseTiers={baseTiers ?? []} />
         </CardContent>
       </Card>
 
@@ -42,7 +47,13 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
           <CardTitle>Pricing Rules</CardTitle>
         </CardHeader>
         <CardContent>
-          <PricingRuleManager pricingGroupId={group.id} rules={rules ?? []} />
+          <PricingRuleManager
+            pricingGroupId={group.id}
+            rules={(rules ?? []).map((r) => ({
+              ...r,
+              pricing_rule_tiers: r.pricing_rule_tiers ?? [],
+            }))}
+          />
         </CardContent>
       </Card>
 

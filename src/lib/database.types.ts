@@ -182,6 +182,7 @@ export type Database = {
           inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price: number
           name: string
+          product_line: string | null
           sku: string
           specifications: Json
         }
@@ -196,6 +197,7 @@ export type Database = {
           inventory_status?: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price: number
           name: string
+          product_line?: string | null
           sku: string
           specifications?: Json
         }
@@ -210,6 +212,7 @@ export type Database = {
           inventory_status?: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price?: number
           name?: string
+          product_line?: string | null
           sku?: string
           specifications?: Json
         }
@@ -1903,6 +1906,35 @@ export type Database = {
           },
         ]
       }
+      pricing_group_base_tiers: {
+        Row: {
+          discount_percent: number
+          id: string
+          min_quantity: number
+          pricing_group_id: string
+        }
+        Insert: {
+          discount_percent: number
+          id?: string
+          min_quantity: number
+          pricing_group_id: string
+        }
+        Update: {
+          discount_percent?: number
+          id?: string
+          min_quantity?: number
+          pricing_group_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_group_base_tiers_pricing_group_id_fkey"
+            columns: ["pricing_group_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pricing_groups: {
         Row: {
           base_discount: number
@@ -1935,6 +1967,35 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      pricing_rule_tiers: {
+        Row: {
+          discount_percent: number
+          id: string
+          min_quantity: number
+          pricing_rule_id: string
+        }
+        Insert: {
+          discount_percent: number
+          id?: string
+          min_quantity: number
+          pricing_rule_id: string
+        }
+        Update: {
+          discount_percent?: number
+          id?: string
+          min_quantity?: number
+          pricing_rule_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_rule_tiers_pricing_rule_id_fkey"
+            columns: ["pricing_rule_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_rules"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pricing_rules: {
         Row: {
@@ -2573,6 +2634,7 @@ export type Database = {
           inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
           map_price: number
           name: string
+          product_line: string | null
           sku: string
           specifications: Json
         }
@@ -2834,9 +2896,23 @@ export type Database = {
           p_category?: string
           p_pricing_group_id: string
           p_product_line?: string
+          p_quantity?: number
         }
         Returns: {
           discount_percent: number
+          source: string
+        }[]
+      }
+      get_pricing_schedule: {
+        Args: {
+          p_brand?: string
+          p_category?: string
+          p_pricing_group_id: string
+          p_product_line?: string
+        }
+        Returns: {
+          discount_percent: number
+          min_quantity: number
           source: string
         }[]
       }
