@@ -39,48 +39,6 @@ export type Database = {
   }
   public: {
     Tables: {
-      catalogs: {
-        Row: {
-          id: string
-          name: string
-          description: string | null
-          pricing_group_id: string | null
-          restriction_group_id: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          description?: string | null
-          pricing_group_id?: string | null
-          restriction_group_id?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          description?: string | null
-          pricing_group_id?: string | null
-          restriction_group_id?: string | null
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "catalogs_pricing_group_id_fkey"
-            columns: ["pricing_group_id"]
-            isOneToOne: false
-            referencedRelation: "pricing_groups"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "catalogs_restriction_group_id_fkey"
-            columns: ["restriction_group_id"]
-            isOneToOne: false
-            referencedRelation: "restriction_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       audit_log: {
         Row: {
           action: string
@@ -204,6 +162,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "catalog_product_inventory_catalog_product_id_fkey"
+            columns: ["catalog_product_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_products_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "catalog_product_inventory_fulfillment_location_id_fkey"
             columns: ["fulfillment_location_id"]
             isOneToOne: false
@@ -268,6 +233,48 @@ export type Database = {
           },
         ]
       }
+      catalogs: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          pricing_group_id: string | null
+          restriction_group_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          pricing_group_id?: string | null
+          restriction_group_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          pricing_group_id?: string | null
+          restriction_group_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalogs_pricing_group_id_fkey"
+            columns: ["pricing_group_id"]
+            isOneToOne: false
+            referencedRelation: "pricing_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalogs_restriction_group_id_fkey"
+            columns: ["restriction_group_id"]
+            isOneToOne: false
+            referencedRelation: "restriction_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       companies: {
         Row: {
           billing_address: string | null
@@ -275,6 +282,7 @@ export type Database = {
           billing_country: string | null
           billing_postal_code: string | null
           billing_state: string | null
+          catalog_id: string | null
           code: string
           created_at: string
           credit_eligible: boolean
@@ -285,7 +293,6 @@ export type Database = {
           is_are_dealer: boolean
           name: string
           netsuite_customer_id: string | null
-          catalog_id: string | null
           pricing_group_id: string | null
           restriction_group_id: string | null
           salesforce_account_id: string | null
@@ -299,11 +306,11 @@ export type Database = {
           billing_country?: string | null
           billing_postal_code?: string | null
           billing_state?: string | null
+          catalog_id?: string | null
           code: string
           created_at?: string
           credit_eligible?: boolean
           dealer_admin_id?: string | null
-          catalog_id?: string | null
           id?: string
           installation_pricing?: Json
           internal_notes?: string | null
@@ -323,11 +330,11 @@ export type Database = {
           billing_country?: string | null
           billing_postal_code?: string | null
           billing_state?: string | null
+          catalog_id?: string | null
           code?: string
           created_at?: string
           credit_eligible?: boolean
           dealer_admin_id?: string | null
-          catalog_id?: string | null
           id?: string
           installation_pricing?: Json
           internal_notes?: string | null
@@ -343,6 +350,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "companies_catalog_id_fkey"
+            columns: ["catalog_id"]
+            isOneToOne: false
+            referencedRelation: "catalogs"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "companies_dealer_admin_id_fkey"
             columns: ["dealer_admin_id"]
             isOneToOne: false
@@ -354,6 +368,13 @@ export type Database = {
             columns: ["pricing_group_id"]
             isOneToOne: false
             referencedRelation: "pricing_groups"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "companies_restriction_group_id_fkey"
+            columns: ["restriction_group_id"]
+            isOneToOne: false
+            referencedRelation: "restriction_groups"
             referencedColumns: ["id"]
           },
         ]
@@ -2080,68 +2101,6 @@ export type Database = {
           },
         ]
       }
-      restriction_groups: {
-        Row: {
-          id: string
-          name: string
-          description: string | null
-          default_access: Database["public"]["Enums"]["catalog_purchase_access"]
-          created_at: string
-          updated_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          description?: string | null
-          default_access?: Database["public"]["Enums"]["catalog_purchase_access"]
-          created_at?: string
-          updated_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          description?: string | null
-          default_access?: Database["public"]["Enums"]["catalog_purchase_access"]
-          created_at?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      restriction_rules: {
-        Row: {
-          id: string
-          restriction_group_id: string
-          target_type: Database["public"]["Enums"]["pricing_target_type"]
-          target_value: string
-          display_name: string
-          access: Database["public"]["Enums"]["catalog_purchase_access"]
-        }
-        Insert: {
-          id?: string
-          restriction_group_id: string
-          target_type: Database["public"]["Enums"]["pricing_target_type"]
-          target_value: string
-          display_name: string
-          access: Database["public"]["Enums"]["catalog_purchase_access"]
-        }
-        Update: {
-          id?: string
-          restriction_group_id?: string
-          target_type?: Database["public"]["Enums"]["pricing_target_type"]
-          target_value?: string
-          display_name?: string
-          access?: Database["public"]["Enums"]["catalog_purchase_access"]
-        }
-        Relationships: [
-          {
-            foreignKeyName: "restriction_rules_restriction_group_id_fkey"
-            columns: ["restriction_group_id"]
-            isOneToOne: false
-            referencedRelation: "restriction_groups"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       product_categories: {
         Row: {
           id: string
@@ -2521,6 +2480,101 @@ export type Database = {
         }
         Relationships: []
       }
+      restriction_groups: {
+        Row: {
+          created_at: string
+          default_access: Database["public"]["Enums"]["catalog_purchase_access"]
+          description: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_access?: Database["public"]["Enums"]["catalog_purchase_access"]
+          description?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_access?: Database["public"]["Enums"]["catalog_purchase_access"]
+          description?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      restriction_rules: {
+        Row: {
+          access: Database["public"]["Enums"]["catalog_purchase_access"]
+          display_name: string
+          id: string
+          restriction_group_id: string
+          target_type: Database["public"]["Enums"]["pricing_target_type"]
+          target_value: string
+        }
+        Insert: {
+          access: Database["public"]["Enums"]["catalog_purchase_access"]
+          display_name: string
+          id?: string
+          restriction_group_id: string
+          target_type: Database["public"]["Enums"]["pricing_target_type"]
+          target_value: string
+        }
+        Update: {
+          access?: Database["public"]["Enums"]["catalog_purchase_access"]
+          display_name?: string
+          id?: string
+          restriction_group_id?: string
+          target_type?: Database["public"]["Enums"]["pricing_target_type"]
+          target_value?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restriction_rules_restriction_group_id_fkey"
+            columns: ["restriction_group_id"]
+            isOneToOne: false
+            referencedRelation: "restriction_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sku_fitment: {
+        Row: {
+          created_at: string
+          id: string
+          make: string
+          model: string
+          notes: string | null
+          sku: string
+          year_end: number
+          year_start: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          make: string
+          model: string
+          notes?: string | null
+          sku: string
+          year_end: number
+          year_start: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          make?: string
+          model?: string
+          notes?: string | null
+          sku?: string
+          year_end?: number
+          year_start?: number
+        }
+        Relationships: []
+      }
       statements: {
         Row: {
           company_id: string
@@ -2735,18 +2789,52 @@ export type Database = {
     Views: {
       catalog_products_public: {
         Row: {
-          brand: string
-          category_id: string
-          created_at: string
-          description: string
-          highlights: string[]
-          id: string
-          inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
-          map_price: number
-          name: string
+          brand: string | null
+          category_id: string | null
+          created_at: string | null
+          description: string | null
+          highlights: string[] | null
+          id: string | null
+          inventory_status:
+            | Database["public"]["Enums"]["catalog_inventory_status"]
+            | null
+          map_price: number | null
+          name: string | null
           product_line: string | null
-          sku: string
-          specifications: Json
+          sku: string | null
+          specifications: Json | null
+        }
+        Insert: {
+          brand?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          highlights?: string[] | null
+          id?: string | null
+          inventory_status?:
+            | Database["public"]["Enums"]["catalog_inventory_status"]
+            | null
+          map_price?: number | null
+          name?: string | null
+          product_line?: string | null
+          sku?: string | null
+          specifications?: Json | null
+        }
+        Update: {
+          brand?: string | null
+          category_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          highlights?: string[] | null
+          id?: string | null
+          inventory_status?:
+            | Database["public"]["Enums"]["catalog_inventory_status"]
+            | null
+          map_price?: number | null
+          name?: string | null
+          product_line?: string | null
+          sku?: string | null
+          specifications?: Json | null
         }
         Relationships: [
           {
@@ -3000,31 +3088,6 @@ export type Database = {
           isSetofReturn: false
         }
       }
-      check_product_purchase_access: {
-        Args: {
-          p_restriction_group_id: string
-          p_brand?: string
-          p_category?: string
-          p_product_line?: string
-        }
-        Returns: {
-          access: string
-          source: string
-        }[]
-      }
-      validate_cart_restrictions: {
-        Args: {
-          p_company_id: string
-          p_items: Json
-        }
-        Returns: {
-          product_id: string
-          product_name: string
-          sku: string
-          access: string
-          source: string
-        }[]
-      }
       calculate_pricing_discount: {
         Args: {
           p_brand?: string
@@ -3038,19 +3101,6 @@ export type Database = {
           source: string
         }[]
       }
-      get_pricing_schedule: {
-        Args: {
-          p_brand?: string
-          p_category?: string
-          p_pricing_group_id: string
-          p_product_line?: string
-        }
-        Returns: {
-          discount_percent: number
-          min_quantity: number
-          source: string
-        }[]
-      }
       can_manage_credit_application: {
         Args: { p_application_id: string }
         Returns: boolean
@@ -3060,6 +3110,18 @@ export type Database = {
         Returns: boolean
       }
       can_manage_quote: { Args: { p_quote_id: string }; Returns: boolean }
+      check_product_purchase_access: {
+        Args: {
+          p_brand?: string
+          p_category?: string
+          p_product_line?: string
+          p_restriction_group_id: string
+        }
+        Returns: {
+          access: string
+          source: string
+        }[]
+      }
       compute_installation_payout_breakdown: {
         Args: { p_installation_id: string }
         Returns: Json
@@ -3166,6 +3228,19 @@ export type Database = {
       get_customer_facing_status: {
         Args: { p_installation_id: string }
         Returns: Database["public"]["Enums"]["customer_facing_status"]
+      }
+      get_pricing_schedule: {
+        Args: {
+          p_brand?: string
+          p_category?: string
+          p_pricing_group_id: string
+          p_product_line?: string
+        }
+        Returns: {
+          discount_percent: number
+          min_quantity: number
+          source: string
+        }[]
       }
       installation_kpi_metrics: {
         Args: { p_company_id?: string }
@@ -3686,6 +3761,16 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      validate_cart_restrictions: {
+        Args: { p_company_id: string; p_items: Json }
+        Returns: {
+          access: string
+          product_id: string
+          product_name: string
+          sku: string
+          source: string
+        }[]
+      }
       validate_order_credit: {
         Args: { p_company_id: string; p_order_total: number }
         Returns: Database["public"]["CompositeTypes"]["credit_validation_result"]
@@ -3953,12 +4038,12 @@ export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -3982,11 +4067,11 @@ export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4007,11 +4092,11 @@ export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
-  TableName extends DefaultSchemaTableNameOrOptions extends {
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4032,11 +4117,11 @@ export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
-  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
-    : never = never,
+    : never) = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4049,11 +4134,11 @@ export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never = never,
+    : never) = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
@@ -4088,6 +4173,7 @@ export const Constants = {
         "backorder",
         "discontinued",
       ],
+      catalog_purchase_access: ["allowed", "not_allowed"],
       checklist_item_key: [
         "correct_cap_model",
         "options_installed",
