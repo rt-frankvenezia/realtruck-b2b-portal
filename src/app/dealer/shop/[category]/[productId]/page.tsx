@@ -9,6 +9,7 @@ import { AddToCartButton } from '@/components/dealer/AddToCartButton'
 import { VolumePricingPanel } from '@/components/dealer/VolumePricingPanel'
 import { ProductCard } from '@/components/dealer/ProductCard'
 import { RecordRecentlyViewed } from '@/components/dealer/RecordRecentlyViewed'
+import { FitmentTable } from '@/components/dealer/FitmentTable'
 import { formatCurrency, CATALOG_INVENTORY_STATUS_LABEL, CATALOG_INVENTORY_STATUS_VARIANT } from '@/lib/status-labels'
 import type { PricingTier } from '@/lib/pricing'
 
@@ -146,6 +147,11 @@ export default async function ProductDetailPage({
               </div>
             </div>
           )}
+
+          <div className="mt-10 flex flex-col gap-3">
+            <h2 className="text-xl font-semibold">Fitment Compatibility</h2>
+            <FitmentTable sku={product.sku} />
+          </div>
 
           {warranty && (
             <div className="mt-10 flex flex-col gap-3">
