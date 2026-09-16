@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { CheckCircle2, Package, ShieldCheck, Zap } from 'lucide-react'
+import { Check, CheckCircle2, Package, ShieldCheck, Star, Truck } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
@@ -162,11 +162,14 @@ export default async function ProductDetailPage({
           <div className="flex flex-col">
             {/* Product identity */}
             <div className="pb-5">
-              <p className="text-sm font-semibold text-muted-foreground">{product.brand}</p>
               <h1 className="text-2xl font-bold leading-tight">{product.name}</h1>
-              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                PART #: {product.sku}
-              </p>
+              <div className="mt-2 flex items-center gap-1.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={13} className="text-yellow-400" fill="currentColor" />
+                ))}
+                <span className="text-sm font-semibold">4.8</span>
+                <span className="text-sm text-muted-foreground">(24)</span>
+              </div>
               {product.inventory_status === 'discontinued' && (
                 <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT['discontinued']} className="mt-2 w-fit">
                   {CATALOG_INVENTORY_STATUS_LABEL['discontinued']}
@@ -174,20 +177,41 @@ export default async function ProductDetailPage({
               )}
             </div>
 
-            {/* Shared: RapidShip row and availability list, rendered between price and cart across all paths */}
+            {/* Shared sections rendered between price and cart across all paths */}
             {(() => {
+              const partAndFitSection = (
+                <div className="border-t py-4">
+                  <p className="text-sm text-muted-foreground">PART #: {product.sku}</p>
+                  <div className="mt-3 flex items-start gap-3">
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-600">
+                      <Check size={11} className="text-white" strokeWidth={3} />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold">Guaranteed Fit</p>
+                      <p className="text-sm text-muted-foreground">2024 Dodge Ram 1500, 5&apos;7&quot; Bed</p>
+                      <span className="mt-0.5 cursor-pointer text-sm font-medium text-primary hover:underline">
+                        Change vehicle
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )
+
               const rapidShipSection = rapidShipEligible ? (
-                <div className="border-t py-5 flex items-start gap-2.5">
-                  <Zap size={15} className="mt-0.5 shrink-0 text-primary" />
+                <div className="border-t py-4 flex items-start gap-3">
+                  <Truck size={16} className="mt-0.5 shrink-0 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-semibold">RapidShip Ready</p>
-                    <p className="text-xs text-muted-foreground">Free Shipping — ships from a Rapid Ship hub</p>
+                    <p className="text-xs text-muted-foreground">
+                      Free Shipping — Ships Wednesday, order within{' '}
+                      <span className="font-semibold text-foreground">16h 54m 35s</span>
+                    </p>
                   </div>
                 </div>
               ) : null
 
               const availabilitySection = availability.length > 0 ? (
-                <div className="border-t py-5">
+                <div className="border-t py-4">
                   <p className="mb-2 text-sm font-semibold">Availability</p>
                   <div className="flex flex-col gap-1.5">
                     {availability.map((row) => {
@@ -222,6 +246,7 @@ export default async function ProductDetailPage({
                     pricingTiers={pricingTiers}
                     disabled={product.inventory_status === 'discontinued'}
                   >
+                    {partAndFitSection}
                     {rapidShipSection}
                     {availabilitySection}
                   </VolumePricingPanel>
@@ -231,21 +256,22 @@ export default async function ProductDetailPage({
               if (dealerPrice != null) {
                 return (
                   <>
-                    <div className="border-t py-5">
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your Price</p>
+                    <div className="border-t py-4">
+                      <div className="flex divide-x">
+                        <div className="pr-6">
+                          <p className="text-xs text-muted-foreground">Your Price</p>
                           <p className="text-2xl font-bold">{formatCurrency(dealerPrice)}</p>
                         </div>
-                        <div>
-                          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">MAP</p>
-                          <p className="text-lg font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
+                        <div className="pl-6">
+                          <p className="text-xs text-muted-foreground">MAP</p>
+                          <p className="text-xl font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
                         </div>
                       </div>
                     </div>
+                    {partAndFitSection}
                     {rapidShipSection}
                     {availabilitySection}
-                    <div className="border-t py-5">
+                    <div className="border-t py-4">
                       <AddToCartButton
                         productId={product.id}
                         name={product.name}
@@ -262,17 +288,14 @@ export default async function ProductDetailPage({
 
               return (
                 <>
-                  <div className="border-t py-5">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Price</p>
-                        <p className="text-2xl font-bold">{formatCurrency(mapPrice)}</p>
-                      </div>
-                    </div>
+                  <div className="border-t py-4">
+                    <p className="text-xs text-muted-foreground">Price</p>
+                    <p className="text-2xl font-bold">{formatCurrency(mapPrice)}</p>
                   </div>
+                  {partAndFitSection}
                   {rapidShipSection}
                   {availabilitySection}
-                  <div className="border-t py-5 flex flex-col gap-3">
+                  <div className="border-t py-4 flex flex-col gap-3">
                     <p className="text-sm text-muted-foreground">Log in to see your dealer price and place an order.</p>
                     <Button render={<Link href="/login" />} nativeButton={false} className="w-full">
                       Log In

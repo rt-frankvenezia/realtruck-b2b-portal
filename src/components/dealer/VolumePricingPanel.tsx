@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { ShoppingCart, TrendingDown } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDealerCart } from '@/components/dealer/DealerCartContext'
@@ -18,7 +18,7 @@ type Props = {
   mapPrice: number
   pricingTiers: PricingTier[]
   disabled?: boolean
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 export function VolumePricingPanel({
@@ -60,14 +60,14 @@ export function VolumePricingPanel({
     <div className="flex flex-col">
       {/* Price display */}
       <div className="border-t py-5">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your Price</p>
+        <div className="flex divide-x">
+          <div className="pr-6">
+            <p className="text-xs text-muted-foreground">Your Price</p>
             <p className="text-2xl font-bold">{formatCurrency(effectivePrice)}</p>
           </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">MAP</p>
-            <p className="text-lg font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
+          <div className="pl-6">
+            <p className="text-xs text-muted-foreground">MAP</p>
+            <p className="text-xl font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
           </div>
         </div>
         {effectiveTier.discountPercent > 0 && (
@@ -76,6 +76,9 @@ export function VolumePricingPanel({
           </span>
         )}
       </div>
+
+      {/* PART # + Guaranteed Fit + RapidShip + Availability injected from the server component */}
+      {children}
 
       {/* Volume pricing table */}
       {hasVolumeTiers && (
@@ -108,9 +111,6 @@ export function VolumePricingPanel({
           </div>
         </div>
       )}
-
-      {/* RapidShip + Availability injected from the server component */}
-      {children}
 
       {/* Quantity + Add to Cart */}
       <div className="border-t py-5 flex flex-col gap-3">
