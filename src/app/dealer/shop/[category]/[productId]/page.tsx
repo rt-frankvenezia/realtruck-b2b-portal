@@ -162,7 +162,7 @@ export default async function ProductDetailPage({
           <div className="flex flex-col">
             {/* Product identity */}
             <div className="pb-5">
-              <h1 className="font-brand text-2xl uppercase leading-tight">
+              <h1 className="font-brand text-4xl uppercase leading-tight">
                 {product.brand} {product.name}
               </h1>
               <div className="mt-2 flex items-center gap-1.5">
@@ -213,7 +213,7 @@ export default async function ProductDetailPage({
               ) : null
 
               const availabilitySection = availability.length > 0 ? (
-                <div className="mt-5 border-t pt-4">
+                <div className="mt-5">
                   <p className="mb-2 text-sm font-semibold">Availability</p>
                   <div className="flex flex-col gap-1.5">
                     {availability.map((row) => {
