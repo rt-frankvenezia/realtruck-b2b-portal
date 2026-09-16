@@ -158,113 +158,129 @@ export default async function ProductDetailPage({
           )}
         </div>
 
-        <div className="w-full shrink-0 lg:w-80">
-          <div className="flex flex-col gap-4 rounded-lg border p-6">
-            <div>
+        <div className="w-full shrink-0 lg:w-[440px]">
+          <div className="flex flex-col">
+            {/* Product identity */}
+            <div className="pb-5">
               <p className="text-sm font-semibold text-muted-foreground">{product.brand}</p>
-              <h1 className="text-xl font-bold leading-tight">{product.name}</h1>
+              <h1 className="text-2xl font-bold leading-tight">{product.name}</h1>
               <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 PART #: {product.sku}
               </p>
+              {product.inventory_status === 'discontinued' && (
+                <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT['discontinued']} className="mt-2 w-fit">
+                  {CATALOG_INVENTORY_STATUS_LABEL['discontinued']}
+                </Badge>
+              )}
             </div>
 
-            {product.inventory_status === 'discontinued' && (
-              <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT['discontinued']} className="w-fit">
-                {CATALOG_INVENTORY_STATUS_LABEL['discontinued']}
-              </Badge>
-            )}
-
-            {rapidShipEligible && (
-              <div className="flex items-start gap-2.5">
-                <Zap size={15} className="mt-0.5 shrink-0 text-primary" />
-                <div>
-                  <p className="text-sm font-semibold">RapidShip Ready</p>
-                  <p className="text-xs text-muted-foreground">Free Shipping — ships from a Rapid Ship hub</p>
-                </div>
-              </div>
-            )}
-
-            {/* Pricing + Add to Cart */}
-            {pricingTiers ? (
-              // Dealer with a pricing group — show volume pricing panel
-              <VolumePricingPanel
-                productId={product.id}
-                name={product.name}
-                brand={product.brand}
-                sku={product.sku}
-                categorySlug={categorySlug}
-                mapPrice={mapPrice}
-                pricingTiers={pricingTiers}
-                disabled={product.inventory_status === 'discontinued'}
-              />
-            ) : dealerPrice != null ? (
-              // Dealer without a pricing group — static dealer_price
-              <>
-                <div className="border-t pt-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your Price</p>
-                      <p className="text-2xl font-bold">{formatCurrency(dealerPrice)}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">MAP</p>
-                      <p className="text-lg font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
-                    </div>
+            {/* Shared: RapidShip row and availability list, rendered between price and cart across all paths */}
+            {(() => {
+              const rapidShipSection = rapidShipEligible ? (
+                <div className="border-t py-5 flex items-start gap-2.5">
+                  <Zap size={15} className="mt-0.5 shrink-0 text-primary" />
+                  <div>
+                    <p className="text-sm font-semibold">RapidShip Ready</p>
+                    <p className="text-xs text-muted-foreground">Free Shipping — ships from a Rapid Ship hub</p>
                   </div>
                 </div>
-                <div className="border-t pt-4">
-                  <AddToCartButton
+              ) : null
+
+              const availabilitySection = availability.length > 0 ? (
+                <div className="border-t py-5">
+                  <p className="mb-2 text-sm font-semibold">Availability</p>
+                  <div className="flex flex-col gap-1.5">
+                    {availability.map((row) => {
+                      const loc = row.fulfillment_locations
+                      if (!loc) return null
+                      const inStock = row.quantity_on_hand > 0
+                      return (
+                        <div key={loc.name} className="flex items-center justify-between gap-2 text-sm">
+                          <div className="flex min-w-0 items-center gap-2">
+                            <span className={`h-2 w-2 shrink-0 rounded-full ${inStock ? 'bg-green-500' : 'bg-red-500'}`} />
+                            <span className="truncate text-muted-foreground">{loc.city}, {loc.state} Warehouse</span>
+                          </div>
+                          <span className={`shrink-0 text-xs font-semibold ${inStock ? 'text-green-700' : 'text-red-600'}`}>
+                            {inStock ? 'In stock' : 'Out of stock'}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              ) : null
+
+              if (pricingTiers) {
+                return (
+                  <VolumePricingPanel
                     productId={product.id}
                     name={product.name}
                     brand={product.brand}
                     sku={product.sku}
-                    unitPrice={dealerPrice}
                     categorySlug={categorySlug}
+                    mapPrice={mapPrice}
+                    pricingTiers={pricingTiers}
                     disabled={product.inventory_status === 'discontinued'}
-                  />
-                </div>
-              </>
-            ) : (
-              // Anonymous visitor
-              <>
-                <div className="border-t pt-4">
-                  <p className="text-sm text-muted-foreground">Price</p>
-                  <p className="text-3xl font-bold">{formatCurrency(mapPrice)}</p>
-                </div>
-                <div className="border-t pt-4">
-                  <div className="flex flex-col gap-2">
+                  >
+                    {rapidShipSection}
+                    {availabilitySection}
+                  </VolumePricingPanel>
+                )
+              }
+
+              if (dealerPrice != null) {
+                return (
+                  <>
+                    <div className="border-t py-5">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your Price</p>
+                          <p className="text-2xl font-bold">{formatCurrency(dealerPrice)}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">MAP</p>
+                          <p className="text-lg font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
+                        </div>
+                      </div>
+                    </div>
+                    {rapidShipSection}
+                    {availabilitySection}
+                    <div className="border-t py-5">
+                      <AddToCartButton
+                        productId={product.id}
+                        name={product.name}
+                        brand={product.brand}
+                        sku={product.sku}
+                        unitPrice={dealerPrice}
+                        categorySlug={categorySlug}
+                        disabled={product.inventory_status === 'discontinued'}
+                      />
+                    </div>
+                  </>
+                )
+              }
+
+              return (
+                <>
+                  <div className="border-t py-5">
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Price</p>
+                        <p className="text-2xl font-bold">{formatCurrency(mapPrice)}</p>
+                      </div>
+                    </div>
+                  </div>
+                  {rapidShipSection}
+                  {availabilitySection}
+                  <div className="border-t py-5 flex flex-col gap-3">
                     <p className="text-sm text-muted-foreground">Log in to see your dealer price and place an order.</p>
-                    <Button render={<Link href="/login" />} nativeButton={false}>
+                    <Button render={<Link href="/login" />} nativeButton={false} className="w-full">
                       Log In
                     </Button>
                   </div>
-                </div>
-              </>
-            )}
-
-            {availability.length > 0 && (
-              <div className="border-t pt-4">
-                <p className="mb-2 text-sm font-semibold">Availability</p>
-                <div className="flex flex-col gap-1.5">
-                  {availability.map((row) => {
-                    const loc = row.fulfillment_locations
-                    if (!loc) return null
-                    const inStock = row.quantity_on_hand > 0
-                    return (
-                      <div key={loc.name} className="flex items-center justify-between gap-2 text-sm">
-                        <div className="flex min-w-0 items-center gap-2">
-                          <span className={`h-2 w-2 shrink-0 rounded-full ${inStock ? 'bg-green-500' : 'bg-red-500'}`} />
-                          <span className="truncate text-muted-foreground">{loc.city}, {loc.state} Warehouse</span>
-                        </div>
-                        <span className={`shrink-0 text-xs font-semibold ${inStock ? 'text-green-700' : 'text-red-600'}`}>
-                          {inStock ? 'In stock' : 'Out of stock'}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
+                </>
+              )
+            })()}
           </div>
         </div>
       </div>

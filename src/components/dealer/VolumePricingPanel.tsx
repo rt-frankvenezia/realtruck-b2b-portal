@@ -18,6 +18,7 @@ type Props = {
   mapPrice: number
   pricingTiers: PricingTier[]
   disabled?: boolean
+  children?: React.ReactNode
 }
 
 export function VolumePricingPanel({
@@ -29,6 +30,7 @@ export function VolumePricingPanel({
   mapPrice,
   pricingTiers,
   disabled,
+  children,
 }: Props) {
   const { addItem } = useDealerCart()
   const [quantity, setQuantity] = useState(1)
@@ -55,9 +57,9 @@ export function VolumePricingPanel({
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col">
       {/* Price display */}
-      <div className="border-t pt-4">
+      <div className="border-t py-5">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your Price</p>
@@ -77,10 +79,10 @@ export function VolumePricingPanel({
 
       {/* Volume pricing table */}
       {hasVolumeTiers && (
-        <div className="rounded-md border">
+        <div className="mb-5 rounded-md border">
           <div className="flex items-center gap-1.5 border-b px-3 py-2">
             <TrendingDown size={13} className="text-muted-foreground" />
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Volume Pricing</span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Volume Pricing</span>
           </div>
           <div className="divide-y">
             {pricingTiers.map((tier) => {
@@ -107,8 +109,11 @@ export function VolumePricingPanel({
         </div>
       )}
 
+      {/* RapidShip + Availability injected from the server component */}
+      {children}
+
       {/* Quantity + Add to Cart */}
-      <div className="border-t pt-4 flex flex-col gap-3">
+      <div className="border-t py-5 flex flex-col gap-3">
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold" htmlFor={`qty-${productId}`}>
             Quantity
@@ -121,7 +126,7 @@ export function VolumePricingPanel({
             onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
           />
         </div>
-        <Button disabled={disabled} onClick={handleAddToCart}>
+        <Button disabled={disabled} onClick={handleAddToCart} className="w-full">
           <ShoppingCart size={16} />
           Add to Cart
         </Button>
