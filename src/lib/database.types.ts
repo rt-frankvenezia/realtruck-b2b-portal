@@ -2789,20 +2789,18 @@ export type Database = {
     Views: {
       catalog_products_public: {
         Row: {
-          brand: string | null
-          category_id: string | null
-          created_at: string | null
-          description: string | null
-          highlights: string[] | null
-          id: string | null
-          inventory_status:
-            | Database["public"]["Enums"]["catalog_inventory_status"]
-            | null
-          map_price: number | null
-          name: string | null
+          brand: string
+          category_id: string
+          created_at: string
+          description: string
+          highlights: string[]
+          id: string
+          inventory_status: Database["public"]["Enums"]["catalog_inventory_status"]
+          map_price: number
+          name: string
           product_line: string | null
-          sku: string | null
-          specifications: Json | null
+          sku: string
+          specifications: Json
         }
         Insert: {
           brand?: string | null

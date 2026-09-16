@@ -96,7 +96,7 @@ export default async function ProductDetailPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <RecordRecentlyViewed userId={user?.profile.id} productId={product.id} />
+      <RecordRecentlyViewed userId={user?.profile.id ?? undefined} productId={product.id} />
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <Link href="/dealer/shop" className="hover:text-foreground">
           Shop
