@@ -162,7 +162,9 @@ export default async function ProductDetailPage({
           <div className="flex flex-col">
             {/* Product identity */}
             <div className="pb-5">
-              <h1 className="text-2xl font-bold leading-tight">{product.name}</h1>
+              <h1 className="font-brand text-2xl uppercase leading-tight">
+                {product.brand} {product.name}
+              </h1>
               <div className="mt-2 flex items-center gap-1.5">
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={13} className="text-yellow-400" fill="currentColor" />
@@ -180,7 +182,7 @@ export default async function ProductDetailPage({
             {/* Shared sections rendered between price and cart across all paths */}
             {(() => {
               const partAndFitSection = (
-                <div className="border-t py-4">
+                <div className="mt-5">
                   <p className="text-sm text-muted-foreground">PART #: {product.sku}</p>
                   <div className="mt-3 flex items-start gap-3">
                     <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-green-600">
@@ -198,7 +200,7 @@ export default async function ProductDetailPage({
               )
 
               const rapidShipSection = rapidShipEligible ? (
-                <div className="border-t py-4 flex items-start gap-3">
+                <div className="mt-4 flex items-start gap-3">
                   <Truck size={16} className="mt-0.5 shrink-0 text-muted-foreground" />
                   <div>
                     <p className="text-sm font-semibold">RapidShip Ready</p>
@@ -211,7 +213,7 @@ export default async function ProductDetailPage({
               ) : null
 
               const availabilitySection = availability.length > 0 ? (
-                <div className="border-t py-4">
+                <div className="mt-5 border-t pt-4">
                   <p className="mb-2 text-sm font-semibold">Availability</p>
                   <div className="flex flex-col gap-1.5">
                     {availability.map((row) => {
@@ -271,7 +273,7 @@ export default async function ProductDetailPage({
                     {partAndFitSection}
                     {rapidShipSection}
                     {availabilitySection}
-                    <div className="border-t py-4">
+                    <div className="mt-5">
                       <AddToCartButton
                         productId={product.id}
                         name={product.name}

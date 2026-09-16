@@ -30,21 +30,18 @@ export function AddToCartButton({
   const [quantity, setQuantity] = useState(1)
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold" htmlFor={`qty-${productId}`}>
-          Quantity
-        </label>
-        <Input
-          id={`qty-${productId}`}
-          type="number"
-          min={1}
-          value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-        />
-      </div>
+    <div className="flex items-center gap-2">
+      <Input
+        id={`qty-${productId}`}
+        type="number"
+        min={1}
+        value={quantity}
+        onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+        className="w-20 shrink-0"
+      />
       <Button
         disabled={disabled}
+        className="flex-1 bg-[#0082C8] text-white hover:bg-[#006BAA]"
         onClick={() => {
           addItem(
             {
@@ -63,7 +60,7 @@ export function AddToCartButton({
         }}
       >
         <ShoppingCart size={16} />
-        Add to Cart
+        ADD TO CART
       </Button>
     </div>
   )

@@ -77,12 +77,9 @@ export function VolumePricingPanel({
         )}
       </div>
 
-      {/* PART # + Guaranteed Fit + RapidShip + Availability injected from the server component */}
-      {children}
-
-      {/* Volume pricing table */}
+      {/* Volume pricing table — stays near the price */}
       {hasVolumeTiers && (
-        <div className="mb-5 rounded-md border">
+        <div className="mt-3 rounded-md border">
           <div className="flex items-center gap-1.5 border-b px-3 py-2">
             <TrendingDown size={13} className="text-muted-foreground" />
             <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Volume Pricing</span>
@@ -112,23 +109,26 @@ export function VolumePricingPanel({
         </div>
       )}
 
-      {/* Quantity + Add to Cart */}
-      <div className="border-t py-5 flex flex-col gap-3">
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold" htmlFor={`qty-${productId}`}>
-            Quantity
-          </label>
-          <Input
-            id={`qty-${productId}`}
-            type="number"
-            min={1}
-            value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-          />
-        </div>
-        <Button disabled={disabled} onClick={handleAddToCart} className="w-full">
+      {/* PART # + Guaranteed Fit + RapidShip + Availability injected from the server component */}
+      {children}
+
+      {/* Quantity inline with Add to Cart */}
+      <div className="mt-5 flex items-center gap-2">
+        <Input
+          id={`qty-${productId}`}
+          type="number"
+          min={1}
+          value={quantity}
+          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+          className="w-20 shrink-0"
+        />
+        <Button
+          disabled={disabled}
+          onClick={handleAddToCart}
+          className="flex-1 bg-[#0082C8] text-white hover:bg-[#006BAA]"
+        >
           <ShoppingCart size={16} />
-          Add to Cart
+          ADD TO CART
         </Button>
       </div>
     </div>
