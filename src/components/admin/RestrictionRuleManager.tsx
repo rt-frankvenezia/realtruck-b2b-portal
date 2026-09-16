@@ -93,7 +93,7 @@ export function RestrictionRuleManager({
         <p className="text-sm text-muted-foreground">
           Rules override the default. Priority: Product Line → Brand → Category → Default
         </p>
-        <Button size="sm" onClick={() => { setAddOpen(true); setEditState({ mode: 'idle' }) }} disabled={addOpen}>
+        <Button size="sm" onClick={() => setAddOpen(true)} disabled={addOpen}>
           <Plus size={14} className="mr-1" />
           ADD RULE
         </Button>
@@ -159,7 +159,6 @@ export function RestrictionRuleManager({
       ) : (
         <div className="flex flex-col gap-2">
           {sortedRules.map((rule) => {
-            const isEditing = editState.mode === 'editing' && editState.ruleId === rule.id
             return (
               <div key={rule.id} className="rounded-md border">
                 <div className="flex items-start justify-between gap-3 px-4 py-3">
