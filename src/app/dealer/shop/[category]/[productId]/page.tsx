@@ -64,7 +64,7 @@ export default async function ProductDetailPage({
   if (pricingGroupId && showDealerPricing) {
     const { data: schedule } = await supabase.rpc('get_pricing_schedule', {
       p_pricing_group_id: pricingGroupId,
-      p_brand: product.brand,
+      p_brand: product.brand ?? undefined,
       p_category: categorySlug,
       p_product_line: productLine,
     })
@@ -82,7 +82,7 @@ export default async function ProductDetailPage({
   if (showDealerPricing && restrictionGroupId) {
     const { data: accessResult } = await supabase.rpc('check_product_purchase_access', {
       p_restriction_group_id: restrictionGroupId,
-      p_brand: product.brand,
+      p_brand: product.brand ?? undefined,
       p_category: categorySlug,
       p_product_line: productLine,
     })
