@@ -9,12 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { PRICING_GROUP_STATUS_LABEL } from '@/lib/status-labels'
-import type { Database, Tables } from '@/lib/database.types'
-
-type PricingGroupStatus = Database['public']['Enums']['pricing_group_status']
-const ALL_STATUSES: PricingGroupStatus[] = ['active', 'inactive']
+import type { Tables } from '@/lib/database.types'
 
 type TierFormState = { mode: 'idle' } | { mode: 'adding'; minQty: string; discount: string }
 
@@ -29,8 +24,6 @@ export function PricingGroupInfoForm({
   const [isPending, startTransition] = useTransition()
   const [name, setName] = useState(group.name)
   const [description, setDescription] = useState(group.description ?? '')
-  const [status, setStatus] = useState<PricingGroupStatus>(group.status)
-  const [effectiveDate, setEffectiveDate] = useState(group.effective_date)
   const [baseDiscount, setBaseDiscount] = useState(group.base_discount.toString())
   const [tierForm, setTierForm] = useState<TierFormState>({ mode: 'idle' })
 
@@ -39,8 +32,6 @@ export function PricingGroupInfoForm({
   const hasChanges =
     name !== group.name ||
     description !== (group.description ?? '') ||
-    status !== group.status ||
-    effectiveDate !== group.effective_date ||
     baseDiscount !== group.base_discount.toString()
 
   function handleSave() {
@@ -51,8 +42,6 @@ export function PricingGroupInfoForm({
         .update({
           name,
           description: description || null,
-          status,
-          effective_date: effectiveDate,
           base_discount: Number(baseDiscount) || 0,
         })
         .eq('id', group.id)
@@ -62,6 +51,20 @@ export function PricingGroupInfoForm({
       }
       toast.success('Pricing group updated')
       router.refresh()
+    })
+  }
+
+  function handleDelete() {
+    if (!window.confirm(`Delete "${group.name}"? This cannot be undone.`)) return
+    startTransition(async () => {
+      const supabase = createClient()
+      const { error } = await supabase.from('pricing_groups').delete().eq('id', group.id)
+      if (error) {
+        toast.error(error.message)
+        return
+      }
+      toast.success('Pricing group deleted')
+      router.push('/admin/pricing-groups')
     })
   }
 
@@ -108,38 +111,17 @@ export function PricingGroupInfoForm({
     <div className="flex flex-col gap-3">
       <div className="grid grid-cols-2 gap-3">
         <div className="flex flex-col gap-2">
-          <Label>Name</Label>
+          <Label>Name *</Label>
           <Input value={name} onChange={(e) => setName(e.target.value)} />
         </div>
         <div className="flex flex-col gap-2">
-          <Label>Status</Label>
-          <Select value={status} onValueChange={(v) => setStatus(v as PricingGroupStatus)}>
-            <SelectTrigger>
-              <SelectValue>{PRICING_GROUP_STATUS_LABEL[status]}</SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {ALL_STATUSES.map((s) => (
-                <SelectItem key={s} value={s}>
-                  {PRICING_GROUP_STATUS_LABEL[s]}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label>% off *</Label>
+          <Input type="number" step="0.01" value={baseDiscount} onChange={(e) => setBaseDiscount(e.target.value)} />
         </div>
       </div>
       <div className="flex flex-col gap-2">
         <Label>Description</Label>
         <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col gap-2">
-          <Label>Effective Date</Label>
-          <Input type="date" value={effectiveDate} onChange={(e) => setEffectiveDate(e.target.value)} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Base Discount %</Label>
-          <Input type="number" step="0.01" value={baseDiscount} onChange={(e) => setBaseDiscount(e.target.value)} />
-        </div>
       </div>
 
       {/* Base discount volume tier editor */}
@@ -225,9 +207,15 @@ export function PricingGroupInfoForm({
         )}
       </div>
 
-      <div className="flex justify-end">
-        <Button size="sm" onClick={handleSave} disabled={isPending || !hasChanges || !name.trim()}>
-          Save Changes
+      <div className="flex justify-end gap-2">
+        <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive/10" onClick={handleDelete} disabled={isPending}>
+          DELETE
+        </Button>
+        <Button variant="outline" onClick={() => { setName(group.name); setDescription(group.description ?? ''); setBaseDiscount(group.base_discount.toString()) }} disabled={isPending || !hasChanges}>
+          CANCEL
+        </Button>
+        <Button onClick={handleSave} disabled={isPending || !hasChanges || !name.trim()}>
+          SAVE CHANGES
         </Button>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -29,8 +30,10 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
   return (
     <div className="flex flex-col gap-6">
       <div>
+        <Link href="/admin/pricing-groups" className="mb-1 inline-block text-sm text-muted-foreground hover:text-foreground">
+          ← Back to Price Groups
+        </Link>
         <h1 className="text-2xl font-semibold">{group.name}</h1>
-        <p className="text-muted-foreground">{group.description}</p>
       </div>
 
       <Card>
