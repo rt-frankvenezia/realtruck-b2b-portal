@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CatalogInfoForm } from '@/components/admin/CatalogInfoForm'
 import { CatalogPricingSection } from '@/components/admin/CatalogPricingSection'
 import { CatalogAvailabilitySection } from '@/components/admin/CatalogAvailabilitySection'
-import { CatalogPreview } from '@/components/admin/CatalogPreview'
+import { CatalogDealerAssignment } from '@/components/admin/CatalogDealerAssignment'
 import { PricingRuleManager } from '@/components/admin/PricingRuleManager'
 import { RestrictionRuleManager } from '@/components/admin/RestrictionRuleManager'
 import { PURCHASE_ACCESS_LABEL } from '@/lib/restrictions'
@@ -147,40 +147,17 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         </Card>
       )}
 
-      {pricingGroup && restrictionGroup && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Catalog Preview</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <CatalogPreview
-              pricingGroupId={pricingGroup.id}
-              restrictionGroupId={restrictionGroup.id}
-            />
-          </CardContent>
-        </Card>
-      )}
-
       <Card>
         <CardHeader>
           <CardTitle>Dealers</CardTitle>
         </CardHeader>
         <CardContent>
-          {(dealers ?? []).length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No dealers are assigned to this catalog. Assign it from the company detail page.
-            </p>
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              {(dealers ?? []).map((d) => (
-                <Link key={d.id} href={`/admin/companies/${d.id}`}>
-                  <Badge variant="outline" className="cursor-pointer hover:bg-muted">
-                    {d.name}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
-          )}
+          <CatalogDealerAssignment
+            catalogId={catalog.id}
+            pricingGroupId={catalog.pricing_group_id}
+            restrictionGroupId={catalog.restriction_group_id}
+            initialDealers={dealers ?? []}
+          />
         </CardContent>
       </Card>
     </div>
