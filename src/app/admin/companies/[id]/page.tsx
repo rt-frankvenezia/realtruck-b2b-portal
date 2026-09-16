@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { CompanyStatusSelect } from '@/components/admin/CompanyStatusSelect'
 import { LocationStatusSelect } from '@/components/admin/LocationStatusSelect'
 import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialog'
-import { CompanyDealerProgramSelect } from '@/components/admin/CompanyDealerProgramSelect'
+import { CompanyCatalogSelect } from '@/components/admin/CompanyCatalogSelect'
 import { CreateLocationDialog } from '@/components/admin/CreateLocationDialog'
 import { CreateUserDialog } from '@/components/admin/CreateUserDialog'
 import { NetSuiteIdForm } from '@/components/admin/NetSuiteIdForm'
@@ -19,25 +19,12 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: company }, { data: locations }, { data: users }, { data: dealerProgramsRaw }] = await Promise.all([
+  const [{ data: company }, { data: locations }, { data: users }, { data: catalogs }] = await Promise.all([
     supabase.from('companies').select('*').eq('id', id).maybeSingle(),
     supabase.from('locations').select('*').eq('company_id', id).order('name'),
     supabase.from('users').select('*').eq('company_id', id).order('name'),
-    supabase
-      .from('dealer_programs')
-      .select('id, name, catalog_id, catalogs(pricing_group_id, restriction_group_id)')
-      .order('name'),
+    supabase.from('catalogs').select('id, name, pricing_group_id, restriction_group_id').order('name'),
   ])
-
-  const dealerPrograms = (dealerProgramsRaw ?? []).map((p) => {
-    const cat = p.catalogs as { pricing_group_id: string | null; restriction_group_id: string | null } | null
-    return {
-      id: p.id,
-      name: p.name,
-      pricing_group_id: cat?.pricing_group_id ?? null,
-      restriction_group_id: cat?.restriction_group_id ?? null,
-    }
-  })
 
   if (!company) notFound()
 
@@ -46,7 +33,7 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
 
   const requirements = [
     { label: 'NetSuite Customer ID assigned', met: Boolean(company.netsuite_customer_id) },
-    { label: 'Dealer Program assigned', met: Boolean(company.dealer_program_id) },
+    { label: 'Catalog assigned', met: Boolean(company.catalog_id) },
     { label: 'At least 1 Location created', met: (locations ?? []).length > 0 },
     { label: 'At least 1 Dealer Admin user exists', met: hasDealerAdmin },
   ]
@@ -77,11 +64,11 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
             <p>{company.is_are_dealer ? 'Yes' : 'No'}</p>
           </div>
           <div>
-            <p className="text-xs font-medium text-muted-foreground">Dealer Program</p>
-            <CompanyDealerProgramSelect
+            <p className="text-xs font-medium text-muted-foreground">Catalog</p>
+            <CompanyCatalogSelect
               companyId={company.id}
-              dealerProgramId={company.dealer_program_id}
-              dealerPrograms={dealerPrograms}
+              catalogId={company.catalog_id}
+              catalogs={catalogs ?? []}
             />
           </div>
           <div>

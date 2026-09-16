@@ -81,38 +81,6 @@ export type Database = {
           },
         ]
       }
-      dealer_programs: {
-        Row: {
-          id: string
-          name: string
-          description: string | null
-          catalog_id: string | null
-          created_at: string
-        }
-        Insert: {
-          id?: string
-          name: string
-          description?: string | null
-          catalog_id?: string | null
-          created_at?: string
-        }
-        Update: {
-          id?: string
-          name?: string
-          description?: string | null
-          catalog_id?: string | null
-          created_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "dealer_programs_catalog_id_fkey"
-            columns: ["catalog_id"]
-            isOneToOne: false
-            referencedRelation: "catalogs"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       audit_log: {
         Row: {
           action: string
@@ -317,7 +285,7 @@ export type Database = {
           is_are_dealer: boolean
           name: string
           netsuite_customer_id: string | null
-          dealer_program_id: string | null
+          catalog_id: string | null
           pricing_group_id: string | null
           restriction_group_id: string | null
           salesforce_account_id: string | null
@@ -335,7 +303,7 @@ export type Database = {
           created_at?: string
           credit_eligible?: boolean
           dealer_admin_id?: string | null
-          dealer_program_id?: string | null
+          catalog_id?: string | null
           id?: string
           installation_pricing?: Json
           internal_notes?: string | null
@@ -359,7 +327,7 @@ export type Database = {
           created_at?: string
           credit_eligible?: boolean
           dealer_admin_id?: string | null
-          dealer_program_id?: string | null
+          catalog_id?: string | null
           id?: string
           installation_pricing?: Json
           internal_notes?: string | null

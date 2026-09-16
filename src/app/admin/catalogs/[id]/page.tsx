@@ -15,19 +15,13 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
   const { id } = await params
   const supabase = await createClient()
 
-  const [
-    { data: catalog },
-    { data: programs },
-  ] = await Promise.all([
+  const [{ data: catalog }, { data: dealers }] = await Promise.all([
     supabase.from('catalogs').select('*').eq('id', id).maybeSingle(),
-    supabase.from('dealer_programs').select('id, name, catalog_id').order('name'),
+    supabase.from('companies').select('id, name, status').eq('catalog_id', id).order('name'),
   ])
 
   if (!catalog) notFound()
 
-  const assignedPrograms = (programs ?? []).filter((p) => p.catalog_id === id)
-
-  // Fetch the underlying pricing and restriction group data
   const [pricingGroupRes, restrictionGroupRes] = await Promise.all([
     catalog.pricing_group_id
       ? supabase.from('pricing_groups').select('*').eq('id', catalog.pricing_group_id).maybeSingle()
@@ -37,7 +31,6 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
       : Promise.resolve({ data: null }),
   ])
 
-  // Fetch pricing rules and restriction rules in parallel
   const [rulesRes, baseTiersRes, restrictionRulesRes] = await Promise.all([
     catalog.pricing_group_id
       ? supabase
@@ -78,7 +71,6 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         {catalog.description && <p className="text-muted-foreground mt-1">{catalog.description}</p>}
       </div>
 
-      {/* Catalog Information */}
       <Card>
         <CardHeader>
           <CardTitle>Catalog Information</CardTitle>
@@ -88,7 +80,6 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         </CardContent>
       </Card>
 
-      {/* Pricing section */}
       {pricingGroup ? (
         <>
           <Card>
@@ -118,7 +109,6 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         </Card>
       )}
 
-      {/* Availability section */}
       {restrictionGroup ? (
         <>
           <Card>
@@ -157,7 +147,6 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         </Card>
       )}
 
-      {/* Combined preview */}
       {pricingGroup && restrictionGroup && (
         <Card>
           <CardHeader>
@@ -172,25 +161,21 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         </Card>
       )}
 
-      {/* Dealer Programs using this catalog */}
       <Card>
         <CardHeader>
-          <CardTitle>Dealer Programs</CardTitle>
+          <CardTitle>Dealers</CardTitle>
         </CardHeader>
         <CardContent>
-          {assignedPrograms.length === 0 ? (
+          {(dealers ?? []).length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              No dealer programs are using this catalog.{' '}
-              <Link href="/admin/dealer-programs" className="text-primary hover:underline">
-                Assign it from a Dealer Program.
-              </Link>
+              No dealers are assigned to this catalog. Assign it from the company detail page.
             </p>
           ) : (
             <div className="flex flex-wrap gap-2">
-              {assignedPrograms.map((p) => (
-                <Link key={p.id} href={`/admin/dealer-programs/${p.id}`}>
+              {(dealers ?? []).map((d) => (
+                <Link key={d.id} href={`/admin/companies/${d.id}`}>
                   <Badge variant="outline" className="cursor-pointer hover:bg-muted">
-                    {p.name}
+                    {d.name}
                   </Badge>
                 </Link>
               ))}
