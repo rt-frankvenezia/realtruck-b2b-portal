@@ -163,20 +163,26 @@ export default async function ProductDetailPage({
             <div>
               <p className="text-sm font-semibold text-muted-foreground">{product.brand}</p>
               <h1 className="text-xl font-bold leading-tight">{product.name}</h1>
-              <p className="mt-1 text-xs text-muted-foreground">SKU: {product.sku}</p>
+              <p className="mt-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                PART #: {product.sku}
+              </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT[product.inventory_status]} className="w-fit">
-                {CATALOG_INVENTORY_STATUS_LABEL[product.inventory_status]}
+            {product.inventory_status === 'discontinued' && (
+              <Badge variant={CATALOG_INVENTORY_STATUS_VARIANT['discontinued']} className="w-fit">
+                {CATALOG_INVENTORY_STATUS_LABEL['discontinued']}
               </Badge>
-              {rapidShipEligible && (
-                <Badge variant="success" className="w-fit gap-1">
-                  <Zap size={12} />
-                  Rapid Ship Eligible
-                </Badge>
-              )}
-            </div>
+            )}
+
+            {rapidShipEligible && (
+              <div className="flex items-start gap-2.5">
+                <Zap size={15} className="mt-0.5 shrink-0 text-primary" />
+                <div>
+                  <p className="text-sm font-semibold">RapidShip Ready</p>
+                  <p className="text-xs text-muted-foreground">Free Shipping — ships from a Rapid Ship hub</p>
+                </div>
+              </div>
+            )}
 
             {/* Pricing + Add to Cart */}
             {pricingTiers ? (
@@ -195,9 +201,16 @@ export default async function ProductDetailPage({
               // Dealer without a pricing group — static dealer_price
               <>
                 <div className="border-t pt-4">
-                  <p className="text-sm text-muted-foreground">Your Dealer Price</p>
-                  <p className="text-3xl font-bold">{formatCurrency(dealerPrice)}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">MAP: {formatCurrency(mapPrice)}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your Price</p>
+                      <p className="text-2xl font-bold">{formatCurrency(dealerPrice)}</p>
+                    </div>
+                    <div>
+                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">MAP</p>
+                      <p className="text-lg font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
+                    </div>
+                  </div>
                 </div>
                 <div className="border-t pt-4">
                   <AddToCartButton
@@ -231,33 +244,25 @@ export default async function ProductDetailPage({
 
             {availability.length > 0 && (
               <div className="border-t pt-4">
-                <p className="mb-2 text-sm font-semibold">Fulfillment Availability</p>
-                <div className="flex flex-col divide-y rounded-md border">
+                <p className="mb-2 text-sm font-semibold">Availability</p>
+                <div className="flex flex-col gap-1.5">
                   {availability.map((row) => {
                     const loc = row.fulfillment_locations
                     if (!loc) return null
                     const inStock = row.quantity_on_hand > 0
                     return (
-                      <div key={loc.name} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
-                        <div>
-                          <div className="font-medium">{loc.name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {loc.city}, {loc.state}
-                            {loc.supports_rapid_ship ? ' · Rapid Ship hub' : ''}
-                          </div>
+                      <div key={loc.name} className="flex items-center justify-between gap-2 text-sm">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className={`h-2 w-2 shrink-0 rounded-full ${inStock ? 'bg-green-500' : 'bg-red-500'}`} />
+                          <span className="truncate text-muted-foreground">{loc.city}, {loc.state} Warehouse</span>
                         </div>
-                        <span className={inStock ? 'font-semibold text-green-700' : 'text-muted-foreground'}>
-                          {inStock ? `${row.quantity_on_hand} in stock` : 'Out of stock'}
+                        <span className={`shrink-0 text-xs font-semibold ${inStock ? 'text-green-700' : 'text-red-600'}`}>
+                          {inStock ? 'In stock' : 'Out of stock'}
                         </span>
                       </div>
                     )
                   })}
                 </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  {rapidShipEligible
-                    ? 'Ships from a Rapid Ship location — arrives faster.'
-                    : 'Ships from a standard fulfillment location.'}
-                </p>
               </div>
             )}
           </div>

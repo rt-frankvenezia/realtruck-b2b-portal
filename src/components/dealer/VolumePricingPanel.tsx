@@ -58,14 +58,21 @@ export function VolumePricingPanel({
     <div className="flex flex-col gap-4">
       {/* Price display */}
       <div className="border-t pt-4">
-        <p className="text-sm text-muted-foreground">Your Dealer Price</p>
-        <p className="text-3xl font-bold">{formatCurrency(effectivePrice)}</p>
-        <div className="mt-1 flex items-center gap-2">
-          <p className="text-sm text-muted-foreground">MAP: {formatCurrency(mapPrice)}</p>
-          <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Your Price</p>
+            <p className="text-2xl font-bold">{formatCurrency(effectivePrice)}</p>
+          </div>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">MAP</p>
+            <p className="text-lg font-medium text-muted-foreground">{formatCurrency(mapPrice)}</p>
+          </div>
+        </div>
+        {effectiveTier.discountPercent > 0 && (
+          <span className="mt-1.5 inline-block rounded-full bg-primary/10 px-2 py-0.5 text-xs font-semibold text-primary">
             {effectiveTier.discountPercent}% off
           </span>
-        </div>
+        )}
       </div>
 
       {/* Volume pricing table */}
