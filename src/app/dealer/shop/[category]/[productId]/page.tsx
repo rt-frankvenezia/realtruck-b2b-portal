@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Check, CheckCircle2, Package, ShieldCheck, Star, Truck } from 'lucide-react'
+import { Ban, Check, CheckCircle2, Package, ShieldCheck, Star, Truck } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
@@ -39,7 +39,7 @@ export default async function ProductDetailPage({
       .eq('catalog_product_id', productId)
       .order('sort_order', { referencedTable: 'fulfillment_locations' }),
     showDealerPricing && user?.profile.company_id
-      ? supabase.from('companies').select('pricing_group_id').eq('id', user.profile.company_id).maybeSingle()
+      ? supabase.from('companies').select('pricing_group_id, restriction_group_id').eq('id', user.profile.company_id).maybeSingle()
       : Promise.resolve({ data: null }),
   ])
 
@@ -56,10 +56,11 @@ export default async function ProductDetailPage({
 
   // Pricing group schedule — fetched only for logged-in dealers with an assigned group
   const pricingGroupId = companyRes.data?.pricing_group_id ?? null
+  const restrictionGroupId = companyRes.data?.restriction_group_id ?? null
+  const productLine = (product as { product_line?: string | null }).product_line ?? undefined
   let pricingTiers: PricingTier[] | null = null
 
   if (pricingGroupId && showDealerPricing) {
-    const productLine = (product as { product_line?: string | null }).product_line ?? undefined
     const { data: schedule } = await supabase.rpc('get_pricing_schedule', {
       p_pricing_group_id: pricingGroupId,
       p_brand: product.brand,
@@ -71,6 +72,21 @@ export default async function ProductDetailPage({
         minQty: row.min_quantity,
         discountPercent: Number(row.discount_percent),
       }))
+    }
+  }
+
+  // Catalog restriction check — determines whether this dealer can purchase this product.
+  // Restrictions control purchasing eligibility, not visibility. The product is always shown.
+  let purchaseAllowed = true
+  if (showDealerPricing && restrictionGroupId) {
+    const { data: accessResult } = await supabase.rpc('check_product_purchase_access', {
+      p_restriction_group_id: restrictionGroupId,
+      p_brand: product.brand,
+      p_category: categorySlug,
+      p_product_line: productLine,
+    })
+    if (accessResult?.[0]?.access === 'not_allowed') {
+      purchaseAllowed = false
     }
   }
 
@@ -236,6 +252,17 @@ export default async function ProductDetailPage({
                 </div>
               ) : null
 
+              // Restriction notice — shown when the dealer's catalog restrictions block this product.
+              // Displayed instead of (not below) the Add to Cart button.
+              const restrictionNotice = !purchaseAllowed ? (
+                <div className="mt-5 flex items-start gap-3 rounded-md border border-amber-200 bg-amber-50 px-4 py-3">
+                  <Ban size={16} className="mt-0.5 shrink-0 text-amber-600" />
+                  <p className="text-sm text-amber-800">
+                    This product isn&apos;t available for purchase with your dealer account.
+                  </p>
+                </div>
+              ) : null
+
               if (pricingTiers) {
                 return (
                   <VolumePricingPanel
@@ -247,10 +274,12 @@ export default async function ProductDetailPage({
                     mapPrice={mapPrice}
                     pricingTiers={pricingTiers}
                     disabled={product.inventory_status === 'discontinued'}
+                    purchaseAllowed={purchaseAllowed}
                   >
                     {partAndFitSection}
                     {rapidShipSection}
                     {availabilitySection}
+                    {restrictionNotice}
                   </VolumePricingPanel>
                 )
               }
@@ -273,17 +302,19 @@ export default async function ProductDetailPage({
                     {partAndFitSection}
                     {rapidShipSection}
                     {availabilitySection}
-                    <div className="mt-5">
-                      <AddToCartButton
-                        productId={product.id}
-                        name={product.name}
-                        brand={product.brand}
-                        sku={product.sku}
-                        unitPrice={dealerPrice}
-                        categorySlug={categorySlug}
-                        disabled={product.inventory_status === 'discontinued'}
-                      />
-                    </div>
+                    {restrictionNotice ?? (
+                      <div className="mt-5">
+                        <AddToCartButton
+                          productId={product.id}
+                          name={product.name}
+                          brand={product.brand}
+                          sku={product.sku}
+                          unitPrice={dealerPrice}
+                          categorySlug={categorySlug}
+                          disabled={product.inventory_status === 'discontinued'}
+                        />
+                      </div>
+                    )}
                   </>
                 )
               }

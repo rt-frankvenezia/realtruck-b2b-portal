@@ -244,6 +244,7 @@ export type Database = {
           name: string
           netsuite_customer_id: string | null
           pricing_group_id: string | null
+          restriction_group_id: string | null
           salesforce_account_id: string | null
           status: Database["public"]["Enums"]["company_status"]
           supported_tiers: Database["public"]["Enums"]["installation_tier"][]
@@ -266,6 +267,7 @@ export type Database = {
           name: string
           netsuite_customer_id?: string | null
           pricing_group_id?: string | null
+          restriction_group_id?: string | null
           salesforce_account_id?: string | null
           status?: Database["public"]["Enums"]["company_status"]
           supported_tiers?: Database["public"]["Enums"]["installation_tier"][]
@@ -288,6 +290,7 @@ export type Database = {
           name?: string
           netsuite_customer_id?: string | null
           pricing_group_id?: string | null
+          restriction_group_id?: string | null
           salesforce_account_id?: string | null
           status?: Database["public"]["Enums"]["company_status"]
           supported_tiers?: Database["public"]["Enums"]["installation_tier"][]
@@ -2032,6 +2035,68 @@ export type Database = {
           },
         ]
       }
+      restriction_groups: {
+        Row: {
+          id: string
+          name: string
+          description: string | null
+          default_access: Database["public"]["Enums"]["catalog_purchase_access"]
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          description?: string | null
+          default_access?: Database["public"]["Enums"]["catalog_purchase_access"]
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          description?: string | null
+          default_access?: Database["public"]["Enums"]["catalog_purchase_access"]
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      restriction_rules: {
+        Row: {
+          id: string
+          restriction_group_id: string
+          target_type: Database["public"]["Enums"]["pricing_target_type"]
+          target_value: string
+          display_name: string
+          access: Database["public"]["Enums"]["catalog_purchase_access"]
+        }
+        Insert: {
+          id?: string
+          restriction_group_id: string
+          target_type: Database["public"]["Enums"]["pricing_target_type"]
+          target_value: string
+          display_name: string
+          access: Database["public"]["Enums"]["catalog_purchase_access"]
+        }
+        Update: {
+          id?: string
+          restriction_group_id?: string
+          target_type?: Database["public"]["Enums"]["pricing_target_type"]
+          target_value?: string
+          display_name?: string
+          access?: Database["public"]["Enums"]["catalog_purchase_access"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restriction_rules_restriction_group_id_fkey"
+            columns: ["restriction_group_id"]
+            isOneToOne: false
+            referencedRelation: "restriction_groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_categories: {
         Row: {
           id: string
@@ -2890,6 +2955,31 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      check_product_purchase_access: {
+        Args: {
+          p_restriction_group_id: string
+          p_brand?: string
+          p_category?: string
+          p_product_line?: string
+        }
+        Returns: {
+          access: string
+          source: string
+        }[]
+      }
+      validate_cart_restrictions: {
+        Args: {
+          p_company_id: string
+          p_items: Json
+        }
+        Returns: {
+          product_id: string
+          product_name: string
+          sku: string
+          access: string
+          source: string
+        }[]
+      }
       calculate_pricing_discount: {
         Args: {
           p_brand?: string
@@ -3652,6 +3742,7 @@ export type Database = {
         | "limited_stock"
         | "backorder"
         | "discontinued"
+      catalog_purchase_access: "allowed" | "not_allowed"
       checklist_item_key:
         | "correct_cap_model"
         | "options_installed"

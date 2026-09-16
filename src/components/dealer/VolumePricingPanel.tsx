@@ -18,6 +18,7 @@ type Props = {
   mapPrice: number
   pricingTiers: PricingTier[]
   disabled?: boolean
+  purchaseAllowed?: boolean
   children?: ReactNode
 }
 
@@ -30,6 +31,7 @@ export function VolumePricingPanel({
   mapPrice,
   pricingTiers,
   disabled,
+  purchaseAllowed = true,
   children,
 }: Props) {
   const { addItem } = useDealerCart()
@@ -112,25 +114,27 @@ export function VolumePricingPanel({
       {/* PART # + Guaranteed Fit + RapidShip + Availability injected from the server component */}
       {children}
 
-      {/* Quantity inline with Add to Cart */}
-      <div className="mt-5 flex items-center gap-2">
-        <Input
-          id={`qty-${productId}`}
-          type="number"
-          min={1}
-          value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-          className="w-20 shrink-0"
-        />
-        <Button
-          disabled={disabled}
-          onClick={handleAddToCart}
-          className="flex-1 bg-[#0082C8] text-white hover:bg-[#006BAA]"
-        >
-          <ShoppingCart size={16} />
-          ADD TO CART
-        </Button>
-      </div>
+      {/* Quantity + Add to Cart — hidden when purchase is not allowed */}
+      {purchaseAllowed && (
+        <div className="mt-5 flex items-center gap-2">
+          <Input
+            id={`qty-${productId}`}
+            type="number"
+            min={1}
+            value={quantity}
+            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+            className="w-20 shrink-0"
+          />
+          <Button
+            disabled={disabled}
+            onClick={handleAddToCart}
+            className="flex-1 bg-[#0082C8] text-white hover:bg-[#006BAA]"
+          >
+            <ShoppingCart size={16} />
+            ADD TO CART
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

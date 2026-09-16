@@ -115,6 +115,24 @@ export function CheckoutForm({
     setCheckoutError(null)
     startTransition(async () => {
       const supabase = createClient()
+
+      // Server-side restriction check before placing the order.
+      // This catches restricted items even if they reached the cart via another path.
+      const { data: restrictionResults, error: restrictionError } = await supabase.rpc('validate_cart_restrictions', {
+        p_company_id: companyId,
+        p_items: items.map((i) => ({ product_id: i.productId })),
+      })
+      if (restrictionError) {
+        setCheckoutError('Unable to validate your cart. Please try again.')
+        return
+      }
+      const blockedItems = (restrictionResults ?? []).filter((r) => r.access === 'not_allowed')
+      if (blockedItems.length > 0) {
+        const names = blockedItems.map((r) => r.product_name).join(', ')
+        setCheckoutError(`Your cart contains items not available for purchase with your dealer account: ${names}. Please remove them to continue.`)
+        return
+      }
+
       const { data, error } = await supabase.rpc('place_wholesale_order', {
         p_company_id: companyId,
         p_location_id: locationId,

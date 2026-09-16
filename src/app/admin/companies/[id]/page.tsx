@@ -8,6 +8,7 @@ import { CompanyStatusSelect } from '@/components/admin/CompanyStatusSelect'
 import { LocationStatusSelect } from '@/components/admin/LocationStatusSelect'
 import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialog'
 import { CompanyPricingGroupSelect } from '@/components/admin/CompanyPricingGroupSelect'
+import { CompanyRestrictionGroupSelect } from '@/components/admin/CompanyRestrictionGroupSelect'
 import { CreateLocationDialog } from '@/components/admin/CreateLocationDialog'
 import { CreateUserDialog } from '@/components/admin/CreateUserDialog'
 import { NetSuiteIdForm } from '@/components/admin/NetSuiteIdForm'
@@ -19,11 +20,12 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: company }, { data: locations }, { data: users }, { data: pricingGroups }] = await Promise.all([
+  const [{ data: company }, { data: locations }, { data: users }, { data: pricingGroups }, { data: restrictionGroups }] = await Promise.all([
     supabase.from('companies').select('*').eq('id', id).maybeSingle(),
     supabase.from('locations').select('*').eq('company_id', id).order('name'),
     supabase.from('users').select('*').eq('company_id', id).order('name'),
     supabase.from('pricing_groups').select('id, name').order('name'),
+    supabase.from('restriction_groups').select('id, name').order('name'),
   ])
 
   if (!company) notFound()
@@ -66,6 +68,10 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
           <div>
             <p className="text-xs font-medium text-muted-foreground">Pricing Group</p>
             <CompanyPricingGroupSelect companyId={company.id} pricingGroupId={company.pricing_group_id} pricingGroups={pricingGroups ?? []} />
+          </div>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground">Catalog Restrictions</p>
+            <CompanyRestrictionGroupSelect companyId={company.id} restrictionGroupId={company.restriction_group_id} restrictionGroups={restrictionGroups ?? []} />
           </div>
           <div>
             <p className="text-xs font-medium text-muted-foreground">Salesforce Account ID</p>
