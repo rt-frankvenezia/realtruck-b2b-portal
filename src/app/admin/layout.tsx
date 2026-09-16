@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { BarChart3, Building2, MapPin, UserCog, Tag, FileText, MessageSquareQuote, ShieldCheck } from 'lucide-react'
+import { BarChart3, Building2, MapPin, UserCog, BookOpen, FileText, MessageSquareQuote, Users2 } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -30,8 +30,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     },
     { href: '/admin/locations', label: 'Locations', description: 'Manage dealer locations', icon: <MapPin {...iconProps} /> },
     { href: '/admin/users', label: 'Users', description: 'Manage user accounts', icon: <UserCog {...iconProps} /> },
-    { href: '/admin/pricing-groups', label: 'Pricing Groups', description: 'Manage dealer pricing', icon: <Tag {...iconProps} /> },
-    { href: '/admin/catalog-restrictions', label: 'Catalog Restrictions', description: 'Purchasing eligibility rules', icon: <ShieldCheck {...iconProps} /> },
+    { href: '/admin/dealer-programs', label: 'Dealer Programs', description: 'Commercial tiers for dealer groups', icon: <Users2 {...iconProps} /> },
+    { href: '/admin/catalogs', label: 'Catalogs', description: 'Pricing and availability per program', icon: <BookOpen {...iconProps} /> },
     { href: '/admin/audit-log', label: 'Audit Log', description: 'Administrative actions', icon: <FileText {...iconProps} /> },
   ]
 

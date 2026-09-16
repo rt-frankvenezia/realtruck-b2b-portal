@@ -8,63 +8,35 @@ import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import type { Tables } from '@/lib/database.types'
 
-type TierFormState = { mode: 'idle' } | { mode: 'adding'; minQty: string; discount: string }
+type TierForm = { mode: 'idle' } | { mode: 'adding'; minQty: string; discount: string }
 
-export function PricingGroupInfoForm({
-  group,
+export function CatalogPricingSection({
+  pricingGroup,
   baseTiers,
 }: {
-  group: Tables<'pricing_groups'>
+  pricingGroup: Tables<'pricing_groups'>
   baseTiers: Tables<'pricing_group_base_tiers'>[]
 }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
-  const [name, setName] = useState(group.name)
-  const [description, setDescription] = useState(group.description ?? '')
-  const [baseDiscount, setBaseDiscount] = useState(group.base_discount.toString())
-  const [tierForm, setTierForm] = useState<TierFormState>({ mode: 'idle' })
+  const [baseDiscount, setBaseDiscount] = useState(pricingGroup.base_discount.toString())
+  const [tierForm, setTierForm] = useState<TierForm>({ mode: 'idle' })
 
   const sortedTiers = [...baseTiers].sort((a, b) => a.min_quantity - b.min_quantity)
-
-  const hasChanges =
-    name !== group.name ||
-    description !== (group.description ?? '') ||
-    baseDiscount !== group.base_discount.toString()
+  const hasChanges = baseDiscount !== pricingGroup.base_discount.toString()
 
   function handleSave() {
     startTransition(async () => {
       const supabase = createClient()
       const { error } = await supabase
         .from('pricing_groups')
-        .update({
-          name,
-          description: description || null,
-          base_discount: Number(baseDiscount) || 0,
-        })
-        .eq('id', group.id)
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-      toast.success('Pricing group updated')
+        .update({ base_discount: Number(baseDiscount) || 0 })
+        .eq('id', pricingGroup.id)
+      if (error) { toast.error(error.message); return }
+      toast.success('Base discount saved')
       router.refresh()
-    })
-  }
-
-  function handleDelete() {
-    if (!window.confirm(`Delete "${group.name}"? This cannot be undone.`)) return
-    startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.from('pricing_groups').delete().eq('id', group.id)
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-      toast.success('Pricing group deleted')
-      router.push('/admin/pricing-groups')
     })
   }
 
@@ -80,14 +52,11 @@ export function PricingGroupInfoForm({
     startTransition(async () => {
       const supabase = createClient()
       const { error } = await supabase.from('pricing_group_base_tiers').insert({
-        pricing_group_id: group.id,
+        pricing_group_id: pricingGroup.id,
         min_quantity: minQty,
         discount_percent: discount,
       })
-      if (error) {
-        toast.error(error.message)
-        return
-      }
+      if (error) { toast.error(error.message); return }
       toast.success('Quantity break added')
       setTierForm({ mode: 'idle' })
       router.refresh()
@@ -98,53 +67,65 @@ export function PricingGroupInfoForm({
     startTransition(async () => {
       const supabase = createClient()
       const { error } = await supabase.from('pricing_group_base_tiers').delete().eq('id', tierId)
-      if (error) {
-        toast.error(error.message)
-        return
-      }
+      if (error) { toast.error(error.message); return }
       toast.success('Quantity break removed')
       router.refresh()
     })
   }
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="grid grid-cols-2 gap-3">
-        <div className="flex flex-col gap-2">
-          <Label>Name *</Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+    <div className="flex flex-col gap-4">
+      <p className="text-sm text-muted-foreground">
+        The base discount applies when no pricing rule matches. Add per-rule volume tiers in the Pricing Rules section below.
+      </p>
+
+      <div className="flex items-end gap-3">
+        <div className="flex flex-col gap-1.5">
+          <Label>Base Discount % (1+ units)</Label>
+          <Input
+            type="number"
+            step="0.01"
+            min={0}
+            max={100}
+            value={baseDiscount}
+            onChange={(e) => setBaseDiscount(e.target.value)}
+            className="w-32"
+          />
         </div>
-        <div className="flex flex-col gap-2">
-          <Label>% off *</Label>
-          <Input type="number" step="0.01" value={baseDiscount} onChange={(e) => setBaseDiscount(e.target.value)} />
-        </div>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label>Description</Label>
-        <Textarea value={description} onChange={(e) => setDescription(e.target.value)} />
+        <Button onClick={handleSave} disabled={isPending || !hasChanges} size="sm">
+          SAVE
+        </Button>
+        {hasChanges && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setBaseDiscount(pricingGroup.base_discount.toString())}
+            disabled={isPending}
+          >
+            CANCEL
+          </Button>
+        )}
       </div>
 
-      {/* Base discount volume tier editor */}
       <div className="rounded-md border">
         <div className="border-b px-3 py-2">
           <p className="text-sm font-semibold">Base Discount — Quantity Breaks</p>
           <p className="text-xs text-muted-foreground">
-            The 1+ rate is the Base Discount % above. Add breaks for higher quantities.
+            The 1+ rate uses the base discount above. Add breaks for higher quantities.
           </p>
         </div>
 
-        {/* 1+ tier — always present, reads from the base_discount field */}
         <div className="flex items-center gap-3 px-3 py-2 text-sm border-b bg-muted/30">
           <span className="w-20 font-mono font-semibold">1+</span>
-          <span className="flex-1 text-muted-foreground">Base rate (edit above)</span>
-          <span className="font-semibold">{baseDiscount || group.base_discount}%</span>
-          <span className="w-8" /> {/* placeholder for delete button alignment */}
+          <span className="flex-1 text-muted-foreground">Base rate</span>
+          <span className="font-semibold">{baseDiscount || pricingGroup.base_discount}%</span>
+          <span className="w-8" />
         </div>
 
         {sortedTiers.map((tier) => (
           <div key={tier.id} className="flex items-center gap-3 px-3 py-2 text-sm border-b last:border-b-0">
             <span className="w-20 font-mono font-semibold">{tier.min_quantity}+</span>
-            <span className="flex-1 text-muted-foreground" />
+            <span className="flex-1" />
             <span className="font-semibold">{tier.discount_percent}%</span>
             <Button
               variant="ghost"
@@ -166,7 +147,7 @@ export function PricingGroupInfoForm({
               placeholder="Min qty (e.g. 5)"
               value={tierForm.minQty}
               onChange={(e) => setTierForm({ ...tierForm, minQty: e.target.value })}
-              className="w-32"
+              className="w-36"
             />
             <Input
               type="number"
@@ -174,21 +155,12 @@ export function PricingGroupInfoForm({
               placeholder="Discount %"
               value={tierForm.discount}
               onChange={(e) => setTierForm({ ...tierForm, discount: e.target.value })}
-              className="w-32"
+              className="w-28"
             />
-            <Button
-              size="sm"
-              onClick={handleAddTier}
-              disabled={isPending || !tierForm.minQty || !tierForm.discount}
-            >
+            <Button size="sm" onClick={handleAddTier} disabled={isPending || !tierForm.minQty || !tierForm.discount}>
               Save
             </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setTierForm({ mode: 'idle' })}
-              disabled={isPending}
-            >
+            <Button size="sm" variant="ghost" onClick={() => setTierForm({ mode: 'idle' })} disabled={isPending}>
               Cancel
             </Button>
           </div>
@@ -205,18 +177,6 @@ export function PricingGroupInfoForm({
             </Button>
           </div>
         )}
-      </div>
-
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" className="border-destructive text-destructive hover:bg-destructive/10" onClick={handleDelete} disabled={isPending}>
-          DELETE
-        </Button>
-        <Button variant="outline" onClick={() => { setName(group.name); setDescription(group.description ?? ''); setBaseDiscount(group.base_discount.toString()) }} disabled={isPending || !hasChanges}>
-          CANCEL
-        </Button>
-        <Button onClick={handleSave} disabled={isPending || !hasChanges || !name.trim()}>
-          SAVE CHANGES
-        </Button>
       </div>
     </div>
   )
