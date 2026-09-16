@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { Plus, Tag, Trash2, Pencil } from 'lucide-react'
+import { Plus, Tag, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -41,11 +41,9 @@ export function RestrictionRuleManager({
   const [targetType, setTargetType] = useState<TargetType>('brand')
   const [targetValue, setTargetValue] = useState('')
   const [displayName, setDisplayName] = useState('')
-  const [access, setAccess] = useState<PurchaseAccess>('allowed')
 
-  const [editState, setEditState] = useState<
-    { mode: 'idle' } | { mode: 'editing'; ruleId: string; access: PurchaseAccess }
-  >({ mode: 'idle' })
+  // Rules always override the default, so access is always the opposite.
+  const overrideAccess: PurchaseAccess = defaultAccess === 'allowed' ? 'not_allowed' : 'allowed'
 
   const sortedRules = [...rules].sort((a, b) => {
     const order: Record<TargetType, number> = { 'product-line': 0, brand: 1, category: 2 }
@@ -61,7 +59,7 @@ export function RestrictionRuleManager({
         target_type: targetType,
         target_value: targetValue.trim(),
         display_name: (displayName.trim() || targetValue.trim()),
-        access,
+        access: overrideAccess,
       })
       if (error) {
         toast.error(error.message)
@@ -70,7 +68,6 @@ export function RestrictionRuleManager({
       toast.success('Rule added')
       setTargetValue('')
       setDisplayName('')
-      setAccess('allowed')
       setAddOpen(false)
       router.refresh()
     })
@@ -86,25 +83,6 @@ export function RestrictionRuleManager({
         return
       }
       toast.success('Rule removed')
-      if (editState.mode === 'editing' && editState.ruleId === id) setEditState({ mode: 'idle' })
-      router.refresh()
-    })
-  }
-
-  function handleSaveEdit(ruleId: string) {
-    if (editState.mode !== 'editing') return
-    startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('restriction_rules')
-        .update({ access: editState.access })
-        .eq('id', ruleId)
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-      toast.success('Rule updated')
-      setEditState({ mode: 'idle' })
       router.refresh()
     })
   }
@@ -123,20 +101,14 @@ export function RestrictionRuleManager({
 
       {addOpen && (
         <div className="rounded-md border p-4">
-          <p className="mb-3 font-semibold">New Restriction Rule</p>
+          <div className="mb-3 flex items-baseline justify-between">
+            <p className="font-semibold">New Restriction Rule</p>
+            <p className="text-xs text-muted-foreground">
+              Access: <span className={overrideAccess === 'allowed' ? 'text-green-700 font-medium' : 'text-destructive font-medium'}>{PURCHASE_ACCESS_LABEL[overrideAccess]}</span>
+              {' '}(overrides default)
+            </p>
+          </div>
           <div className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1.5">
-              <Label>Purchase Access *</Label>
-              <Select value={access} onValueChange={(v) => setAccess(v as PurchaseAccess)}>
-                <SelectTrigger className="w-48">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="allowed">Allowed</SelectItem>
-                  <SelectItem value="not_allowed">Not Allowed</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
             <div className="flex flex-col gap-1.5">
               <Label>Scope *</Label>
               <div className="flex gap-2">
@@ -170,7 +142,7 @@ export function RestrictionRuleManager({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => { setAddOpen(false); setTargetValue(''); setDisplayName(''); setAccess('allowed') }}
+                onClick={() => { setAddOpen(false); setTargetValue(''); setDisplayName('') }}
                 disabled={isPending}
               >
                 Cancel
@@ -192,54 +164,20 @@ export function RestrictionRuleManager({
               <div key={rule.id} className="rounded-md border">
                 <div className="flex items-start justify-between gap-3 px-4 py-3">
                   <div className="flex-1">
-                    {isEditing ? (
-                      <div className="flex items-center gap-2">
-                        <Select
-                          value={editState.access}
-                          onValueChange={(v) => setEditState({ ...editState, access: v as PurchaseAccess })}
-                        >
-                          <SelectTrigger className="h-8 w-36">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="allowed">Allowed</SelectItem>
-                            <SelectItem value="not_allowed">Not Allowed</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <Button size="sm" onClick={() => handleSaveEdit(rule.id)} disabled={isPending} className="h-8">
-                          Save
-                        </Button>
-                        <Button size="sm" variant="ghost" onClick={() => setEditState({ mode: 'idle' })} disabled={isPending} className="h-8">
-                          Cancel
-                        </Button>
-                      </div>
-                    ) : (
-                      <p className={`font-semibold ${rule.access === 'allowed' ? 'text-green-600' : 'text-destructive'}`}>
-                        {PURCHASE_ACCESS_LABEL[rule.access]}
-                      </p>
-                    )}
+                    <p className={`font-semibold ${rule.access === 'allowed' ? 'text-green-600' : 'text-destructive'}`}>
+                      {PURCHASE_ACCESS_LABEL[rule.access]}
+                    </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">{PRIORITY_LABEL[rule.target_type]}</p>
                   </div>
-                  <div className="flex shrink-0 items-center gap-1">
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      disabled={isPending}
-                      onClick={() => setEditState({ mode: 'editing', ruleId: rule.id, access: rule.access })}
-                      title="Edit access"
-                    >
-                      <Pencil size={14} />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      disabled={isPending}
-                      onClick={() => handleDelete(rule.id)}
-                      title="Remove rule"
-                    >
-                      <Trash2 size={14} className="text-destructive" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    disabled={isPending}
+                    onClick={() => handleDelete(rule.id)}
+                    title="Remove rule"
+                  >
+                    <Trash2 size={14} className="text-destructive" />
+                  </Button>
                 </div>
                 <div className="border-t px-4 py-2">
                   <span className="inline-flex items-center gap-1 rounded bg-muted px-2 py-1 text-xs text-muted-foreground">
