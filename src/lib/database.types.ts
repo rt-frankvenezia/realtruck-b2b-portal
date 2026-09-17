@@ -2542,6 +2542,91 @@ export type Database = {
           },
         ]
       }
+      saved_payment_method_locations: {
+        Row: {
+          location_id: string
+          payment_method_id: string
+        }
+        Insert: {
+          location_id: string
+          payment_method_id: string
+        }
+        Update: {
+          location_id?: string
+          payment_method_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_payment_method_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "location_directory"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_payment_method_locations_location_id_fkey"
+            columns: ["location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_payment_method_locations_payment_method_id_fkey"
+            columns: ["payment_method_id"]
+            isOneToOne: false
+            referencedRelation: "saved_payment_methods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      saved_payment_methods: {
+        Row: {
+          company_id: string
+          created_at: string
+          created_by: string | null
+          display_info: Json
+          id: string
+          label: string | null
+          location_scope: Database["public"]["Enums"]["saved_payment_method_scope"]
+          type: Database["public"]["Enums"]["saved_payment_method_type"]
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          created_by?: string | null
+          display_info?: Json
+          id?: string
+          label?: string | null
+          location_scope?: Database["public"]["Enums"]["saved_payment_method_scope"]
+          type: Database["public"]["Enums"]["saved_payment_method_type"]
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          created_by?: string | null
+          display_info?: Json
+          id?: string
+          label?: string | null
+          location_scope?: Database["public"]["Enums"]["saved_payment_method_scope"]
+          type?: Database["public"]["Enums"]["saved_payment_method_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_payment_methods_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "saved_payment_methods_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sku_fitment: {
         Row: {
           created_at: string
@@ -4004,6 +4089,8 @@ export type Database = {
         | "spam"
         | "invalid"
         | "test"
+      saved_payment_method_scope: "all" | "selected"
+      saved_payment_method_type: "card" | "bank_account"
       statement_status: "generating" | "ready" | "failed"
       status_change_source: "dealer" | "erp" | "rt_admin" | "customer"
       user_role:
@@ -4320,6 +4407,8 @@ export const Constants = {
         "invalid",
         "test",
       ],
+      saved_payment_method_scope: ["all", "selected"],
+      saved_payment_method_type: ["card", "bank_account"],
       statement_status: ["generating", "ready", "failed"],
       status_change_source: ["dealer", "erp", "rt_admin", "customer"],
       user_role: [

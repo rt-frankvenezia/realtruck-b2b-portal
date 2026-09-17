@@ -2,190 +2,218 @@ import { redirect } from 'next/navigation'
 import { CreditCard, Landmark } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
-import { hasFinancialPermission } from '@/lib/financial-permissions'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { AddBankAccountDialog } from '@/components/dealer/financial/AddBankAccountDialog'
-import { SetDefaultBankAccountButton } from '@/components/dealer/financial/SetDefaultBankAccountButton'
-import { DeactivateBankAccountButton } from '@/components/dealer/financial/DeactivateBankAccountButton'
-import { AddPaymentCardDialog } from '@/components/dealer/financial/AddPaymentCardDialog'
-import { SetDefaultPaymentCardButton } from '@/components/dealer/financial/SetDefaultPaymentCardButton'
-import { DeactivatePaymentCardButton } from '@/components/dealer/financial/DeactivatePaymentCardButton'
-import { BANK_VERIFICATION_STATUS_LABEL, BANK_VERIFICATION_STATUS_VARIANT, formatDate } from '@/lib/status-labels'
+import { AddSavedPaymentMethodDialog } from '@/components/dealer/financial/AddSavedPaymentMethodDialog'
+import { DeleteSavedPaymentMethodButton } from '@/components/dealer/financial/DeleteSavedPaymentMethodButton'
+import { LocationScopeEditor, LocationScopeBadge } from '@/components/dealer/financial/LocationScopeEditor'
+import { formatDate } from '@/lib/status-labels'
 
 export default async function PaymentMethodsPage() {
   const user = await getCurrentUser()
   if (!user || !user.profile.company_id) redirect('/dealer')
-  if (!hasFinancialPermission(user.profile.role, 'manage_bank_accounts')) redirect('/dealer')
+  // Staff cannot manage payment methods; realtruck_admin has no company context here.
+  if (user.profile.role === 'staff' || user.profile.role === 'customer' || user.profile.role === 'realtruck_admin') {
+    redirect('/dealer')
+  }
 
+  const role = user.profile.role
+  const isDealerAdmin = role === 'dealer_admin'
   const companyId = user.profile.company_id
   const supabase = await createClient()
 
-  // Terms accounts pay by Net terms only — checkout never shows Card/ACH
-  // for them, so a saved card would never be selectable. Bank accounts
-  // stay relevant regardless (used for paying invoices by ACH), so only
-  // the Cards section is gated on this.
-  const { data: creditAccount } = await supabase
-    .from('credit_accounts')
-    .select('id')
+  // All company methods with location assignments
+  const { data: rawMethods } = await supabase
+    .from('saved_payment_methods')
+    .select('*, saved_payment_method_locations(location_id)')
     .eq('company_id', companyId)
-    .in('status', ['active', 'on_hold'])
-    .maybeSingle()
-  const hasCreditTerms = Boolean(creditAccount)
+    .order('created_at')
 
-  const [{ data: bankAccounts }, { data: cards }] = await Promise.all([
-    supabase.from('bank_accounts').select('*, users(name)').eq('company_id', companyId).order('created_at'),
-    hasCreditTerms
-      ? Promise.resolve({ data: null })
-      : supabase.from('payment_cards').select('*, users(name)').eq('company_id', companyId).order('created_at'),
-  ])
+  // For location_admin: find their assigned locations to filter/pre-scope
+  let userLocationIds: string[] = []
+  if (!isDealerAdmin) {
+    const { data: ul } = await supabase
+      .from('user_locations')
+      .select('location_id')
+      .eq('user_id', user.profile.id)
+    userLocationIds = (ul ?? []).map((r) => r.location_id)
+  }
 
-  const activeBankAccounts = (bankAccounts ?? []).filter((a) => a.verification_status !== 'deactivated')
-  const deactivatedBankAccounts = (bankAccounts ?? []).filter((a) => a.verification_status === 'deactivated')
-  const activeCards = (cards ?? []).filter((c) => c.status !== 'deactivated')
-  const deactivatedCards = (cards ?? []).filter((c) => c.status === 'deactivated')
+  const allMethods = (rawMethods ?? []).map((m) => ({
+    ...m,
+    locationIds: m.saved_payment_method_locations.map((l) => l.location_id),
+  }))
+
+  // location_admin sees only methods available to their locations
+  const visibleMethods = isDealerAdmin
+    ? allMethods
+    : allMethods.filter(
+        (m) =>
+          m.location_scope === 'all' ||
+          m.locationIds.some((lid) => userLocationIds.includes(lid))
+      )
+
+  const cards = visibleMethods.filter((m) => m.type === 'card')
+  const bankAccounts = visibleMethods.filter((m) => m.type === 'bank_account')
+
+  // Company locations for scope editor and add dialog (dealer_admin needs all; location_admin needs their subset)
+  const { data: allCompanyLocations } = await supabase
+    .from('locations')
+    .select('id, name')
+    .eq('company_id', companyId)
+    .in('status', ['active', 'pending_approval'])
+    .order('name')
+
+  const companyLocations = isDealerAdmin
+    ? (allCompanyLocations ?? [])
+    : (allCompanyLocations ?? []).filter((l) => userLocationIds.includes(l.id))
+
+  function methodDisplayLabel(m: (typeof visibleMethods)[number]) {
+    if (m.label) return m.label
+    const info = m.display_info as Record<string, string>
+    if (m.type === 'card') return `${info.brand} •••• ${info.last4}`
+    return `${info.bank} •••• ${info.last4}`
+  }
+
+  function methodSubLabel(m: (typeof visibleMethods)[number]) {
+    const info = m.display_info as Record<string, string>
+    if (m.type === 'card') return `${info.brand} •••• ${info.last4} — Exp ${info.exp}`
+    return `${info.bank} (${info.account_type}) •••• ${info.last4}`
+  }
 
   return (
     <div className="flex flex-col gap-8">
-      <div>
-        <h1 className="text-2xl font-semibold">Payment Methods</h1>
-        <p className="text-muted-foreground">Manage the cards and bank accounts used to pay for orders.</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">Payment Methods</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {isDealerAdmin
+              ? 'Manage saved cards and bank accounts. Control which locations can use each method at checkout.'
+              : 'Saved payment methods available at your location(s).'}
+          </p>
+        </div>
+        <AddSavedPaymentMethodDialog
+          companyId={companyId}
+          userId={user.profile.id}
+          isDealerAdmin={isDealerAdmin}
+          companyLocations={companyLocations}
+          userLocationIds={userLocationIds}
+        />
       </div>
 
-      <div className="flex flex-col gap-4">
-        <div className="flex items-start justify-between gap-4">
-          <h2 className="text-lg font-semibold">Bank Accounts</h2>
-          <AddBankAccountDialog companyId={companyId} isFirstAccount={activeBankAccounts.length === 0} />
-        </div>
-
-        {activeBankAccounts.length === 0 ? (
+      {/* Cards */}
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">Cards</h2>
+        {cards.length === 0 ? (
           <Card>
             <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
-              <Landmark size={40} className="text-muted-foreground/40" />
-              <p className="text-sm text-muted-foreground">No bank accounts yet. Add one to pay by ACH.</p>
+              <CreditCard size={40} className="text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No saved cards yet.</p>
             </CardContent>
           </Card>
         ) : (
           <div className="rounded-lg border">
             <div className="flex flex-col divide-y">
-              {activeBankAccounts.map((account) => (
-                <div key={account.id} className="flex items-center justify-between px-6 py-4">
-                  <div className="flex items-center gap-4">
-                    <Landmark size={20} className="text-muted-foreground" />
-                    <div>
-                      <div className="flex items-center gap-2 font-semibold">
-                        {account.bank_name} •••• {account.last_four}
-                        {account.is_default && <Badge variant="outline">Default</Badge>}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {account.account_type === 'checking' ? 'Checking' : 'Savings'} • Added {formatDate(account.created_at)}
-                        {account.users?.name ? ` by ${account.users.name}` : ''}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant={BANK_VERIFICATION_STATUS_VARIANT[account.verification_status]}>
-                      {BANK_VERIFICATION_STATUS_LABEL[account.verification_status]}
-                    </Badge>
-                    {!account.is_default && account.verification_status === 'verified' && (
-                      <SetDefaultBankAccountButton bankAccountId={account.id} />
-                    )}
-                    <DeactivateBankAccountButton bankAccountId={account.id} accountLabel={`${account.bank_name} •••• ${account.last_four}`} />
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {deactivatedBankAccounts.length > 0 && (
-          <div>
-            <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Deactivated</h3>
-            <div className="rounded-lg border opacity-60">
-              <div className="flex flex-col divide-y">
-                {deactivatedBankAccounts.map((account) => (
-                  <div key={account.id} className="flex items-center justify-between px-6 py-4">
+              {cards.map((m) => {
+                const info = m.display_info as Record<string, string>
+                return (
+                  <div key={m.id} className="flex items-center justify-between gap-4 px-6 py-4">
                     <div className="flex items-center gap-4">
-                      <Landmark size={20} className="text-muted-foreground" />
+                      <CreditCard size={20} className="shrink-0 text-muted-foreground" />
                       <div>
-                        <div className="font-semibold">
-                          {account.bank_name} •••• {account.last_four}
+                        <div className="font-semibold">{methodDisplayLabel(m)}</div>
+                        <div className="text-xs text-muted-foreground">
+                          {m.label ? methodSubLabel(m) + ' • ' : ''}{info.brand} • Added {formatDate(m.created_at)}
                         </div>
-                        <div className="text-xs text-muted-foreground">Deactivated {formatDate(account.deactivated_at)}</div>
                       </div>
                     </div>
-                    <Badge variant="secondary">Deactivated</Badge>
+                    <div className="flex shrink-0 items-center gap-3">
+                      {isDealerAdmin ? (
+                        <LocationScopeEditor
+                          methodId={m.id}
+                          currentScope={m.location_scope}
+                          currentLocationIds={m.locationIds}
+                          companyLocations={companyLocations}
+                        />
+                      ) : (
+                        <LocationScopeBadge
+                          scope={m.location_scope}
+                          locationIds={m.locationIds}
+                          companyLocations={companyLocations}
+                        />
+                      )}
+                      <DeleteSavedPaymentMethodButton methodId={m.id} label={methodDisplayLabel(m)} />
+                    </div>
                   </div>
-                ))}
-              </div>
+                )
+              })}
             </div>
           </div>
         )}
-      </div>
+      </section>
 
-      {!hasCreditTerms && (
-        <div className="flex flex-col gap-4">
-          <div className="flex items-start justify-between gap-4">
-            <h2 className="text-lg font-semibold">Cards</h2>
-            <AddPaymentCardDialog companyId={companyId} isFirstCard={activeCards.length === 0} />
-          </div>
-
-          {activeCards.length === 0 ? (
-            <Card>
-              <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
-                <CreditCard size={40} className="text-muted-foreground/40" />
-                <p className="text-sm text-muted-foreground">No cards yet. Add one to pay by card at checkout.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="rounded-lg border">
-              <div className="flex flex-col divide-y">
-                {activeCards.map((card) => (
-                  <div key={card.id} className="flex items-center justify-between px-6 py-4">
+      {/* Bank Accounts */}
+      <section className="flex flex-col gap-4">
+        <h2 className="text-lg font-semibold">Bank Accounts</h2>
+        {bankAccounts.length === 0 ? (
+          <Card>
+            <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+              <Landmark size={40} className="text-muted-foreground/40" />
+              <p className="text-sm text-muted-foreground">No saved bank accounts yet.</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="rounded-lg border">
+            <div className="flex flex-col divide-y">
+              {bankAccounts.map((m) => {
+                const info = m.display_info as Record<string, string | boolean>
+                const verified = Boolean(info.verified)
+                return (
+                  <div key={m.id} className="flex items-center justify-between gap-4 px-6 py-4">
                     <div className="flex items-center gap-4">
-                      <CreditCard size={20} className="text-muted-foreground" />
+                      <Landmark size={20} className="shrink-0 text-muted-foreground" />
                       <div>
                         <div className="flex items-center gap-2 font-semibold">
-                          {card.card_brand} •••• {card.last_four}
-                          {card.is_default && <Badge variant="outline">Default</Badge>}
+                          {methodDisplayLabel(m)}
+                          <Badge variant={verified ? 'success' : 'secondary'}>
+                            {verified ? 'Verified' : 'Pending'}
+                          </Badge>
                         </div>
                         <div className="text-xs text-muted-foreground">
-                          Expires {String(card.expiry_month).padStart(2, '0')}/{card.expiry_year} • Added {formatDate(card.created_at)}
-                          {card.users?.name ? ` by ${card.users.name}` : ''}
+                          {m.label ? `${info.bank as string} (${info.account_type as string}) •••• ${info.last4 as string} • ` : ''}
+                          Added {formatDate(m.created_at)}
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      {!card.is_default && <SetDefaultPaymentCardButton paymentCardId={card.id} />}
-                      <DeactivatePaymentCardButton paymentCardId={card.id} cardLabel={`${card.card_brand} •••• ${card.last_four}`} />
+                    <div className="flex shrink-0 items-center gap-3">
+                      {isDealerAdmin ? (
+                        <LocationScopeEditor
+                          methodId={m.id}
+                          currentScope={m.location_scope}
+                          currentLocationIds={m.locationIds}
+                          companyLocations={companyLocations}
+                        />
+                      ) : (
+                        <LocationScopeBadge
+                          scope={m.location_scope}
+                          locationIds={m.locationIds}
+                          companyLocations={companyLocations}
+                        />
+                      )}
+                      <DeleteSavedPaymentMethodButton methodId={m.id} label={methodDisplayLabel(m)} />
                     </div>
                   </div>
-                ))}
-              </div>
+                )
+              })}
             </div>
-          )}
+          </div>
+        )}
+      </section>
 
-          {deactivatedCards.length > 0 && (
-            <div>
-              <h3 className="mb-2 text-sm font-semibold text-muted-foreground">Removed</h3>
-              <div className="rounded-lg border opacity-60">
-                <div className="flex flex-col divide-y">
-                  {deactivatedCards.map((card) => (
-                    <div key={card.id} className="flex items-center justify-between px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <CreditCard size={20} className="text-muted-foreground" />
-                        <div className="font-semibold">
-                          {card.card_brand} •••• {card.last_four}
-                        </div>
-                      </div>
-                      <Badge variant="secondary">Removed</Badge>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+      {!isDealerAdmin && (
+        <p className="text-xs text-muted-foreground">
+          Contact your Dealer Admin to add new payment methods or change location availability.
+        </p>
       )}
     </div>
   )

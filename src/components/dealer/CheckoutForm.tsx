@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { AlertTriangle, Building2, CheckCircle2, Loader2, Lock, Receipt, RotateCcw, ShieldAlert, Truck } from 'lucide-react'
+import { AlertTriangle, Building2, CheckCircle2, CreditCard, Landmark, Loader2, Lock, Receipt, RotateCcw, ShieldAlert, Truck } from 'lucide-react'
 import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { useDealerCart } from '@/components/dealer/DealerCartContext'
@@ -11,15 +11,21 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
 import { formatCurrency } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
 
 type Location = { id: string; name: string; address: string | null; city: string | null; state: string | null; postal_code: string | null }
 type CreditAccount = { status: string; available_credit: number | null; payment_terms: string | null } | null
 type ValidationResult = Database['public']['CompositeTypes']['credit_validation_result']
-type BankAccountOption = { id: string; bank_name: string; last_four: string; is_default: boolean }
-type PaymentCardOption = { id: string; card_brand: string; last_four: string; is_default: boolean }
+type SavedMethodOption = {
+  id: string
+  type: 'card' | 'bank_account'
+  label: string | null
+  display_info: Record<string, string | boolean>
+  location_scope: 'all' | 'selected'
+  location_ids: string[]
+}
 
 const TAX_RATE = 0.0835
 const SHIPPING_COST: Record<string, number> = { standard: 0, expedited: 75 }
@@ -29,15 +35,13 @@ export function CheckoutForm({
   companyName,
   locations,
   creditAccount,
-  bankAccounts,
-  paymentCards,
+  savedMethods,
 }: {
   companyId: string
   companyName: string
   locations: Location[]
   creditAccount: CreditAccount
-  bankAccounts: BankAccountOption[]
-  paymentCards: PaymentCardOption[]
+  savedMethods: SavedMethodOption[]
 }) {
   const router = useRouter()
   const { items, subtotal, clear } = useDealerCart()
@@ -48,11 +52,16 @@ export function CheckoutForm({
   // just de-emphasized. There's nothing to pick between in that case, so
   // this is a fixed boolean, not a tab the dealer can switch away from.
   const usingTerms = Boolean(creditAccount)
-  const [cardOrAch, setCardOrAch] = useState<'card' | 'ach'>('card')
-  const [selectedCardId, setSelectedCardId] = useState(paymentCards.find((c) => c.is_default)?.id ?? paymentCards[0]?.id ?? '')
-  const [selectedBankAccountId, setSelectedBankAccountId] = useState(bankAccounts.find((a) => a.is_default)?.id ?? bankAccounts[0]?.id ?? '')
 
   const [locationId, setLocationId] = useState(locations[0]?.id ?? '')
+  const [locationChangedCleared, setLocationChangedCleared] = useState(false)
+
+  // Compute methods valid for the currently selected location.
+  const validMethods = savedMethods.filter(
+    (m) => m.location_scope === 'all' || m.location_ids.includes(locationId)
+  )
+  const [selectedMethodId, setSelectedMethodId] = useState(validMethods[0]?.id ?? '')
+
   const [poNumber, setPoNumber] = useState('')
   const [shippingMethod, setShippingMethod] = useState<'standard' | 'expedited'>('standard')
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
@@ -103,12 +112,31 @@ export function CheckoutForm({
 
   function paymentMethodDescription(): string | undefined {
     if (usingTerms) return undefined
-    if (cardOrAch === 'card') {
-      const card = paymentCards.find((c) => c.id === selectedCardId)
-      return card ? `Card — ${card.card_brand} •••• ${card.last_four}` : 'Credit Card (mock)'
+    const method = validMethods.find((m) => m.id === selectedMethodId)
+    if (!method) return undefined
+    const info = method.display_info
+    if (method.type === 'card') return `Card — ${info.brand as string} •••• ${info.last4 as string}`
+    return `ACH — ${info.bank as string} •••• ${info.last4 as string}`
+  }
+
+  function handleLocationChange(newLocationId: string) {
+    setLocationId(newLocationId)
+    // Check if the currently selected method is still valid for the new location
+    const stillValid = savedMethods.some(
+      (m) =>
+        m.id === selectedMethodId &&
+        (m.location_scope === 'all' || m.location_ids.includes(newLocationId))
+    )
+    if (selectedMethodId && !stillValid) {
+      // Auto-select the first valid method for the new location, if any
+      const firstValid = savedMethods.find(
+        (m) => m.location_scope === 'all' || m.location_ids.includes(newLocationId)
+      )
+      setSelectedMethodId(firstValid?.id ?? '')
+      setLocationChangedCleared(true)
+    } else {
+      setLocationChangedCleared(false)
     }
-    const account = bankAccounts.find((a) => a.id === selectedBankAccountId)
-    return account ? `ACH — ${account.bank_name} •••• ${account.last_four}` : 'Business Checking (mock)'
   }
 
   function submitOrder(requestReview: boolean) {
@@ -163,7 +191,9 @@ export function CheckoutForm({
     items.length > 0 &&
     !!locationId &&
     !isPending &&
-    (!usingTerms || (!previewLoading && termsOutcome === 'approved'))
+    (usingTerms
+      ? !previewLoading && termsOutcome === 'approved'
+      : !!selectedMethodId)
 
   return (
     <div className="flex flex-col gap-6">
@@ -198,7 +228,7 @@ export function CheckoutForm({
                   <select
                     id="location"
                     value={locationId}
-                    onChange={(e) => setLocationId(e.target.value)}
+                    onChange={(e) => handleLocationChange(e.target.value)}
                     className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     {locations.map((loc) => (
@@ -260,68 +290,61 @@ export function CheckoutForm({
               </div>
               <div className="px-6 py-4">
                 {!usingTerms ? (
-                  <Tabs value={cardOrAch} onValueChange={(v) => setCardOrAch(v as typeof cardOrAch)}>
-                    <TabsList>
-                      <TabsTrigger value="card">Card</TabsTrigger>
-                      <TabsTrigger value="ach">ACH</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="card" className="mt-4">
-                      {paymentCards.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
-                          No saved cards yet.{' '}
-                          <Link href="/dealer/payment-methods" className="font-semibold underline">
-                            Add a card
-                          </Link>{' '}
-                          to pay by card at checkout.
-                        </p>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          {paymentCards.map((card) => (
-                            <label key={card.id} className="flex cursor-pointer items-center gap-3 rounded-md border p-3 hover:bg-muted/50">
+                  <div className="flex flex-col gap-3">
+                    {locationChangedCleared && (
+                      <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                        Your previous payment method isn&apos;t available at this location. Please select another.
+                      </p>
+                    )}
+                    {validMethods.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">
+                        No saved payment methods for this location.{' '}
+                        <Link href="/dealer/payment-methods" className="font-semibold underline">
+                          Add one
+                        </Link>{' '}
+                        and set its availability to include this location.
+                      </p>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        {validMethods.map((m) => {
+                          const info = m.display_info
+                          const isCard = m.type === 'card'
+                          const primaryLabel = m.label ?? (isCard
+                            ? `${info.brand as string} •••• ${info.last4 as string}`
+                            : `${info.bank as string} •••• ${info.last4 as string}`)
+                          const subLabel = isCard
+                            ? `${info.brand as string} •••• ${info.last4 as string} — Exp ${info.exp as string}`
+                            : `${info.bank as string} (${info.account_type as string}) •••• ${info.last4 as string}`
+                          return (
+                            <label key={m.id} className="flex cursor-pointer items-center gap-3 rounded-md border p-3 hover:bg-muted/50">
                               <input
                                 type="radio"
-                                name="payment-card"
-                                checked={selectedCardId === card.id}
-                                onChange={() => setSelectedCardId(card.id)}
+                                name="payment-method"
+                                checked={selectedMethodId === m.id}
+                                onChange={() => { setSelectedMethodId(m.id); setLocationChangedCleared(false) }}
                               />
-                              <span className="text-sm font-semibold">
-                                {card.card_brand} •••• {card.last_four}
-                              </span>
-                              {card.is_default && <span className="text-xs text-muted-foreground">Default</span>}
+                              {isCard
+                                ? <CreditCard size={16} className="shrink-0 text-muted-foreground" />
+                                : <Landmark size={16} className="shrink-0 text-muted-foreground" />
+                              }
+                              <div className="flex-1 min-w-0">
+                                <div className="text-sm font-semibold">{primaryLabel}</div>
+                                {m.label && <div className="text-xs text-muted-foreground">{subLabel}</div>}
+                              </div>
+                              <Badge variant="outline" className="shrink-0 text-xs">
+                                {isCard ? 'Card' : 'ACH'}
+                              </Badge>
                             </label>
-                          ))}
-                        </div>
-                      )}
-                    </TabsContent>
-                    <TabsContent value="ach" className="mt-4">
-                      {bankAccounts.length === 0 ? (
-                        <p className="text-sm text-muted-foreground">
-                          No saved bank accounts yet.{' '}
-                          <Link href="/dealer/payment-methods" className="font-semibold underline">
-                            Add a bank account
-                          </Link>{' '}
-                          to pay by ACH at checkout.
-                        </p>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          {bankAccounts.map((account) => (
-                            <label key={account.id} className="flex cursor-pointer items-center gap-3 rounded-md border p-3 hover:bg-muted/50">
-                              <input
-                                type="radio"
-                                name="payment-bank-account"
-                                checked={selectedBankAccountId === account.id}
-                                onChange={() => setSelectedBankAccountId(account.id)}
-                              />
-                              <span className="text-sm font-semibold">
-                                {account.bank_name} •••• {account.last_four}
-                              </span>
-                              {account.is_default && <span className="text-xs text-muted-foreground">Default</span>}
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </TabsContent>
-                  </Tabs>
+                          )
+                        })}
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground">
+                      <Link href="/dealer/payment-methods" className="underline">
+                        Manage payment methods
+                      </Link>
+                    </p>
+                  </div>
                 ) : (
                   // Docs: an active-terms account never sees card/ACH as an
                   // option at all — this is the only payment method, so it's

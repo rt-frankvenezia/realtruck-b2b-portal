@@ -77,12 +77,10 @@ export default async function DealerAccountLayout({ children }: { children: Reac
     { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
     ...(creditInvoicesNavItem ? [creditInvoicesNavItem] : []),
     // Independent of credit status entirely — a company without terms
-    // still checks out with a saved card or bank account, so payment
-    // methods matter to every dealer who can place orders, not just ones
-    // with the manage_bank_accounts-gated financial permission... but
-    // managing them (not just using them) stays restricted to that same
-    // permission, matching today's dealer_admin/realtruck_admin scope.
-    ...(hasFinancialPermission(role, 'manage_bank_accounts')
+    // Payment Methods: dealer_admin manages all company methods; location_admin
+    // manages methods within their assigned locations; staff can use methods
+    // at checkout but has no management page.
+    ...(role === 'dealer_admin' || role === 'location_admin'
       ? [{ href: '/dealer/payment-methods', label: 'Payment Methods', description: 'Cards & bank accounts', icon: <Landmark {...iconProps} /> }]
       : []),
     ...(INSTALLATIONS_ENABLED
