@@ -1,10 +1,8 @@
-import { createClient as createSupabaseClient } from '@supabase/supabase-js'
-import type { Database } from '@/lib/database.types'
+import { createMockClient } from '@/lib/mock/client'
+import { DEMO_USERS } from '@/lib/mock/session'
 
-// Service-role client — bypasses RLS. Only use in server components/route handlers.
-export function createAdminClient() {
-  return createSupabaseClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  )
+// In mock mode the admin client has the same fixture-backed behaviour as the
+// regular server client — service-role bypass is irrelevant with no database.
+export function createAdminClient(): any {
+  return createMockClient(DEMO_USERS[0].id)
 }

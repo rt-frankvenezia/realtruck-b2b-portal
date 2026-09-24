@@ -1,5 +1,6 @@
 import { cache } from 'react'
-import { createClient } from '@/lib/supabase/server'
+import { cookies } from 'next/headers'
+import { DEMO_USERS } from '@/lib/mock/session'
 import type { Tables } from '@/lib/database.types'
 
 export type CurrentUser = {
@@ -8,15 +9,19 @@ export type CurrentUser = {
   profile: Tables<'users'>
 }
 
-// Cached per-request: the dealer route tree calls this from two nested
-// layouts (outer auth/header, inner account sidebar) plus the page itself.
 export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return null
+  const cookieStore = await cookies()
+  const userId = cookieStore.get('demo_user')?.value ?? DEMO_USERS[0].id
 
-  const { data: profile } = await supabase.from('users').select('*').eq('id', user.id).single()
+  const demoUser = DEMO_USERS.find((u) => u.id === userId) ?? DEMO_USERS[0]
+
+  const { USERS } = await import('@/lib/mock/fixtures')
+  const profile = USERS.find((u) => u.id === demoUser.id)
   if (!profile) return null
 
-  return { authId: user.id, email: user.email ?? profile.email, profile }
+  return {
+    authId: demoUser.id,
+    email: demoUser.email,
+    profile: profile as Tables<'users'>,
+  }
 })

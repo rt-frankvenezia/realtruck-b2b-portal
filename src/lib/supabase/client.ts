@@ -1,9 +1,11 @@
-import { createBrowserClient } from '@supabase/ssr'
-import type { Database } from '@/lib/database.types'
+import { createMockClient } from '@/lib/mock/client'
+import { DEMO_USERS } from '@/lib/mock/session'
 
-export function createClient() {
-  return createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
+export function createClient(): any {
+  let userId = DEMO_USERS[0].id
+  if (typeof document !== 'undefined') {
+    const match = document.cookie.match(/demo_user=([^;]+)/)
+    if (match) userId = match[1]
+  }
+  return createMockClient(userId)
 }
