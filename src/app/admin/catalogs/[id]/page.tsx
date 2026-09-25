@@ -4,10 +4,8 @@ import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CatalogInfoForm } from '@/components/admin/CatalogInfoForm'
-import { CatalogPricingSection } from '@/components/admin/CatalogPricingSection'
 import { CatalogAvailabilitySection } from '@/components/admin/CatalogAvailabilitySection'
 import { CatalogDealerAssignment } from '@/components/admin/CatalogDealerAssignment'
-import { PricingRuleManager } from '@/components/admin/PricingRuleManager'
 import { RestrictionRuleManager } from '@/components/admin/RestrictionRuleManager'
 import { PURCHASE_ACCESS_LABEL } from '@/lib/restrictions'
 
@@ -22,44 +20,19 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
 
   if (!catalog) notFound()
 
-  const [pricingGroupRes, restrictionGroupRes] = await Promise.all([
-    catalog.pricing_group_id
-      ? supabase.from('pricing_groups').select('*').eq('id', catalog.pricing_group_id).maybeSingle()
-      : Promise.resolve({ data: null }),
-    catalog.restriction_group_id
-      ? supabase.from('restriction_groups').select('*').eq('id', catalog.restriction_group_id).maybeSingle()
-      : Promise.resolve({ data: null }),
-  ])
+  const { data: restrictionGroup } = catalog.restriction_group_id
+    ? await supabase.from('restriction_groups').select('*').eq('id', catalog.restriction_group_id).maybeSingle()
+    : Promise.resolve({ data: null })
 
-  const [rulesRes, baseTiersRes, restrictionRulesRes] = await Promise.all([
-    catalog.pricing_group_id
-      ? supabase
-          .from('pricing_rules')
-          .select('*, pricing_rule_tiers(*)')
-          .eq('pricing_group_id', catalog.pricing_group_id)
-          .order('target_type')
-      : Promise.resolve({ data: [] }),
-    catalog.pricing_group_id
-      ? supabase
-          .from('pricing_group_base_tiers')
-          .select('*')
-          .eq('pricing_group_id', catalog.pricing_group_id)
-          .order('min_quantity')
-      : Promise.resolve({ data: [] }),
-    catalog.restriction_group_id
-      ? supabase
-          .from('restriction_rules')
-          .select('*')
-          .eq('restriction_group_id', catalog.restriction_group_id)
-          .order('target_type')
-      : Promise.resolve({ data: [] }),
-  ])
+  const { data: restrictionRulesRaw } = catalog.restriction_group_id
+    ? await supabase
+        .from('restriction_rules')
+        .select('*')
+        .eq('restriction_group_id', catalog.restriction_group_id)
+        .order('target_type')
+    : Promise.resolve({ data: [] })
 
-  const pricingGroup = pricingGroupRes.data
-  const restrictionGroup = restrictionGroupRes.data
-  const pricingRules = (rulesRes.data ?? []).map((r) => ({ ...r, pricing_rule_tiers: r.pricing_rule_tiers ?? [] }))
-  const baseTiers = baseTiersRes.data ?? []
-  const restrictionRules = restrictionRulesRes.data ?? []
+  const restrictionRules = restrictionRulesRaw ?? []
 
   return (
     <div className="flex flex-col gap-6">
@@ -79,35 +52,6 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
           <CatalogInfoForm catalog={catalog} />
         </CardContent>
       </Card>
-
-      {pricingGroup ? (
-        <>
-          <Card>
-            <CardHeader>
-              <CardTitle>Pricing — Base Discount</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CatalogPricingSection pricingGroup={pricingGroup} baseTiers={baseTiers} />
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Pricing Rules</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PricingRuleManager pricingGroupId={pricingGroup.id} rules={pricingRules} />
-            </CardContent>
-          </Card>
-        </>
-      ) : (
-        <Card>
-          <CardHeader><CardTitle>Pricing</CardTitle></CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">No pricing configuration attached to this catalog.</p>
-          </CardContent>
-        </Card>
-      )}
 
       {restrictionGroup ? (
         <>
@@ -154,7 +98,6 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         <CardContent>
           <CatalogDealerAssignment
             catalogId={catalog.id}
-            pricingGroupId={catalog.pricing_group_id}
             restrictionGroupId={catalog.restriction_group_id}
             initialDealers={dealers ?? []}
           />

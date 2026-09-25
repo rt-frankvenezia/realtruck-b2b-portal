@@ -11,12 +11,10 @@ type Company = { id: string; name: string; status: string }
 
 export function CatalogDealerAssignment({
   catalogId,
-  pricingGroupId,
   restrictionGroupId,
   initialDealers,
 }: {
   catalogId: string
-  pricingGroupId: string | null
   restrictionGroupId: string | null
   initialDealers: Company[]
 }) {
@@ -46,7 +44,6 @@ export function CatalogDealerAssignment({
         .from('companies')
         .update({
           catalog_id: catalogId,
-          pricing_group_id: pricingGroupId,
           restriction_group_id: restrictionGroupId,
         })
         .eq('id', company.id)
@@ -62,7 +59,7 @@ export function CatalogDealerAssignment({
       const supabase = createClient()
       const { error } = await supabase
         .from('companies')
-        .update({ catalog_id: null, pricing_group_id: null, restriction_group_id: null })
+        .update({ catalog_id: null, restriction_group_id: null })
         .eq('id', company.id)
       if (error) { toast.error(error.message); return }
       toast.success(`${company.name} removed`)

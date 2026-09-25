@@ -26,7 +26,11 @@ import {
   STATEMENTS,
   CATALOGS,
   PRICING_GROUPS,
+  PRICING_GROUP_BASE_TIERS,
+  PRICING_RULES,
+  PRICING_RULE_TIERS,
   RESTRICTION_GROUPS,
+  RESTRICTION_RULES,
   AUDIT_LOG,
   CREDIT_APPLICATIONS,
 } from './fixtures'
@@ -60,7 +64,11 @@ const FIXTURE_MAP: Record<string, any[]> = {
   statements: STATEMENTS,
   catalogs: CATALOGS,
   pricing_groups: PRICING_GROUPS,
+  pricing_group_base_tiers: PRICING_GROUP_BASE_TIERS,
+  pricing_rules: PRICING_RULES,
+  pricing_rule_tiers: PRICING_RULE_TIERS,
   restriction_groups: RESTRICTION_GROUPS,
+  restriction_rules: RESTRICTION_RULES,
   audit_log: AUDIT_LOG,
   credit_applications: CREDIT_APPLICATIONS,
 }

@@ -8,6 +8,7 @@ import { CompanyStatusSelect } from '@/components/admin/CompanyStatusSelect'
 import { LocationStatusSelect } from '@/components/admin/LocationStatusSelect'
 import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialog'
 import { CompanyCatalogSelect } from '@/components/admin/CompanyCatalogSelect'
+import { CompanyPricingGroupSelect } from '@/components/admin/CompanyPricingGroupSelect'
 import { CreateLocationDialog } from '@/components/admin/CreateLocationDialog'
 import { CreateUserDialog } from '@/components/admin/CreateUserDialog'
 import { NetSuiteIdForm } from '@/components/admin/NetSuiteIdForm'
@@ -19,11 +20,12 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
   const { id } = await params
   const supabase = await createClient()
 
-  const [{ data: company }, { data: locations }, { data: users }, { data: catalogs }] = await Promise.all([
+  const [{ data: company }, { data: locations }, { data: users }, { data: catalogs }, { data: pricingGroups }] = await Promise.all([
     supabase.from('companies').select('*').eq('id', id).maybeSingle(),
     supabase.from('locations').select('*').eq('company_id', id).order('name'),
     supabase.from('users').select('*').eq('company_id', id).order('name'),
-    supabase.from('catalogs').select('id, name, pricing_group_id, restriction_group_id').order('name'),
+    supabase.from('catalogs').select('id, name, restriction_group_id').order('name'),
+    supabase.from('pricing_groups').select('id, name, base_discount').order('name'),
   ])
 
   if (!company) notFound()
@@ -33,6 +35,7 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
 
   const requirements = [
     { label: 'NetSuite Customer ID assigned', met: Boolean(company.netsuite_customer_id) },
+    { label: 'Pricing Group assigned', met: Boolean(company.pricing_group_id) },
     { label: 'Catalog assigned', met: Boolean(company.catalog_id) },
     { label: 'At least 1 Location created', met: (locations ?? []).length > 0 },
     { label: 'At least 1 Dealer Admin user exists', met: hasDealerAdmin },
@@ -62,6 +65,14 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
           <div>
             <p className="text-xs font-medium text-muted-foreground">A.R.E. Dealer</p>
             <p>{company.is_are_dealer ? 'Yes' : 'No'}</p>
+          </div>
+          <div>
+            <p className="text-xs font-medium text-muted-foreground">Pricing Group</p>
+            <CompanyPricingGroupSelect
+              companyId={company.id}
+              pricingGroupId={company.pricing_group_id}
+              pricingGroups={pricingGroups ?? []}
+            />
           </div>
           <div>
             <p className="text-xs font-medium text-muted-foreground">Catalog</p>

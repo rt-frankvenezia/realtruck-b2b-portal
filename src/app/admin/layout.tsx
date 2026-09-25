@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { BarChart3, Building2, MapPin, UserCog, BookOpen, FileText, MessageSquareQuote } from 'lucide-react'
+import { BarChart3, Building2, MapPin, UserCog, BookOpen, FileText, MessageSquareQuote, Tag } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -30,7 +30,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     },
     { href: '/admin/locations', label: 'Locations', description: 'Manage dealer locations', icon: <MapPin {...iconProps} /> },
     { href: '/admin/users', label: 'Users', description: 'Manage user accounts', icon: <UserCog {...iconProps} /> },
-    { href: '/admin/catalogs', label: 'Catalogs', description: 'Pricing and availability configurations', icon: <BookOpen {...iconProps} /> },
+    { href: '/admin/pricing-groups', label: 'Pricing Groups', description: 'Dealer discount and pricing rules', icon: <Tag {...iconProps} /> },
+    { href: '/admin/catalogs', label: 'Catalogs', description: 'Product availability configurations', icon: <BookOpen {...iconProps} /> },
     { href: '/admin/audit-log', label: 'Audit Log', description: 'Administrative actions', icon: <FileText {...iconProps} /> },
   ]
 

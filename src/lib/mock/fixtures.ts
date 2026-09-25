@@ -385,6 +385,7 @@ export const COMPANIES = [
     installation_pricing: { 'tier-1': 150, 'tier-2': 250, 'tier-3': 400 },
     supported_tiers: ['tier-1', 'tier-2', 'tier-3'],
     pricing_group_id: '44444444-4444-4444-4444-000000000001',
+    catalog_id: null,
     credit_eligible: true,
     dealer_admin_id: '33333333-3333-3333-3333-000000000002',
     created_at: '2026-04-15T00:00:00Z',
@@ -403,6 +404,7 @@ export const COMPANIES = [
     installation_pricing: { 'tier-1': 120, 'tier-2': 220 },
     supported_tiers: ['tier-1', 'tier-2'],
     pricing_group_id: null,
+    catalog_id: null,
     credit_eligible: false,
     dealer_admin_id: '33333333-3333-3333-3333-000000000005',
     created_at: '2026-04-15T00:00:00Z',
@@ -421,6 +423,7 @@ export const COMPANIES = [
     installation_pricing: {},
     supported_tiers: [],
     pricing_group_id: null,
+    catalog_id: null,
     credit_eligible: false,
     dealer_admin_id: null,
     created_at: '2026-04-15T00:00:00Z',
@@ -1477,15 +1480,71 @@ export const PRICING_GROUPS = [
   {
     id: '44444444-4444-4444-4444-000000000001',
     name: 'Tier 1 Volume Partners',
-    description: 'Highest-volume dealer discount tier',
+    description: 'Highest-volume dealer discount tier with category overrides',
     status: 'active',
     effective_date: '2026-01-01',
     base_discount: 5.00,
     created_at: '2026-01-01T00:00:00Z',
   },
+  {
+    id: '44444444-4444-4444-4444-000000000002',
+    name: 'Standard Dealer',
+    description: 'Default pricing group for standard dealer partners',
+    status: 'active',
+    effective_date: '2026-01-01',
+    base_discount: 2.00,
+    created_at: '2026-01-01T00:00:00Z',
+  },
+]
+
+export const PRICING_GROUP_BASE_TIERS = [
+  { id: 'btr00001-0000-0000-0000-000000000001', pricing_group_id: '44444444-4444-4444-4444-000000000001', min_quantity: 1, discount_percent: 5.00, created_at: '2026-01-01T00:00:00Z' },
+  { id: 'btr00002-0000-0000-0000-000000000001', pricing_group_id: '44444444-4444-4444-4444-000000000001', min_quantity: 10, discount_percent: 8.00, created_at: '2026-01-01T00:00:00Z' },
+  { id: 'btr00003-0000-0000-0000-000000000001', pricing_group_id: '44444444-4444-4444-4444-000000000002', min_quantity: 1, discount_percent: 2.00, created_at: '2026-01-01T00:00:00Z' },
+]
+
+export const PRICING_RULES = [
+  {
+    id: 'prl00001-0000-0000-0000-000000000001',
+    pricing_group_id: '44444444-4444-4444-4444-000000000001',
+    target_type: 'category',
+    target_id: 'a1111111-0000-0000-0000-000000000001',
+    target_label: 'Truck Bed Covers',
+    rule_type: 'volume_tiers',
+    discount_percent: null,
+    created_at: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'prl00002-0000-0000-0000-000000000001',
+    pricing_group_id: '44444444-4444-4444-4444-000000000001',
+    target_type: 'brand',
+    target_id: null,
+    target_label: 'Retrax',
+    rule_type: 'flat_discount',
+    discount_percent: 12.00,
+    created_at: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'prl00003-0000-0000-0000-000000000001',
+    pricing_group_id: '44444444-4444-4444-4444-000000000002',
+    target_type: 'category',
+    target_id: 'a1111111-0000-0000-0000-000000000002',
+    target_label: 'Floor Liners',
+    rule_type: 'flat_discount',
+    discount_percent: 3.00,
+    created_at: '2026-01-01T00:00:00Z',
+  },
+]
+
+export const PRICING_RULE_TIERS = [
+  { id: 'prt00001-0000-0000-0000-000000000001', pricing_rule_id: 'prl00001-0000-0000-0000-000000000001', min_quantity: 1, discount_percent: 10.00 },
+  { id: 'prt00002-0000-0000-0000-000000000001', pricing_rule_id: 'prl00001-0000-0000-0000-000000000001', min_quantity: 5, discount_percent: 13.00 },
+  { id: 'prt00003-0000-0000-0000-000000000001', pricing_rule_id: 'prl00002-0000-0000-0000-000000000001', min_quantity: 1, discount_percent: 12.00 },
 ]
 
 export const RESTRICTION_GROUPS: any[] = []
+
+export const RESTRICTION_RULES: any[] = []
 
 export const AUDIT_LOG = [
   {

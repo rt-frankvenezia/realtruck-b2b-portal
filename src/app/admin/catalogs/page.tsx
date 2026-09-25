@@ -6,17 +6,12 @@ import { CreateCatalogDialog } from '@/components/admin/CreateCatalogDialog'
 
 export default async function AdminCatalogsPage() {
   const supabase = await createClient()
-  const [{ data: catalogs }, { data: pricingRules }, { data: restrictionRules }, { data: companies }] = await Promise.all([
+  const [{ data: catalogs }, { data: restrictionRules }, { data: companies }] = await Promise.all([
     supabase.from('catalogs').select('*').order('name'),
-    supabase.from('pricing_rules').select('pricing_group_id'),
     supabase.from('restriction_rules').select('restriction_group_id'),
     supabase.from('companies').select('id, catalog_id').not('catalog_id', 'is', null),
   ])
 
-  const pricingRuleCountByGroup = new Map<string, number>()
-  for (const r of pricingRules ?? []) {
-    pricingRuleCountByGroup.set(r.pricing_group_id, (pricingRuleCountByGroup.get(r.pricing_group_id) ?? 0) + 1)
-  }
   const restrictionRuleCountByGroup = new Map<string, number>()
   for (const r of restrictionRules ?? []) {
     restrictionRuleCountByGroup.set(r.restriction_group_id, (restrictionRuleCountByGroup.get(r.restriction_group_id) ?? 0) + 1)
@@ -34,7 +29,7 @@ export default async function AdminCatalogsPage() {
         <div>
           <h1 className="text-2xl font-semibold">Catalogs</h1>
           <p className="text-muted-foreground">
-            A Catalog defines what dealers can purchase and what they pay.
+            A Catalog defines what a dealer is allowed to buy.
           </p>
         </div>
         <CreateCatalogDialog />
@@ -46,7 +41,6 @@ export default async function AdminCatalogsPage() {
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
-                <TableHead>Pricing</TableHead>
                 <TableHead>Availability</TableHead>
                 <TableHead>Dealers</TableHead>
               </TableRow>
@@ -54,13 +48,12 @@ export default async function AdminCatalogsPage() {
             <TableBody>
               {(catalogs ?? []).length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  <TableCell colSpan={3} className="text-center text-muted-foreground">
                     No catalogs yet. Create one to get started.
                   </TableCell>
                 </TableRow>
               )}
               {(catalogs ?? []).map((catalog) => {
-                const pricingRuleCount = catalog.pricing_group_id ? (pricingRuleCountByGroup.get(catalog.pricing_group_id) ?? 0) : 0
                 const availRuleCount = catalog.restriction_group_id ? (restrictionRuleCountByGroup.get(catalog.restriction_group_id) ?? 0) : 0
                 const dealerCount = dealerCountByCatalog.get(catalog.id) ?? 0
                 return (
@@ -72,11 +65,6 @@ export default async function AdminCatalogsPage() {
                       {catalog.description && (
                         <p className="text-xs text-muted-foreground mt-0.5 max-w-xs truncate">{catalog.description}</p>
                       )}
-                    </TableCell>
-                    <TableCell>
-                      <span className="text-sm text-muted-foreground">
-                        {pricingRuleCount} {pricingRuleCount === 1 ? 'rule' : 'rules'}
-                      </span>
                     </TableCell>
                     <TableCell>
                       {catalog.restriction_group_id ? (
