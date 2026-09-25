@@ -349,25 +349,54 @@ export function createMockClient(userId?: string) {
 
         case 'admin_dealer_health':
           return {
-            data: {
-              total_dealers: 3,
-              active_dealers: 2,
-              pending_companies: 1,
-              open_quotes: 4,
-              installations_in_progress: 2,
-              past_due_invoices: 3,
-            },
+            data: [
+              {
+                company_id: '11111111-1111-1111-1111-000000000001',
+                company_name: 'Big Sky Truck Outfitters',
+                health_tier: 'needs_attention',
+                open_quotes: 3,
+                aged_quotes: 1,
+                sla_compliance_pct: 82,
+                active_user_count: 3,
+                total_user_count: 3,
+                flags: ['sla_breach_warning'],
+              },
+              {
+                company_id: '11111111-1111-1111-1111-000000000002',
+                company_name: 'Lone Star Cap & Bed',
+                health_tier: 'healthy',
+                open_quotes: 1,
+                aged_quotes: 0,
+                sla_compliance_pct: 96,
+                active_user_count: 1,
+                total_user_count: 1,
+                flags: [],
+              },
+              {
+                company_id: '11111111-1111-1111-1111-000000000003',
+                company_name: 'Cascade Truck Accessories',
+                health_tier: 'inactive',
+                open_quotes: 0,
+                aged_quotes: 0,
+                sla_compliance_pct: 0,
+                active_user_count: 0,
+                total_user_count: 0,
+                flags: ['no_active_users'],
+              },
+            ],
             error: null,
           }
 
         case 'installation_kpi_metrics':
           return {
-            data: {
-              installs_this_month: 3,
-              revenue_this_month: 2400,
-              avg_days_to_complete: 8,
-              pending_payouts: 1,
-            },
+            data: [
+              {
+                installs_this_month: 3,
+                revenue_this_month: 2400,
+                avg_days_to_complete: 8,
+                pending_payouts: 1,
+              },
+            ],
             error: null,
           }
 
@@ -378,10 +407,7 @@ export function createMockClient(userId?: string) {
           }
 
         case 'get_customer_facing_status':
-          return {
-            data: { status: 'Scheduled', detail: 'Your installation is scheduled' },
-            error: null,
-          }
+          return { data: 'installation_scheduled', error: null }
 
         default:
           return { data: { success: true }, error: null }
