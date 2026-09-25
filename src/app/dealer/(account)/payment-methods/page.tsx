@@ -6,76 +6,37 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AddSavedPaymentMethodDialog } from '@/components/dealer/financial/AddSavedPaymentMethodDialog'
 import { DeleteSavedPaymentMethodButton } from '@/components/dealer/financial/DeleteSavedPaymentMethodButton'
-import { LocationScopeEditor, LocationScopeBadge } from '@/components/dealer/financial/LocationScopeEditor'
 import { formatDate } from '@/lib/status-labels'
 
 export default async function PaymentMethodsPage() {
   const user = await getCurrentUser()
   if (!user || !user.profile.company_id) redirect('/dealer')
-  // Staff cannot manage payment methods; realtruck_admin has no company context here.
-  if (user.profile.role === 'staff' || user.profile.role === 'customer' || user.profile.role === 'realtruck_admin') {
+  if (user.profile.role === 'customer' || user.profile.role === 'realtruck_admin') {
     redirect('/dealer')
   }
 
   const role = user.profile.role
-  const isDealerAdmin = role === 'dealer_admin'
+  const isStaff = role === 'staff'
   const companyId = user.profile.company_id
   const supabase = await createClient()
 
-  // All company methods with location assignments
-  const { data: rawMethods } = await supabase
+  const { data: methods } = await supabase
     .from('saved_payment_methods')
-    .select('*, saved_payment_method_locations(location_id)')
+    .select('*')
     .eq('company_id', companyId)
     .order('created_at')
 
-  // For location_admin: find their assigned locations to filter/pre-scope
-  let userLocationIds: string[] = []
-  if (!isDealerAdmin) {
-    const { data: ul } = await supabase
-      .from('user_locations')
-      .select('location_id')
-      .eq('user_id', user.profile.id)
-    userLocationIds = (ul ?? []).map((r) => r.location_id)
-  }
+  const cards = (methods ?? []).filter((m) => m.type === 'card')
+  const bankAccounts = (methods ?? []).filter((m) => m.type === 'bank_account')
 
-  const allMethods = (rawMethods ?? []).map((m) => ({
-    ...m,
-    locationIds: m.saved_payment_method_locations.map((l) => l.location_id),
-  }))
-
-  // location_admin sees only methods available to their locations
-  const visibleMethods = isDealerAdmin
-    ? allMethods
-    : allMethods.filter(
-        (m) =>
-          m.location_scope === 'all' ||
-          m.locationIds.some((lid) => userLocationIds.includes(lid))
-      )
-
-  const cards = visibleMethods.filter((m) => m.type === 'card')
-  const bankAccounts = visibleMethods.filter((m) => m.type === 'bank_account')
-
-  // Company locations for scope editor and add dialog (dealer_admin needs all; location_admin needs their subset)
-  const { data: allCompanyLocations } = await supabase
-    .from('locations')
-    .select('id, name')
-    .eq('company_id', companyId)
-    .in('status', ['active', 'pending_approval'])
-    .order('name')
-
-  const companyLocations = isDealerAdmin
-    ? (allCompanyLocations ?? [])
-    : (allCompanyLocations ?? []).filter((l) => userLocationIds.includes(l.id))
-
-  function methodDisplayLabel(m: (typeof visibleMethods)[number]) {
+  function methodDisplayLabel(m: NonNullable<typeof methods>[number]) {
     if (m.label) return m.label
     const info = m.display_info as Record<string, string>
     if (m.type === 'card') return `${info.brand} •••• ${info.last4}`
     return `${info.bank} •••• ${info.last4}`
   }
 
-  function methodSubLabel(m: (typeof visibleMethods)[number]) {
+  function methodSubLabel(m: NonNullable<typeof methods>[number]) {
     const info = m.display_info as Record<string, string>
     if (m.type === 'card') return `${info.brand} •••• ${info.last4} — Exp ${info.exp}`
     return `${info.bank} (${info.account_type}) •••• ${info.last4}`
@@ -87,18 +48,15 @@ export default async function PaymentMethodsPage() {
         <div>
           <h1 className="text-2xl font-semibold">Payment Methods</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {isDealerAdmin
-              ? 'Manage saved cards and bank accounts. Control which locations can use each method at checkout.'
-              : 'Saved payment methods available at your location(s).'}
+            Manage saved cards and bank accounts for your dealer account.
           </p>
         </div>
-        <AddSavedPaymentMethodDialog
-          companyId={companyId}
-          userId={user.profile.id}
-          isDealerAdmin={isDealerAdmin}
-          companyLocations={companyLocations}
-          userLocationIds={userLocationIds}
-        />
+        {!isStaff && (
+          <AddSavedPaymentMethodDialog
+            companyId={companyId}
+            userId={user.profile.id}
+          />
+        )}
       </div>
 
       {/* Cards */}
@@ -127,23 +85,11 @@ export default async function PaymentMethodsPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex shrink-0 items-center gap-3">
-                      {isDealerAdmin ? (
-                        <LocationScopeEditor
-                          methodId={m.id}
-                          currentScope={m.location_scope}
-                          currentLocationIds={m.locationIds}
-                          companyLocations={companyLocations}
-                        />
-                      ) : (
-                        <LocationScopeBadge
-                          scope={m.location_scope}
-                          locationIds={m.locationIds}
-                          companyLocations={companyLocations}
-                        />
-                      )}
-                      <DeleteSavedPaymentMethodButton methodId={m.id} label={methodDisplayLabel(m)} />
-                    </div>
+                    {!isStaff && (
+                      <div className="shrink-0">
+                        <DeleteSavedPaymentMethodButton methodId={m.id} label={methodDisplayLabel(m)} />
+                      </div>
+                    )}
                   </div>
                 )
               })}
@@ -185,23 +131,11 @@ export default async function PaymentMethodsPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex shrink-0 items-center gap-3">
-                      {isDealerAdmin ? (
-                        <LocationScopeEditor
-                          methodId={m.id}
-                          currentScope={m.location_scope}
-                          currentLocationIds={m.locationIds}
-                          companyLocations={companyLocations}
-                        />
-                      ) : (
-                        <LocationScopeBadge
-                          scope={m.location_scope}
-                          locationIds={m.locationIds}
-                          companyLocations={companyLocations}
-                        />
-                      )}
-                      <DeleteSavedPaymentMethodButton methodId={m.id} label={methodDisplayLabel(m)} />
-                    </div>
+                    {!isStaff && (
+                      <div className="shrink-0">
+                        <DeleteSavedPaymentMethodButton methodId={m.id} label={methodDisplayLabel(m)} />
+                      </div>
+                    )}
                   </div>
                 )
               })}
@@ -209,12 +143,6 @@ export default async function PaymentMethodsPage() {
           </div>
         )}
       </section>
-
-      {!isDealerAdmin && (
-        <p className="text-xs text-muted-foreground">
-          Contact your Dealer Admin to add new payment methods or change location availability.
-        </p>
-      )}
     </div>
   )
 }
