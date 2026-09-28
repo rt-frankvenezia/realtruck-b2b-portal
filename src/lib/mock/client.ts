@@ -237,12 +237,25 @@ class MockQueryBuilder {
 
   private execute(): { data: any; error: any; count?: number } {
     if (this.isDelete) {
+      const arr = FIXTURE_MAP[this.table]
+      if (arr) {
+        const toRemove = new Set(this.applyFilters(arr).map((r: any) => r.id))
+        arr.splice(0, arr.length, ...arr.filter((r: any) => !toRemove.has(r.id)))
+      }
       return { data: null, error: null }
     }
 
     if (this.insertData !== null) {
+      const now = new Date().toISOString()
       const items = Array.isArray(this.insertData) ? this.insertData : [this.insertData]
-      const withIds = items.map((item: any) => ({ id: randomUUID(), ...item }))
+      const withIds = items.map((item: any) => ({
+        id: randomUUID(),
+        created_at: now,
+        updated_at: now,
+        ...item,
+      }))
+      const arr = FIXTURE_MAP[this.table]
+      if (arr) arr.push(...withIds)
       if (this.isSingle || this.isMaybeSingle) {
         return { data: withIds[0] ?? null, error: null }
       }
@@ -250,6 +263,16 @@ class MockQueryBuilder {
     }
 
     if (this.updateData !== null) {
+      const arr = FIXTURE_MAP[this.table]
+      if (arr) {
+        const now = new Date().toISOString()
+        const toUpdate = new Set(this.applyFilters(arr).map((r: any) => r.id))
+        for (let i = 0; i < arr.length; i++) {
+          if (toUpdate.has(arr[i].id)) {
+            arr[i] = { ...arr[i], ...this.updateData, updated_at: now }
+          }
+        }
+      }
       return { data: this.updateData, error: null }
     }
 
