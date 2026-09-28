@@ -26,11 +26,11 @@ export function PortalSidebar({ title, items }: { title: string; items: PortalNa
 
   return (
     <aside className="w-64 shrink-0">
-      <div className="sticky top-8 overflow-hidden rounded border border-[#d5d5d5] bg-white">
-        <div className="bg-[#1E1E1E] px-6 py-5">
+      <div className="sticky top-8 flex max-h-[calc(100vh-4rem)] flex-col overflow-hidden rounded border border-[#d5d5d5] bg-white">
+        <div className="shrink-0 bg-[#1E1E1E] px-6 py-5">
           <h2 className="text-lg font-semibold text-white">{title}</h2>
         </div>
-        <nav className="space-y-1 py-1">
+        <nav className="overflow-y-auto space-y-1 py-1">
           {items.map((item) => {
             if (item.external) {
               return (

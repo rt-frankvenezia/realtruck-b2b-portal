@@ -2,7 +2,9 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { CreateCatalogDialog } from '@/components/admin/CreateCatalogDialog'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Plus } from 'lucide-react'
 
 export default async function AdminCatalogsPage() {
   const supabase = await createClient()
@@ -32,7 +34,9 @@ export default async function AdminCatalogsPage() {
             A Catalog defines what a dealer is allowed to buy.
           </p>
         </div>
-        <CreateCatalogDialog />
+        <Link href="/admin/catalogs/new" className={cn(buttonVariants())}>
+          <Plus size={16} className="mr-1" />New Catalog
+        </Link>
       </div>
 
       <Card>

@@ -35,7 +35,7 @@ export function DemoUserSwitcher() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: user.id }),
     })
-    window.location.reload()
+    window.location.href = user.role === 'realtruck_admin' ? '/admin' : '/dealer'
   }
 
   return (
