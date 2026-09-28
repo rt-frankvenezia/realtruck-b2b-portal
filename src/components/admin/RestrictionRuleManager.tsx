@@ -20,9 +20,9 @@ type RestrictionRule = Tables<'restriction_rules'>
 const ALL_TARGET_TYPES: TargetType[] = ['product-line', 'brand', 'category']
 
 const PRIORITY_LABEL: Record<TargetType, string> = {
-  'product-line': '1st priority (most specific)',
-  brand: '2nd priority',
-  category: '3rd priority',
+  'product-line': 'Product line — most specific, overrides brand and category',
+  brand: 'Brand — applies to all products from this brand',
+  category: 'Category — applies to all products in this category',
 }
 
 export function RestrictionRuleManager({
