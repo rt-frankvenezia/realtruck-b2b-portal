@@ -1489,7 +1489,24 @@ export const STATEMENTS = [
   },
 ]
 
-export const CATALOGS: any[] = []
+export const CATALOGS: any[] = [
+  {
+    id: 'cat00001-0000-0000-0000-000000000001',
+    name: 'Standard Dealer Catalog',
+    description: 'Full product access for standard dealer partners. Excludes discontinued and clearance-only items.',
+    restriction_group_id: 'rg000001-0000-0000-0000-000000000001',
+    created_at: '2026-01-01T00:00:00Z',
+    updated_at: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'cat00002-0000-0000-0000-000000000002',
+    name: 'ARE Exclusive Catalog',
+    description: 'Curated catalog for A.R.E. dealer partners. Includes ARE product lines and approved accessories.',
+    restriction_group_id: 'rg000002-0000-0000-0000-000000000002',
+    created_at: '2026-03-01T00:00:00Z',
+    updated_at: '2026-03-01T00:00:00Z',
+  },
+]
 
 export const PRICING_GROUPS = [
   {
@@ -1557,7 +1574,20 @@ export const PRICING_RULE_TIERS = [
   { id: 'prt00003-0000-0000-0000-000000000001', pricing_rule_id: 'prl00002-0000-0000-0000-000000000001', min_quantity: 1, discount_percent: 12.00 },
 ]
 
-export const RESTRICTION_GROUPS: any[] = []
+export const RESTRICTION_GROUPS: any[] = [
+  {
+    id: 'rg000001-0000-0000-0000-000000000001',
+    name: 'Standard Dealer Catalog — Availability',
+    default_access: 'allowed',
+    created_at: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'rg000002-0000-0000-0000-000000000002',
+    name: 'ARE Exclusive Catalog — Availability',
+    default_access: 'not_allowed',
+    created_at: '2026-03-01T00:00:00Z',
+  },
+]
 
 export const RESTRICTION_RULES: any[] = []
 
