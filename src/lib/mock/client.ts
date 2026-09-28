@@ -352,8 +352,19 @@ export function createMockClient(userId?: string) {
             error: null,
           }
 
-        case 'check_product_purchase_access':
-          return { data: { allowed: true }, error: null }
+        case 'check_product_purchase_access': {
+          const { p_restriction_group_id, p_brand, p_category, p_product_line } = params ?? {}
+          if (!p_restriction_group_id) return { data: [{ access: 'allowed' }], error: null }
+          const rg = RESTRICTION_GROUPS.find((g: any) => g.id === p_restriction_group_id)
+          if (!rg) return { data: [{ access: 'allowed' }], error: null }
+          const rules = RESTRICTION_RULES.filter((r: any) => r.restriction_group_id === p_restriction_group_id)
+          const match =
+            (p_product_line && rules.find((r: any) => r.target_type === 'product-line' && r.target_value === p_product_line)) ||
+            (p_brand && rules.find((r: any) => r.target_type === 'brand' && r.target_value === p_brand)) ||
+            (p_category && rules.find((r: any) => r.target_type === 'category' && r.target_value === p_category)) ||
+            null
+          return { data: [{ access: match ? match.access : rg.default_access }], error: null }
+        }
 
         case 'validate_order_credit': {
           const isBigSky = demoUser.company_id === '11111111-1111-1111-1111-000000000001'

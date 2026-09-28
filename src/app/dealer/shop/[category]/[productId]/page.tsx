@@ -40,7 +40,7 @@ export default async function ProductDetailPage({
       .eq('catalog_product_id', productId)
       .order('sort_order', { referencedTable: 'fulfillment_locations' }),
     showDealerPricing && user?.profile.company_id
-      ? supabase.from('companies').select('pricing_group_id, restriction_group_id').eq('id', user.profile.company_id).maybeSingle()
+      ? supabase.from('companies').select('pricing_group_id, catalog_id').eq('id', user.profile.company_id).maybeSingle()
       : Promise.resolve({ data: null }),
   ])
 
@@ -57,7 +57,14 @@ export default async function ProductDetailPage({
 
   // Pricing group schedule — fetched only for logged-in dealers with an assigned group
   const pricingGroupId = companyRes.data?.pricing_group_id ?? null
-  const restrictionGroupId = companyRes.data?.restriction_group_id ?? null
+  const catalogId = companyRes.data?.catalog_id ?? null
+
+  // Restriction group lives on the catalog, not the company — look it up via catalog_id
+  let restrictionGroupId: string | null = null
+  if (catalogId && showDealerPricing) {
+    const { data: catalog } = await supabase.from('catalogs').select('restriction_group_id').eq('id', catalogId).maybeSingle()
+    restrictionGroupId = catalog?.restriction_group_id ?? null
+  }
   const productLine = (product as { product_line?: string | null }).product_line ?? undefined
   let pricingTiers: PricingTier[] | null = null
 
