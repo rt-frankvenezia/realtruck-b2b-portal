@@ -385,7 +385,7 @@ export const COMPANIES = [
     installation_pricing: { 'tier-1': 150, 'tier-2': 250, 'tier-3': 400 },
     supported_tiers: ['tier-1', 'tier-2', 'tier-3'],
     pricing_group_id: '44444444-4444-4444-4444-000000000001',
-    catalog_id: null,
+    catalog_id: 'cat00002-0000-0000-0000-000000000002',
     credit_eligible: true,
     dealer_admin_id: '33333333-3333-3333-3333-000000000002',
     created_at: '2026-04-15T00:00:00Z',
@@ -403,8 +403,8 @@ export const COMPANIES = [
     is_are_dealer: false,
     installation_pricing: { 'tier-1': 120, 'tier-2': 220 },
     supported_tiers: ['tier-1', 'tier-2'],
-    pricing_group_id: null,
-    catalog_id: null,
+    pricing_group_id: '44444444-4444-4444-4444-000000000002',
+    catalog_id: 'cat00001-0000-0000-0000-000000000001',
     credit_eligible: false,
     dealer_admin_id: '33333333-3333-3333-3333-000000000005',
     created_at: '2026-04-15T00:00:00Z',
@@ -1589,7 +1589,55 @@ export const RESTRICTION_GROUPS: any[] = [
   },
 ]
 
-export const RESTRICTION_RULES: any[] = []
+export const RESTRICTION_RULES: any[] = [
+  // Standard Dealer Catalog — deny-list (default: allowed), these categories are excluded
+  {
+    id: 'rr000001-0000-0000-0000-000000000001',
+    restriction_group_id: 'rg000001-0000-0000-0000-000000000001',
+    target_type: 'category',
+    target_id: 'a1111111-0000-0000-0000-000000000003',
+    target_label: 'Lift Kits',
+    access: 'not_allowed',
+    created_at: '2026-01-01T00:00:00Z',
+  },
+  {
+    id: 'rr000002-0000-0000-0000-000000000001',
+    restriction_group_id: 'rg000001-0000-0000-0000-000000000001',
+    target_type: 'brand',
+    target_id: null,
+    target_label: 'Retrax',
+    access: 'not_allowed',
+    created_at: '2026-01-01T00:00:00Z',
+  },
+  // ARE Exclusive Catalog — allow-list (default: not_allowed), these categories are included
+  {
+    id: 'rr000003-0000-0000-0000-000000000002',
+    restriction_group_id: 'rg000002-0000-0000-0000-000000000002',
+    target_type: 'category',
+    target_id: 'a1111111-0000-0000-0000-000000000001',
+    target_label: 'Truck Bed Covers',
+    access: 'allowed',
+    created_at: '2026-03-01T00:00:00Z',
+  },
+  {
+    id: 'rr000004-0000-0000-0000-000000000002',
+    restriction_group_id: 'rg000002-0000-0000-0000-000000000002',
+    target_type: 'category',
+    target_id: 'a1111111-0000-0000-0000-000000000006',
+    target_label: 'Exterior Accessories',
+    access: 'allowed',
+    created_at: '2026-03-01T00:00:00Z',
+  },
+  {
+    id: 'rr000005-0000-0000-0000-000000000002',
+    restriction_group_id: 'rg000002-0000-0000-0000-000000000002',
+    target_type: 'category',
+    target_id: 'a1111111-0000-0000-0000-000000000007',
+    target_label: 'Interior Accessories',
+    access: 'allowed',
+    created_at: '2026-03-01T00:00:00Z',
+  },
+]
 
 export const AUDIT_LOG = [
   {
