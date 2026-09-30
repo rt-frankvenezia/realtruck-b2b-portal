@@ -276,6 +276,19 @@ export default async function ProductDetailPage({
                 </div>
               ) : null
 
+              if (!purchaseAllowed) {
+                return (
+                  <>
+                    <div className="border-t py-4">
+                      <p className="text-xs text-muted-foreground">MAP</p>
+                      <p className="text-2xl font-bold text-muted-foreground">{formatCurrency(mapPrice)}</p>
+                    </div>
+                    {partAndFitSection}
+                    {restrictionNotice}
+                  </>
+                )
+              }
+
               if (pricingTiers) {
                 return (
                   <VolumePricingPanel
