@@ -87,20 +87,36 @@ export function DemoUserSwitcher() {
             <span style={{ display: 'block', fontWeight: 600, color: '#fff', lineHeight: 1.3 }}>
               {current.name}
             </span>
-            <span
-              style={{
-                display: 'inline-block',
-                marginTop: 2,
-                padding: '1px 6px',
-                borderRadius: 4,
-                background: '#333',
-                color: '#FFC60B',
-                fontSize: 10,
-                fontWeight: 600,
-                letterSpacing: '0.03em',
-              }}
-            >
-              {ROLE_LABELS[current.role] ?? current.role}
+            <span style={{ display: 'flex', flexWrap: 'wrap', gap: 4, marginTop: 3 }}>
+              <span
+                style={{
+                  display: 'inline-block',
+                  padding: '1px 6px',
+                  borderRadius: 4,
+                  background: '#333',
+                  color: '#FFC60B',
+                  fontSize: 10,
+                  fontWeight: 600,
+                  letterSpacing: '0.03em',
+                }}
+              >
+                {ROLE_LABELS[current.role] ?? current.role}
+              </span>
+              {current.dealerType && (
+                <span
+                  style={{
+                    display: 'inline-block',
+                    padding: '1px 6px',
+                    borderRadius: 4,
+                    background: '#2a2a2a',
+                    color: '#aaa',
+                    fontSize: 10,
+                    fontWeight: 500,
+                  }}
+                >
+                  {current.dealerType}
+                </span>
+              )}
             </span>
           </span>
           <span style={{ color: '#888', fontSize: 10 }}>{open ? '▲' : '▼'}</span>
@@ -145,8 +161,11 @@ export function DemoUserSwitcher() {
                 <span style={{ flex: 1 }}>
                   <span style={{ display: 'block', fontSize: 12, fontWeight: 500 }}>{user.name}</span>
                   <span style={{ display: 'block', fontSize: 10, color: '#888', marginTop: 1 }}>
+                    {user.company ?? (user.company_id ? '' : 'RealTruck')}
+                  </span>
+                  <span style={{ display: 'block', fontSize: 10, color: '#666', marginTop: 1 }}>
                     {ROLE_LABELS[user.role] ?? user.role}
-                    {user.company_id ? '' : ' · No company'}
+                    {user.dealerType ? ` · ${user.dealerType}` : ''}
                   </span>
                 </span>
                 {user.id === current.id && (

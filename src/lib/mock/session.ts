@@ -5,17 +5,12 @@ export type DemoUser = {
   role: string
   company_id: string | null
   avatarInitials: string
+  company?: string
+  dealerType?: string
 }
 
 export const DEMO_USERS: DemoUser[] = [
-  {
-    id: '33333333-3333-3333-3333-000000000002',
-    name: 'Casey Whitfield',
-    email: 'casey@bigskytruck.example',
-    role: 'dealer_admin',
-    company_id: '11111111-1111-1111-1111-000000000001',
-    avatarInitials: 'CW',
-  },
+  // ── RealTruck Admin ──────────────────────────────────
   {
     id: '33333333-3333-3333-3333-000000000001',
     name: 'Jordan Reyes',
@@ -23,6 +18,19 @@ export const DEMO_USERS: DemoUser[] = [
     role: 'realtruck_admin',
     company_id: null,
     avatarInitials: 'JR',
+    company: 'RealTruck',
+    dealerType: 'RT Admin',
+  },
+  // ── ARE + Transactional (both) ────────────────────────
+  {
+    id: '33333333-3333-3333-3333-000000000002',
+    name: 'Casey Whitfield',
+    email: 'casey@bigskytruck.example',
+    role: 'dealer_admin',
+    company_id: '11111111-1111-1111-1111-000000000001',
+    avatarInitials: 'CW',
+    company: 'Big Sky Truck Outfitters',
+    dealerType: 'ARE + Transactional',
   },
   {
     id: '33333333-3333-3333-3333-000000000003',
@@ -31,6 +39,8 @@ export const DEMO_USERS: DemoUser[] = [
     role: 'location_admin',
     company_id: '11111111-1111-1111-1111-000000000001',
     avatarInitials: 'PN',
+    company: 'Big Sky Truck Outfitters',
+    dealerType: 'ARE + Transactional',
   },
   {
     id: '33333333-3333-3333-3333-000000000004',
@@ -39,7 +49,21 @@ export const DEMO_USERS: DemoUser[] = [
     role: 'staff',
     company_id: '11111111-1111-1111-1111-000000000001',
     avatarInitials: 'MI',
+    company: 'Big Sky Truck Outfitters',
+    dealerType: 'ARE + Transactional',
   },
+  // ── ARE-only (quotes, no transactional ordering) ─────
+  {
+    id: '33333333-3333-3333-3333-000000000008',
+    name: 'Blake Sullivan',
+    email: 'blake@summitcap.example',
+    role: 'dealer_admin',
+    company_id: '11111111-1111-1111-1111-000000000004',
+    avatarInitials: 'BS',
+    company: 'Summit Cap Outfitters',
+    dealerType: 'ARE Only',
+  },
+  // ── Transactional-only (no ARE, ordering + credit) ───
   {
     id: '33333333-3333-3333-3333-000000000005',
     name: 'Dana Okafor',
@@ -47,6 +71,8 @@ export const DEMO_USERS: DemoUser[] = [
     role: 'dealer_admin',
     company_id: '11111111-1111-1111-1111-000000000002',
     avatarInitials: 'DO',
+    company: 'Lone Star Cap & Bed',
+    dealerType: 'Transactional Only',
   },
 ]
 

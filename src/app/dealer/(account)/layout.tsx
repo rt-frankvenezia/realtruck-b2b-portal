@@ -22,14 +22,19 @@ export default async function DealerAccountLayout({ children }: { children: Reac
   // uses to decide whether to offer Pay on Terms at all.
   let hasCreditTerms = false
   let isAreDealer = false
+  let creditEligible = false
   if (role !== 'realtruck_admin' && user.profile.company_id) {
     const supabase = await createClient()
     const [{ data: account }, { data: company }] = await Promise.all([
       supabase.from('credit_accounts').select('id').eq('company_id', user.profile.company_id).in('status', ['active', 'on_hold']).maybeSingle(),
-      supabase.from('companies').select('is_are_dealer').eq('id', user.profile.company_id).maybeSingle(),
+      supabase.from('companies').select('is_are_dealer, credit_eligible').eq('id', user.profile.company_id).maybeSingle(),
     ])
     hasCreditTerms = Boolean(account)
     isAreDealer = Boolean(company?.is_are_dealer)
+    // credit_eligible flags whether this dealer transacts through the portal
+    // (Order History, Credit & Invoices). Non-ARE dealers are always transactional.
+    if (!isAreDealer) creditEligible = true
+    else creditEligible = Boolean(company?.credit_eligible)
   }
 
   // Single nav entry covering both "apply for terms" and "manage active
@@ -67,20 +72,21 @@ export default async function DealerAccountLayout({ children }: { children: Reac
 
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
-    // A.R.E. dealers order custom caps through a separate order-portal
-    // site, not this app — represented here so the nav matches what an
-    // A.R.E. dealer actually sees, but not wired to a real destination.
+    // A.R.E. dealers manage inbound leads via Quotes; they have a separate
+    // order-portal site for custom cap orders (external, not this app).
     ...(isAreDealer
-      ? [{ href: '/dealer/order-portal', label: 'Order Portal', description: 'Order a custom cap', icon: <ShoppingBag {...iconProps} />, external: true }]
+      ? [
+          { href: '/dealer/quotes', label: 'Quotes', description: 'Customer cap leads', icon: <MessageSquareQuote {...iconProps} /> },
+          { href: '/dealer/order-portal', label: 'Order Portal', description: 'Order a custom cap', icon: <ShoppingBag {...iconProps} />, external: true },
+        ]
       : []),
-    { href: '/dealer/quotes', label: 'Quotes', description: 'Customer leads', icon: <MessageSquareQuote {...iconProps} /> },
-    { href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> },
-    ...(creditInvoicesNavItem ? [creditInvoicesNavItem] : []),
-    // Independent of credit status entirely — a company without terms
-    // Payment Methods: dealer_admin manages all company methods; location_admin
-    // manages methods within their assigned locations; staff can use methods
-    // at checkout but has no management page.
-    ...(role === 'dealer_admin' || role === 'location_admin'
+    // Transactional dealers order product through the portal and have
+    // order history, invoicing, and credit available.
+    ...(creditEligible
+      ? [{ href: '/dealer/orders', label: 'Order History', description: 'Orders from RealTruck', icon: <Package {...iconProps} /> }]
+      : []),
+    ...(creditEligible && creditInvoicesNavItem ? [creditInvoicesNavItem] : []),
+    ...(creditEligible && (role === 'dealer_admin' || role === 'location_admin')
       ? [{ href: '/dealer/payment-methods', label: 'Payment Methods', description: 'Cards & bank accounts', icon: <Landmark {...iconProps} /> }]
       : []),
     ...(INSTALLATIONS_ENABLED
