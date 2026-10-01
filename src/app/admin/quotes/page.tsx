@@ -1,131 +1,143 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { AdminQuoteEditDialog } from '@/components/admin/AdminQuoteEditDialog'
-import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT, formatDate } from '@/lib/status-labels'
+import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT } from '@/lib/status-labels'
 
-type SlaStatus = 'on_time' | 'warning' | 'critical'
+function formatAge(createdAt: string): { text: string; dot: 'none' | 'warning' | 'critical' } {
+  const hours = (Date.now() - new Date(createdAt).getTime()) / 3_600_000
+  if (hours < 24) return { text: `${Math.round(hours)}h`, dot: 'none' }
+  const days = Math.floor(hours / 24)
+  if (days < 7) {
+    return { text: `${days}d`, dot: days <= 2 ? 'warning' : 'critical' }
+  }
+  return { text: `${Math.floor(days / 7)}w`, dot: 'warning' }
+}
 
-const SLA_LABEL: Record<SlaStatus, string> = { on_time: 'On Time', warning: 'Warning', critical: 'Critical' }
-const SLA_VARIANT: Record<SlaStatus, 'success' | 'secondary' | 'destructive'> = {
-  on_time: 'success',
-  warning: 'secondary',
-  critical: 'destructive',
+function quoteDisplayNum(id: string): string {
+  const n = parseInt(id.split('-').pop() ?? '0', 16)
+  return `26-${71000 + (n % 1000)}`
 }
 
 export default async function AdminQuotesPage() {
   const supabase = await createClient()
-  const { data: quotes } = await supabase
-    .from('quotes')
-    .select('*, locations(id, name, status), companies(id, name, status)')
-    .order('created_at', { ascending: false })
+  const [{ data: quotes }, { data: locations }, { data: companies }] = await Promise.all([
+    supabase
+      .from('quotes')
+      .select('id, customer_name, vehicle_year, vehicle_make, vehicle_model, status, created_at, location_id, company_id')
+      .order('created_at', { ascending: false }),
+    supabase.from('locations').select('id, code, name, city, state'),
+    supabase.from('companies').select('id, name'),
+  ])
 
-  const rows = (quotes ?? []).map((quote) => {
-    const ageHours = (Date.now() - new Date(quote.created_at).getTime()) / 3_600_000
-    const slaStatus: SlaStatus = quote.status !== 'new' ? 'on_time' : ageHours > 72 ? 'critical' : ageHours > 24 ? 'warning' : 'on_time'
+  type LocRow = { id: string; code: string; name: string; city: string; state: string }
+  type CompRow = { id: string; name: string }
+  const locMap = new Map<string, LocRow>((locations ?? []).map((l: any) => [l.id as string, l as LocRow]))
+  const compMap = new Map<string, CompRow>((companies ?? []).map((c: any) => [c.id as string, c as CompRow]))
 
-    let orphaned = false
-    let orphanedReason: string | null = null
-    if (!quote.location_id) {
-      orphaned = true
-      orphanedReason = 'No location assigned'
-    } else if (quote.locations?.status === 'closed') {
-      orphaned = true
-      orphanedReason = 'Location is closed'
-    } else if (quote.companies && quote.companies.status !== 'active') {
-      orphaned = true
-      orphanedReason = `Company is ${quote.companies.status}`
-    }
-
-    return { quote, ageHours, slaStatus, orphaned, orphanedReason }
-  })
-
-  const stats = {
-    total: rows.length,
-    orphaned: rows.filter((r) => r.orphaned).length,
-    critical: rows.filter((r) => r.slaStatus === 'critical').length,
-    warning: rows.filter((r) => r.slaStatus === 'warning').length,
-  }
+  const rows = quotes ?? []
 
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-2xl font-semibold">Quote Oversight</h1>
-        <p className="text-muted-foreground">SLA and orphaned-quote monitoring across every dealer.</p>
+        <h1 className="text-2xl font-semibold">Quote Management</h1>
+        <p className="text-muted-foreground">Monitor and manage leads across all dealer locations.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardDescription>Total</CardDescription>
-            <CardTitle className="text-3xl">{stats.total}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Orphaned</CardDescription>
-            <CardTitle className="text-3xl">{stats.orphaned}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>SLA Critical</CardDescription>
-            <CardTitle className="text-3xl">{stats.critical}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>SLA Warning</CardDescription>
-            <CardTitle className="text-3xl">{stats.warning}</CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
+      {/* Filters (represented) */}
+      <Card>
+        <CardContent className="flex flex-wrap items-end gap-3 p-4">
+          <div className="flex min-w-40 flex-1 flex-col gap-1">
+            <label className="text-xs text-muted-foreground">Search</label>
+            <input
+              readOnly
+              placeholder="Search by customer name, email, or quote ID..."
+              className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-muted-foreground">Dealer</label>
+            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+              <option>All Dealers</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-muted-foreground">Location</label>
+            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+              <option>All Locations</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-muted-foreground">Status</label>
+            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+              <option>All Statuses</option>
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-muted-foreground">Date Range</label>
+            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+              <option>Last 30 Days</option>
+            </select>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Customer</TableHead>
-                <TableHead>Company</TableHead>
+                <TableHead>Quote ID</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>SLA</TableHead>
-                <TableHead>Orphaned</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>Age</TableHead>
+                <TableHead>Dealer</TableHead>
+                <TableHead>Code</TableHead>
+                <TableHead>Location</TableHead>
+                <TableHead>Customer Name</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {rows.map(({ quote, slaStatus, orphaned, orphanedReason }) => (
-                <TableRow key={quote.id}>
-                  <TableCell className="font-medium">{quote.customer_name}</TableCell>
-                  <TableCell>{quote.companies?.name ?? '—'}</TableCell>
-                  <TableCell>
-                    <Badge variant={QUOTE_STATUS_VARIANT[quote.status]}>{QUOTE_STATUS_LABEL[quote.status]}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={SLA_VARIANT[slaStatus]}>{SLA_LABEL[slaStatus]}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    {orphaned ? (
-                      <Badge variant="destructive" title={orphanedReason ?? undefined}>
-                        {orphanedReason}
-                      </Badge>
-                    ) : (
-                      '—'
-                    )}
-                  </TableCell>
-                  <TableCell>{formatDate(quote.created_at)}</TableCell>
-                  <TableCell className="flex justify-end gap-2">
-                    <Link href={`/dealer/quotes/${quote.id}`} className="text-sm text-primary hover:underline">
-                      View
-                    </Link>
-                    <AdminQuoteEditDialog quote={quote} />
+              {rows.map((quote) => {
+                const loc = quote.location_id ? locMap.get(quote.location_id) : null
+                const company = quote.company_id ? compMap.get(quote.company_id) : null
+                const age = formatAge(quote.created_at)
+                return (
+                  <TableRow key={quote.id}>
+                    <TableCell>
+                      <Link href={`/dealer/quotes/${quote.id}`} className="font-medium hover:underline">
+                        {quoteDisplayNum(quote.id)}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={QUOTE_STATUS_VARIANT[quote.status]}>{QUOTE_STATUS_LABEL[quote.status]}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <span className="flex items-center gap-1.5 text-sm">
+                        {age.dot !== 'none' && (
+                          <span
+                            className={`h-2 w-2 shrink-0 rounded-full ${age.dot === 'warning' ? 'bg-orange-400' : 'bg-red-500'}`}
+                          />
+                        )}
+                        {age.text}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-sm">{company?.name ?? '—'}</TableCell>
+                    <TableCell className="font-mono text-sm">{loc?.code ?? '—'}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {loc ? `${loc.city}, ${loc.state}` : '—'}
+                    </TableCell>
+                    <TableCell className="font-medium">{quote.customer_name}</TableCell>
+                  </TableRow>
+                )
+              })}
+              {rows.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                    No quotes found.
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </CardContent>

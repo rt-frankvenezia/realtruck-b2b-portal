@@ -1,6 +1,6 @@
 import type { Database } from '@/lib/database.types'
 
-type BadgeVariant = 'default' | 'success' | 'secondary' | 'destructive' | 'outline'
+type BadgeVariant = 'default' | 'success' | 'secondary' | 'destructive' | 'outline' | 'info'
 
 export const DEALER_STATUS_LABEL: Record<Database['public']['Enums']['dealer_operational_status'], string> = {
   requested: 'Requested',
@@ -38,7 +38,7 @@ export const QUOTE_STATUS_LABEL: Record<Database['public']['Enums']['quote_statu
 }
 
 export const QUOTE_STATUS_VARIANT: Record<Database['public']['Enums']['quote_status'], BadgeVariant> = {
-  new: 'outline',
+  new: 'info',
   working: 'secondary',
   quote_sent: 'secondary',
   converted: 'success',

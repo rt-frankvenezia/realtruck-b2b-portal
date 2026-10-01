@@ -58,18 +58,23 @@ export function QuoteStatusActions({ quoteId, status }: { quoteId: string; statu
 
   return (
     <div className="flex items-center gap-2">
-      {(status === 'new' || status === 'working') && (
-        <Button size="sm" onClick={handleSendQuote} disabled={isPending}>
-          Send Quote
-        </Button>
-      )}
       {nextStatuses
-        .filter((s) => s !== 'quote_sent') // "Send Quote" already covers new/working -> quote_sent
+        .filter((s) => s !== 'quote_sent')
         .map((s) => (
           <Button key={s} size="sm" variant="outline" onClick={() => handleTransition(s)} disabled={isPending}>
             Mark {QUOTE_STATUS_LABEL[s]}
           </Button>
         ))}
+      {(status === 'new' || status === 'working') && (
+        <Button
+          size="sm"
+          onClick={handleSendQuote}
+          disabled={isPending}
+          className="bg-[#FFC60B] text-[#1E1E1E] hover:bg-[#FFC60B]/90 font-semibold uppercase tracking-wide"
+        >
+          Send Quote
+        </Button>
+      )}
     </div>
   )
 }

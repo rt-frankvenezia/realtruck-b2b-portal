@@ -33,6 +33,7 @@ import {
   RESTRICTION_RULES,
   AUDIT_LOG,
   CREDIT_APPLICATIONS,
+  QUOTE_ACTIVITY,
 } from './fixtures'
 import { DEMO_USERS } from './session'
 
@@ -71,6 +72,7 @@ const FIXTURE_MAP: Record<string, any[]> = {
   restriction_rules: RESTRICTION_RULES,
   audit_log: AUDIT_LOG,
   credit_applications: CREDIT_APPLICATIONS,
+  quote_activity: QUOTE_ACTIVITY,
 }
 
 function randomUUID(): string {
@@ -388,6 +390,44 @@ export function createMockClient(userId?: string) {
             },
             error: null,
           }
+
+        case 'transition_quote_status': {
+          const { p_quote_id, p_new_status } = params ?? {}
+          const arr = FIXTURE_MAP['quotes']
+          if (arr && p_quote_id && p_new_status) {
+            const idx = arr.findIndex((q: any) => q.id === p_quote_id)
+            if (idx !== -1) arr[idx] = { ...arr[idx], status: p_new_status, updated_at: new Date().toISOString() }
+          }
+          return { data: { success: true }, error: null }
+        }
+
+        case 'send_quote': {
+          const { p_quote_id } = params ?? {}
+          const arr = FIXTURE_MAP['quotes']
+          if (arr && p_quote_id) {
+            const idx = arr.findIndex((q: any) => q.id === p_quote_id)
+            if (idx !== -1) arr[idx] = { ...arr[idx], status: 'quote_sent', updated_at: new Date().toISOString() }
+          }
+          return { data: { success: true }, error: null }
+        }
+
+        case 'add_quote_note': {
+          const { p_quote_id, p_message, p_is_internal } = params ?? {}
+          const arr = FIXTURE_MAP['quote_activity']
+          if (arr && p_quote_id && p_message) {
+            arr.unshift({
+              id: randomUUID(),
+              quote_id: p_quote_id,
+              type: 'note',
+              message: p_message,
+              is_internal: p_is_internal ?? false,
+              actor_id: resolvedUserId,
+              created_at: new Date().toISOString(),
+              users: { name: demoUser.name },
+            })
+          }
+          return { data: { success: true }, error: null }
+        }
 
         case 'admin_dealer_health':
           return {

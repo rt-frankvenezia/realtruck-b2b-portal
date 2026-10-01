@@ -1123,11 +1123,50 @@ export const QUOTES = [
 
 export const QUOTE_LINE_ITEMS = [
   { id: 'qli00001-0000-0000-0000-000000000001', quote_id: '55555555-5555-5555-5555-000000000001', description: 'A.R.E. LS-II Series Cap', sku: 'ARE-LS2-F150', msrp: 1899.00, price: 1899.00, quantity: 1, is_required: true, type: 'base' },
-  { id: 'qli00002-0000-0000-0000-000000000001', quote_id: '55555555-5555-5555-5555-000000000001', description: 'LED Interior Lighting Kit', sku: 'ARE-LED-KIT', msrp: 89.00, price: 89.00, quantity: 1, is_required: false, type: 'option' },
+  { id: 'qli00001-0000-0000-0000-000000000002', quote_id: '55555555-5555-5555-5555-000000000001', description: 'Color: Oxford White', sku: 'ARE-COLOR-OW', msrp: 0, price: 0, quantity: 1, is_required: false, type: 'option' },
+  { id: 'qli00001-0000-0000-0000-000000000003', quote_id: '55555555-5555-5555-5555-000000000001', description: 'Driver Side Window: Frameless All Glass Window', sku: 'ARE-DSW-FLG', msrp: 0, price: 0, quantity: 1, is_required: false, type: 'option' },
+  { id: 'qli00001-0000-0000-0000-000000000004', quote_id: '55555555-5555-5555-5555-000000000001', description: 'Passenger Side Window: Frameless All Glass Window', sku: 'ARE-PSW-FLG', msrp: 0, price: 0, quantity: 1, is_required: false, type: 'option' },
+  { id: 'qli00002-0000-0000-0000-000000000001', quote_id: '55555555-5555-5555-5555-000000000001', description: 'Interior Lighting: 12V LED Dome Light With Prop Switch', sku: 'ARE-LED-KIT', msrp: 89.00, price: 89.00, quantity: 1, is_required: false, type: 'option' },
+  { id: 'qli00001-0000-0000-0000-000000000005', quote_id: '55555555-5555-5555-5555-000000000001', description: 'Rear Door: Frameless Door with Contour Strip and Keyless Entry', sku: 'ARE-RDOOR-FKE', msrp: 169.99, price: 169.99, quantity: 1, is_required: false, type: 'option' },
+  { id: 'qli00001-0000-0000-0000-000000000006', quote_id: '55555555-5555-5555-5555-000000000001', description: 'Interior Finish: Dark Gray Headliner', sku: 'ARE-INT-DGH', msrp: 0, price: 0, quantity: 1, is_required: false, type: 'option' },
+  { id: 'qli00001-0000-0000-0000-000000000007', quote_id: '55555555-5555-5555-5555-000000000001', description: 'Front Window: Aluminum Framed Tilt-Down Sliding Window', sku: 'ARE-FW-AFTD', msrp: 189.99, price: 189.99, quantity: 1, is_required: false, type: 'option' },
   { id: 'qli00003-0000-0000-0000-000000000001', quote_id: '55555555-5555-5555-5555-000000000002', description: 'A.R.E. Z-Series Cap', sku: 'ARE-Z-SLV1500', msrp: 2099.00, price: 1999.00, quantity: 1, is_required: true, type: 'base' },
   { id: 'qli00004-0000-0000-0000-000000000001', quote_id: '55555555-5555-5555-5555-000000000003', description: 'A.R.E. MX-Series Cap', sku: 'ARE-MX-RAM1500', msrp: 2299.00, price: 2299.00, quantity: 1, is_required: true, type: 'base' },
   { id: 'qli00005-0000-0000-0000-000000000001', quote_id: '55555555-5555-5555-5555-000000000004', description: 'A.R.E. LS-II Series Cap', sku: 'ARE-LS2-TUNDRA', msrp: 2099.00, price: 2099.00, quantity: 1, is_required: true, type: 'base' },
   { id: 'qli00006-0000-0000-0000-000000000001', quote_id: '55555555-5555-5555-5555-000000000004', description: 'Interior Carpet Kit', sku: 'ARE-CARPET-TUNDRA', msrp: 249.00, price: 249.00, quantity: 1, is_required: false, type: 'option' },
+]
+
+export const QUOTE_ACTIVITY: any[] = [
+  {
+    id: 'qa000001-0000-0000-0000-000000000001',
+    quote_id: '55555555-5555-5555-5555-000000000001',
+    type: 'system',
+    message: 'Quote request created via 3D configurator',
+    is_internal: false,
+    actor_id: null,
+    created_at: '2026-09-24T22:00:00Z',
+    users: null,
+  },
+  {
+    id: 'qa000002-0000-0000-0000-000000000001',
+    quote_id: '55555555-5555-5555-5555-000000000002',
+    type: 'system',
+    message: 'Quote request created via 3D configurator',
+    is_internal: false,
+    actor_id: null,
+    created_at: '2026-09-23T00:00:00Z',
+    users: null,
+  },
+  {
+    id: 'qa000003-0000-0000-0000-000000000001',
+    quote_id: '55555555-5555-5555-5555-000000000002',
+    type: 'status_change',
+    message: 'Status changed to Working',
+    is_internal: false,
+    actor_id: '33333333-3333-3333-3333-000000000003',
+    created_at: '2026-09-23T14:00:00Z',
+    users: { name: 'Casey Nguyen' },
+  },
 ]
 
 export const INSTALLATIONS = [
