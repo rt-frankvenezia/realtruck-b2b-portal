@@ -2,9 +2,10 @@ import Link from 'next/link'
 import { AlertCircle, FileText, TrendingUp, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 function formatAge(createdAt: string): { text: string; dot: 'none' | 'warning' | 'critical' } {
   const hours = (Date.now() - new Date(createdAt).getTime()) / 3_600_000
@@ -50,138 +51,116 @@ export default async function DealerQuotesPage() {
 
       {/* KPI cards */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card>
-          <CardContent className="flex items-center justify-between p-4">
-            <div>
-              <p className="text-xs text-muted-foreground">Requires Action</p>
-              <p className="mt-1 text-3xl font-bold">{requiresAction}</p>
+        {[
+          { label: 'Requires Action', value: requiresAction, icon: AlertCircle },
+          { label: 'Total Quotes', value: total, icon: FileText },
+          { label: 'Active Quotes', value: active, icon: TrendingUp },
+          { label: 'Conversion Rate', value: `${conversionRate}%`, icon: CheckCircle2 },
+        ].map(({ label, value, icon: Icon }) => (
+          <div key={label} className={PANEL}>
+            <div className="flex items-center justify-between p-4">
+              <div>
+                <p className="text-xs text-muted-foreground">{label}</p>
+                <p className="mt-1 text-3xl font-bold">{value}</p>
+              </div>
+              <Icon size={22} className="text-muted-foreground/40" />
             </div>
-            <AlertCircle size={22} className="text-muted-foreground/40" />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center justify-between p-4">
-            <div>
-              <p className="text-xs text-muted-foreground">Total Quotes</p>
-              <p className="mt-1 text-3xl font-bold">{total}</p>
-            </div>
-            <FileText size={22} className="text-muted-foreground/40" />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center justify-between p-4">
-            <div>
-              <p className="text-xs text-muted-foreground">Active Quotes</p>
-              <p className="mt-1 text-3xl font-bold">{active}</p>
-            </div>
-            <TrendingUp size={22} className="text-muted-foreground/40" />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="flex items-center justify-between p-4">
-            <div>
-              <p className="text-xs text-muted-foreground">Conversion Rate</p>
-              <p className="mt-1 text-3xl font-bold">{conversionRate}%</p>
-            </div>
-            <CheckCircle2 size={22} className="text-muted-foreground/40" />
-          </CardContent>
-        </Card>
+          </div>
+        ))}
       </div>
 
       {/* Filters (represented) */}
-      <Card>
-        <CardContent className="flex flex-wrap items-end gap-3 p-4">
+      <div className={PANEL}>
+        <div className="flex flex-wrap items-end gap-3 p-4">
           <div className="flex min-w-48 flex-1 flex-col gap-1">
             <label className="text-xs text-muted-foreground">Search</label>
             <input
               readOnly
               placeholder="Search by customer name, email, or quote ID..."
-              className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground"
+              className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground"
             />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground">Location</label>
-            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
               <option>All Locations</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground">Status</label>
-            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
               <option>All Statuses</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground">Date Range</label>
-            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
               <option>Last 30 Days</option>
             </select>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Quote ID</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Age</TableHead>
-                <TableHead>Code</TableHead>
-                <TableHead>Location</TableHead>
-                <TableHead>Customer Name</TableHead>
-                <TableHead>Vehicle</TableHead>
-                <TableHead>Value</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {rows.map((quote) => {
-                const loc = quote.location_id ? locMap.get(quote.location_id) : null
-                const age = formatAge(quote.created_at)
-                return (
-                  <TableRow key={quote.id}>
-                    <TableCell>
-                      <Link href={`/dealer/quotes/${quote.id}`} className="font-medium hover:underline">
-                        {quoteDisplayNum(quote.id)}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={QUOTE_STATUS_VARIANT[quote.status]}>{QUOTE_STATUS_LABEL[quote.status]}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <span className="flex items-center gap-1.5 text-sm">
-                        {age.dot !== 'none' && (
-                          <span
-                            className={`h-2 w-2 shrink-0 rounded-full ${age.dot === 'warning' ? 'bg-orange-400' : 'bg-red-500'}`}
-                          />
-                        )}
-                        {age.text}
-                      </span>
-                    </TableCell>
-                    <TableCell className="font-mono text-sm">{loc?.code ?? '—'}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {loc ? `${loc.city}, ${loc.state}` : '—'}
-                    </TableCell>
-                    <TableCell className="font-medium">{quote.customer_name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {[quote.vehicle_year, quote.vehicle_make, quote.vehicle_model].filter(Boolean).join(' ') || '—'}
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">—</TableCell>
-                  </TableRow>
-                )
-              })}
-              {rows.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
-                    No quotes yet.
+      <div className={PANEL}>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Quote ID</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Age</TableHead>
+              <TableHead>Code</TableHead>
+              <TableHead>Location</TableHead>
+              <TableHead>Customer Name</TableHead>
+              <TableHead>Vehicle</TableHead>
+              <TableHead>Value</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((quote) => {
+              const loc = quote.location_id ? locMap.get(quote.location_id) : null
+              const age = formatAge(quote.created_at)
+              return (
+                <TableRow key={quote.id}>
+                  <TableCell>
+                    <Link href={`/dealer/quotes/${quote.id}`} className="font-medium hover:underline">
+                      {quoteDisplayNum(quote.id)}
+                    </Link>
                   </TableCell>
+                  <TableCell>
+                    <Badge variant={QUOTE_STATUS_VARIANT[quote.status]}>{QUOTE_STATUS_LABEL[quote.status]}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <span className="flex items-center gap-1.5 text-sm">
+                      {age.dot !== 'none' && (
+                        <span
+                          className={`h-2 w-2 shrink-0 rounded-full ${age.dot === 'warning' ? 'bg-orange-400' : 'bg-red-500'}`}
+                        />
+                      )}
+                      {age.text}
+                    </span>
+                  </TableCell>
+                  <TableCell className="font-mono text-sm">{loc?.code ?? '—'}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {loc ? `${loc.city}, ${loc.state}` : '—'}
+                  </TableCell>
+                  <TableCell className="font-medium">{quote.customer_name}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground">
+                    {[quote.vehicle_year, quote.vehicle_make, quote.vehicle_model].filter(Boolean).join(' ') || '—'}
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground">—</TableCell>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              )
+            })}
+            {rows.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
+                  No quotes yet.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }

@@ -113,7 +113,7 @@ export function QuoteLineItemsEditor({
   return (
     <div className="flex flex-col">
       {/* Items table */}
-      <div className="overflow-hidden rounded-lg border">
+      <div className="overflow-hidden rounded border border-[#d5d5d5]">
         {/* Header */}
         <div className="grid grid-cols-[1fr_120px_60px_100px_36px] gap-0 bg-[#1E1E1E] text-white">
           <div className="px-4 py-3 text-sm font-semibold">Item</div>

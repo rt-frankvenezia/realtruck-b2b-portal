@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT } from '@/lib/status-labels'
 
 function formatAge(createdAt: string): { text: string; dot: 'none' | 'warning' | 'critical' } {
@@ -46,45 +47,44 @@ export default async function AdminQuotesPage() {
       </div>
 
       {/* Filters (represented) */}
-      <Card>
-        <CardContent className="flex flex-wrap items-end gap-3 p-4">
+      <div className={PANEL}>
+        <div className="flex flex-wrap items-end gap-3 p-4">
           <div className="flex min-w-40 flex-1 flex-col gap-1">
             <label className="text-xs text-muted-foreground">Search</label>
             <input
               readOnly
               placeholder="Search by customer name, email, or quote ID..."
-              className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground"
+              className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground"
             />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground">Dealer</label>
-            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
               <option>All Dealers</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground">Location</label>
-            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
               <option>All Locations</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground">Status</label>
-            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
               <option>All Statuses</option>
             </select>
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs text-muted-foreground">Date Range</label>
-            <select disabled className="h-9 rounded-md border border-input bg-background px-3 text-sm text-muted-foreground">
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
               <option>Last 30 Days</option>
             </select>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="p-0">
+      <div className={PANEL}>
           <Table>
             <TableHeader>
               <TableRow>
@@ -140,8 +140,7 @@ export default async function AdminQuotesPage() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

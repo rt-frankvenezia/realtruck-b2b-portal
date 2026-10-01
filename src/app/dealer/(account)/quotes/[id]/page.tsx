@@ -3,12 +3,15 @@ import { notFound } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
-import { Card, CardContent } from '@/components/ui/card'
 import { QuoteStatusActions } from '@/components/dealer/QuoteStatusActions'
 import { QuoteActivityTimeline } from '@/components/dealer/QuoteActivityTimeline'
 import { QuoteLineItemsEditor } from '@/components/dealer/QuoteLineItemsEditor'
 import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignDialog'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 function quoteDisplayNum(id: string): string {
   const n = parseInt(id.split('-').pop() ?? '0', 16)
@@ -38,14 +41,12 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
 
   if (!quote) notFound()
 
-  // Fetch location for display
   const { data: location } = await supabase
     .from('locations')
     .select('id, name, code, city, state, company_id')
     .eq('id', quote.location_id ?? '')
     .maybeSingle()
 
-  // For admin reassign dialog: fetch all available locations
   const { data: allLocations } = isAdmin
     ? await supabase.from('locations').select('id, name, code, city, state, company_id, companies(name)') as any
     : { data: null }
@@ -92,43 +93,38 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
         </div>
       </div>
 
-      {/* 3-column cards */}
+      {/* 3-column panels */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        {/* Customer */}
-        <Card>
-          <div className="bg-[#1E1E1E] px-4 py-3">
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
             <h2 className="font-semibold text-white">Customer</h2>
           </div>
-          <CardContent className="flex flex-col gap-3 p-4">
+          <div className={`${PANEL_BODY} flex flex-col gap-3`}>
             <Field label="Full Name" value={quote.customer_name} />
             <Field label="Email" value={quote.customer_email} />
             <Field label="Phone Number" value={quote.customer_phone} />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        {/* Vehicle */}
-        <Card>
-          <div className="bg-[#1E1E1E] px-4 py-3">
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
             <h2 className="font-semibold text-white">Vehicle</h2>
           </div>
-          <CardContent className="p-4">
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Year" value={quote.vehicle_year} />
-              <Field label="Make" value={quote.vehicle_make} />
-              <Field label="Model" value={quote.vehicle_model} />
-              <Field label="Bed Length" value={quote.bed_length} />
-              <Field label="Body Type" value={quote.body_type} />
-              <Field label="Engine" value={quote.engine} />
-            </div>
-          </CardContent>
-        </Card>
+          <div className={`${PANEL_BODY} grid grid-cols-2 gap-3`}>
+            <Field label="Year" value={quote.vehicle_year} />
+            <Field label="Make" value={quote.vehicle_make} />
+            <Field label="Model" value={quote.vehicle_model} />
+            <Field label="Bed Length" value={quote.bed_length} />
+            <Field label="Body Type" value={quote.body_type} />
+            <Field label="Engine" value={quote.engine} />
+          </div>
+        </div>
 
-        {/* Summary */}
-        <Card>
-          <div className="bg-[#1E1E1E] px-4 py-3">
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
             <h2 className="font-semibold text-white">Summary</h2>
           </div>
-          <CardContent className="flex flex-col gap-3 p-4">
+          <div className={`${PANEL_BODY} flex flex-col gap-3`}>
             <div>
               <p className="text-xs text-muted-foreground">Status</p>
               <p className="mt-0.5 text-sm font-medium">{QUOTE_STATUS_LABEL[quote.status]}</p>
@@ -136,8 +132,8 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
             <Field label="Quote ID" value={displayNum} />
             <Field label="Created" value={createdAt} />
             {location && <Field label="Location" value={`${location.name} (${location.code})`} />}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
       {/* Line items */}
@@ -148,24 +144,24 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
       />
 
       {/* Message To Customer */}
-      <div className="overflow-hidden rounded-lg border">
-        <div className="bg-[#1E1E1E] px-4 py-3">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
           <h2 className="font-semibold text-white">Message To Customer</h2>
         </div>
-        <div className="p-4">
+        <div className={PANEL_BODY}>
           <div className="flex flex-col gap-1.5">
             <label className="text-sm text-muted-foreground">Message</label>
             <textarea
               rows={4}
               placeholder="Enter your message here..."
-              className="w-full resize-none rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              className="w-full resize-none rounded border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
         </div>
       </div>
 
       {/* Activity */}
-      <div className="overflow-hidden rounded-lg border">
+      <div className={PANEL}>
         <QuoteActivityTimeline
           quoteId={quote.id}
           entries={(activity ?? []) as any}
