@@ -10,7 +10,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 
 export default function NewCatalogPage() {
   const router = useRouter()
@@ -54,11 +56,11 @@ export default function NewCatalogPage() {
         <p className="mt-1 text-muted-foreground">A Catalog defines what a dealer is allowed to buy.</p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Catalog Information</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Catalog Information</h2>
+        </div>
+        <div className="flex flex-col gap-4 p-4">
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="cat-name">Catalog Name *</Label>
             <Input
@@ -78,14 +80,14 @@ export default function NewCatalogPage() {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Availability</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-1.5">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Availability</h2>
+        </div>
+        <div className="flex flex-col gap-1.5 p-4">
           <Label>Default Access</Label>
           <Select value={defaultAccess} onValueChange={(v) => setDefaultAccess(v as 'allowed' | 'not_allowed')}>
             <SelectTrigger className="max-w-xs">
@@ -97,8 +99,8 @@ export default function NewCatalogPage() {
             </SelectContent>
           </Select>
           <p className="text-xs text-muted-foreground mt-1">You can add specific availability rules after creating the catalog.</p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <div className="flex justify-end gap-2">
         <Button variant="outline" onClick={() => router.push('/admin/catalogs')} disabled={isPending}>

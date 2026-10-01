@@ -2,9 +2,12 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CompanyBillingForm } from '@/components/dealer/CompanyBillingForm'
 import { COMPANY_STATUS_LABEL, COMPANY_STATUS_VARIANT } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function DealerCompanyPage() {
   const user = await getCurrentUser()
@@ -31,12 +34,12 @@ export default async function DealerCompanyPage() {
         <Badge variant={COMPANY_STATUS_VARIANT[company.status]}>{COMPANY_STATUS_LABEL[company.status]}</Badge>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Overview</CardTitle>
-          <CardDescription>Company code, status, and A.R.E. dealer designation are managed by RealTruck.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Overview</h2>
+          <p className="text-sm text-white/70">Company code, status, and A.R.E. dealer designation are managed by RealTruck.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-4 p-4">
           <div>
             <p className="text-xs font-medium text-muted-foreground">A.R.E. Dealer</p>
             <p>{company.is_are_dealer ? 'Yes' : 'No'}</p>
@@ -53,18 +56,18 @@ export default async function DealerCompanyPage() {
             <p className="text-xs font-medium text-muted-foreground">Users</p>
             <p>{userCount ?? 0}</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Billing Address</CardTitle>
-          <CardDescription>Editable by your dealer admin.</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Billing Address</h2>
+          <p className="text-sm text-white/70">Editable by your dealer admin.</p>
+        </div>
+        <div className={PANEL_BODY}>
           <CompanyBillingForm company={company} />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

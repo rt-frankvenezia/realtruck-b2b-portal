@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ResourceIcon } from '@/components/dealer/ResourceIcon'
 import { DownloadResourceButton } from '@/components/dealer/DownloadResourceButton'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 
 export default async function ResourcesPage({ searchParams }: { searchParams: Promise<{ q?: string; category?: string }> }) {
   const { q, category } = await searchParams
@@ -29,30 +31,30 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardDescription>Total Resources</CardDescription>
-            <CardTitle className="text-3xl">{allResources?.length ?? 0}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Categories</CardDescription>
-            <CardTitle className="text-3xl">{categories.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Brands</CardDescription>
-            <CardTitle className="text-3xl">{brandCount}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>New This Month</CardDescription>
-            <CardTitle className="text-3xl">{newCount}</CardTitle>
-          </CardHeader>
-        </Card>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Total Resources</p>
+            <h2 className="font-semibold text-white text-3xl">{allResources?.length ?? 0}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Categories</p>
+            <h2 className="font-semibold text-white text-3xl">{categories.length}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Brands</p>
+            <h2 className="font-semibold text-white text-3xl">{brandCount}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">New This Month</p>
+            <h2 className="font-semibold text-white text-3xl">{newCount}</h2>
+          </div>
+        </div>
       </div>
 
       <form className="flex gap-2">
@@ -84,12 +86,12 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((resource) => (
-          <Card key={resource.id} className="flex flex-col overflow-hidden">
+          <div key={resource.id} className={`${PANEL} flex flex-col`}>
             <div className="relative flex h-32 items-center justify-center bg-neutral-100">
               <ResourceIcon category={resource.category} size={40} className="text-neutral-400" />
               {resource.is_new && <Badge className="absolute right-3 top-3 bg-green-600 text-white">NEW</Badge>}
             </div>
-            <CardContent className="flex flex-1 flex-col gap-3 pt-4">
+            <div className="flex flex-1 flex-col gap-3 p-4">
               <div>
                 <h3 className="font-semibold">{resource.title}</h3>
                 <p className="mt-1 text-sm text-muted-foreground">{resource.description}</p>
@@ -99,13 +101,13 @@ export default async function ResourcesPage({ searchParams }: { searchParams: Pr
                 <Badge variant="outline">{resource.brand}</Badge>
               </div>
               <DownloadResourceButton title={resource.title} />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
         {filtered.length === 0 && (
-          <Card className="sm:col-span-2 lg:col-span-3">
-            <CardContent className="pt-6 text-center text-sm text-muted-foreground">No resources match your search.</CardContent>
-          </Card>
+          <div className={`${PANEL} sm:col-span-2 lg:col-span-3`}>
+            <div className="p-6 text-center text-sm text-muted-foreground">No resources match your search.</div>
+          </div>
         )}
       </div>
     </div>

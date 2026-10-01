@@ -3,11 +3,12 @@ import { FileText } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { DownloadDocumentButton } from '@/components/dealer/financial/DownloadDocumentButton'
 import { GenerateStatementForm } from '@/components/dealer/financial/GenerateStatementForm'
 import { STATEMENT_STATUS_LABEL, STATEMENT_STATUS_VARIANT, formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function StatementsPage() {
   const user = await getCurrentUser()
@@ -31,12 +32,12 @@ export default async function StatementsPage() {
       <GenerateStatementForm companyId={user.profile.company_id} />
 
       {!statements || statements.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+        <div className={PANEL}>
+          <div className="flex flex-col items-center gap-3 py-16 text-center px-4">
             <FileText size={40} className="text-muted-foreground/40" />
             <p className="text-sm text-muted-foreground">No statements yet. Generate one above for a specific period.</p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ) : (
         <div className="rounded-lg border">
           <div className="flex flex-col divide-y">

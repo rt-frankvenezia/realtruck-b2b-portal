@@ -3,9 +3,10 @@ import Link from 'next/link'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { MakePaymentForm } from '@/components/dealer/financial/MakePaymentForm'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function NewPaymentPage({
   searchParams,
@@ -39,14 +40,14 @@ export default async function NewPaymentPage({
     return (
       <div className="flex flex-col gap-6">
         <h1 className="text-2xl font-semibold">Make a Payment</h1>
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+        <div className={PANEL}>
+          <div className="flex flex-col items-center gap-3 py-16 text-center px-4">
             <p className="text-sm text-muted-foreground">You do not have any open invoices eligible for payment.</p>
             <Button variant="outline" render={<Link href="/dealer/financial/invoices" />} nativeButton={false}>
               View Invoices
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     )
   }

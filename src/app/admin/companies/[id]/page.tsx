@@ -2,8 +2,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 import { CompanyStatusSelect } from '@/components/admin/CompanyStatusSelect'
 import { LocationStatusSelect } from '@/components/admin/LocationStatusSelect'
 import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialog'
@@ -53,11 +56,11 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
 
       {company.status === 'pending_provisioning' && <DealerActivationPanel companyId={company.id} requirements={requirements} />}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Company Information</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Company Information</h2>
+        </div>
+        <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3 p-4">
           <div>
             <p className="text-xs font-medium text-muted-foreground">Billing Address</p>
             <p>{[company.billing_address, company.billing_city, company.billing_state].filter(Boolean).join(', ') || '—'}</p>
@@ -107,16 +110,17 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
             <p className="text-xs font-medium text-muted-foreground">Created Date</p>
             <p>{formatDate(company.created_at)}</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>Locations</CardTitle>
-          <CreateLocationDialog companyId={company.id} />
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-white">Locations</h2>
+            <CreateLocationDialog companyId={company.id} />
+          </div>
+        </div>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
@@ -153,55 +157,54 @@ export default async function AdminCompanyDetailPage({ params }: { params: Promi
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
 
-      <Card>
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>Users</CardTitle>
-          <CreateUserDialog
-            creatorRole="realtruck_admin"
-            companies={[{ id: company.id, name: company.name }]}
-            locations={(locations ?? []).map((l) => ({ id: l.id, name: l.name, company_id: l.company_id }))}
-            defaultCompanyId={company.id}
-          />
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-white">Users</h2>
+            <CreateUserDialog
+              creatorRole="realtruck_admin"
+              companies={[{ id: company.id, name: company.name }]}
+              locations={(locations ?? []).map((l) => ({ id: l.id, name: l.name, company_id: l.company_id }))}
+              defaultCompanyId={company.id}
+            />
+          </div>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Status</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(users ?? []).map((u) => (
+              <TableRow key={u.id}>
+                <TableCell>
+                  <Link href={`/admin/users/${u.id}`} className="font-medium hover:underline">
+                    {u.name}
+                  </Link>
+                </TableCell>
+                <TableCell>{u.email}</TableCell>
+                <TableCell>{USER_ROLE_LABEL[u.role]}</TableCell>
+                <TableCell>
+                  <Badge variant={USER_STATUS_VARIANT[u.status]}>{USER_STATUS_LABEL[u.status]}</Badge>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(users ?? []).map((u) => (
-                <TableRow key={u.id}>
-                  <TableCell>
-                    <Link href={`/admin/users/${u.id}`} className="font-medium hover:underline">
-                      {u.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{u.email}</TableCell>
-                  <TableCell>{USER_ROLE_LABEL[u.role]}</TableCell>
-                  <TableCell>
-                    <Badge variant={USER_STATUS_VARIANT[u.status]}>{USER_STATUS_LABEL[u.status]}</Badge>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {(users ?? []).length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground">
-                    No users yet.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            ))}
+            {(users ?? []).length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  No users yet.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
 
       <InternalNotesCard table="companies" id={company.id} notes={company.internal_notes} />
     </div>

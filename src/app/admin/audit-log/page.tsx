@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function AdminAuditLogPage() {
   const supabase = await createClient()
@@ -17,9 +18,8 @@ export default async function AdminAuditLogPage() {
         <p className="text-muted-foreground">Every administrative action, in order.</p>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Actor</TableHead>
@@ -48,8 +48,7 @@ export default async function AdminAuditLogPage() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

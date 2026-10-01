@@ -2,11 +2,12 @@ import { redirect } from 'next/navigation'
 import { CreditCard, Landmark } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { AddSavedPaymentMethodDialog } from '@/components/dealer/financial/AddSavedPaymentMethodDialog'
 import { DeleteSavedPaymentMethodButton } from '@/components/dealer/financial/DeleteSavedPaymentMethodButton'
 import { formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function PaymentMethodsPage() {
   const user = await getCurrentUser()
@@ -63,12 +64,12 @@ export default async function PaymentMethodsPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">Cards</h2>
         {cards.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+          <div className={PANEL}>
+            <div className="flex flex-col items-center gap-3 py-16 text-center px-4">
               <CreditCard size={40} className="text-muted-foreground/40" />
               <p className="text-sm text-muted-foreground">No saved cards yet.</p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ) : (
           <div className="rounded-lg border">
             <div className="flex flex-col divide-y">
@@ -102,12 +103,12 @@ export default async function PaymentMethodsPage() {
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">Bank Accounts</h2>
         {bankAccounts.length === 0 ? (
-          <Card>
-            <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+          <div className={PANEL}>
+            <div className="flex flex-col items-center gap-3 py-16 text-center px-4">
               <Landmark size={40} className="text-muted-foreground/40" />
               <p className="text-sm text-muted-foreground">No saved bank accounts yet.</p>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ) : (
           <div className="rounded-lg border">
             <div className="flex flex-col divide-y">

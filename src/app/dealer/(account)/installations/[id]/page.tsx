@@ -2,8 +2,11 @@ import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 import {
   DEALER_STATUS_LABEL,
   DEALER_STATUS_VARIANT,
@@ -70,11 +73,11 @@ export default async function InstallationDetailPage({ params }: { params: Promi
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="flex flex-col gap-6 lg:col-span-2">
-          <Card>
-            <CardHeader>
-              <CardTitle>Order details</CardTitle>
-            </CardHeader>
-            <CardContent className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
+          <div className={PANEL}>
+            <div className={PANEL_HEADER}>
+              <h2 className="font-semibold text-white">Order details</h2>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3 p-4">
               <Field label="Cap Model" value={installation.cap_model} />
               <Field label="Color / Finish" value={[installation.cap_color, installation.cap_finish].filter(Boolean).join(' / ') || null} />
               <Field label="MSRP" value={formatCurrency(installation.msrp)} />
@@ -89,8 +92,8 @@ export default async function InstallationDetailPage({ params }: { params: Promi
                   <p>{installation.dealer_instructions}</p>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
           <VerificationPanel
             installationId={installation.id}
@@ -106,15 +109,15 @@ export default async function InstallationDetailPage({ params }: { params: Promi
         <div className="flex flex-col gap-6">
           <PayoutSummary payout={payout} />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Status history</CardTitle>
-              <CardDescription>Every transition, in order — dealer, ERP, or RT admin sourced.</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <div className={PANEL}>
+            <div className={PANEL_HEADER}>
+              <h2 className="font-semibold text-white">Status history</h2>
+              <p className="text-sm text-white/70">Every transition, in order — dealer, ERP, or RT admin sourced.</p>
+            </div>
+            <div className={PANEL_BODY}>
               <StatusHistoryTimeline entries={statusHistory ?? []} />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
       </div>
     </div>

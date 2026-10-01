@@ -1,11 +1,14 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LocationAddressForm } from '@/components/dealer/LocationAddressForm'
 import { LocationPricingOverride } from '@/components/dealer/LocationPricingOverride'
 import { LOCATION_STATUS_LABEL, LOCATION_STATUS_VARIANT } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function DealerLocationDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -34,41 +37,41 @@ export default async function DealerLocationDetailPage({ params }: { params: Pro
       </div>
 
       {location.status === 'pending_approval' && (
-        <Card>
-          <CardContent className="text-sm text-muted-foreground">
+        <div className={PANEL}>
+          <div className="p-4 text-sm text-muted-foreground">
             This location is awaiting approval by RealTruck. A RealTruck admin needs to assign a location code and
             activate it before it can be used.
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Address & Contact</CardTitle>
-          <CardDescription>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Address &amp; Contact</h2>
+          <p className="text-sm text-white/70">
             Location code, status, and regional sales manager are managed by RealTruck.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+          </p>
+        </div>
+        <div className={PANEL_BODY}>
           <LocationAddressForm location={location} />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Installation Pricing</CardTitle>
-          <CardDescription>Override your company&apos;s default installation pricing for this location.</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Installation Pricing</h2>
+          <p className="text-sm text-white/70">Override your company&apos;s default installation pricing for this location.</p>
+        </div>
+        <div className={PANEL_BODY}>
           <LocationPricingOverride location={location} companyDefaults={companyDefaults} companyName={location.companies?.name ?? 'your company'} />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Assigned Location Admins</CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Assigned Location Admins</h2>
+        </div>
+        <div className="text-sm p-4">
           {(assignedAdmins ?? []).length > 0 ? (
             <ul className="flex flex-col gap-1">
               {(assignedAdmins ?? []).map((row) => (
@@ -82,8 +85,8 @@ export default async function DealerLocationDetailPage({ params }: { params: Pro
               No location admins assigned yet. Assign them from the Team page.
             </p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

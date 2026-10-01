@@ -4,10 +4,11 @@ import { Receipt } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { PAYMENT_STATUS_LABEL, PAYMENT_STATUS_VARIANT, formatCurrency, formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function PaymentHistoryPage() {
   const user = await getCurrentUser()
@@ -36,12 +37,12 @@ export default async function PaymentHistoryPage() {
       </div>
 
       {!payments || payments.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+        <div className={PANEL}>
+          <div className="flex flex-col items-center gap-3 py-16 text-center px-4">
             <Receipt size={40} className="text-muted-foreground/40" />
             <p className="text-sm text-muted-foreground">No payments yet.</p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ) : (
         <div className="overflow-x-auto rounded-lg border">
           <table className="w-full text-sm">

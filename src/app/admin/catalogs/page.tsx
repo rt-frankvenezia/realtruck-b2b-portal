@@ -1,10 +1,11 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Plus } from 'lucide-react'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function AdminCatalogsPage() {
   const supabase = await createClient()
@@ -39,9 +40,8 @@ export default async function AdminCatalogsPage() {
         </Link>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
@@ -89,8 +89,7 @@ export default async function AdminCatalogsPage() {
               })}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

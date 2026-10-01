@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { LocationStatusSelect } from '@/components/admin/LocationStatusSelect'
 import { LocationApprovalDialog } from '@/components/admin/LocationApprovalDialog'
 import type { Database } from '@/lib/database.types'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 
 type LocationStatus = Database['public']['Enums']['location_status']
 
@@ -45,24 +47,24 @@ export default async function AdminLocationsPage({ searchParams }: { searchParam
       </div>
 
       <div className="grid grid-cols-3 gap-4">
-        <Card>
-          <CardHeader>
-            <CardDescription>Pending Approval</CardDescription>
-            <CardTitle className="text-3xl">{stats.pending}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Active</CardDescription>
-            <CardTitle className="text-3xl">{stats.active}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Total</CardDescription>
-            <CardTitle className="text-3xl">{stats.total}</CardTitle>
-          </CardHeader>
-        </Card>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Pending Approval</p>
+            <h2 className="font-semibold text-white text-3xl">{stats.pending}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Active</p>
+            <h2 className="font-semibold text-white text-3xl">{stats.active}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Total</p>
+            <h2 className="font-semibold text-white text-3xl">{stats.total}</h2>
+          </div>
+        </div>
       </div>
 
       <div className="flex gap-2">
@@ -79,9 +81,8 @@ export default async function AdminLocationsPage({ searchParams }: { searchParam
         ))}
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
@@ -117,8 +118,7 @@ export default async function AdminLocationsPage({ searchParams }: { searchParam
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

@@ -1,10 +1,11 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { PAYOUT_STATUS_LABEL, PAYOUT_STATUS_VARIANT, formatCurrency, formatDate } from '@/lib/status-labels'
 import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function DealerPayoutsPage() {
   if (!INSTALLATIONS_ENABLED) redirect('/dealer')
@@ -21,9 +22,8 @@ export default async function DealerPayoutsPage() {
         <p className="text-muted-foreground">Created automatically once an installation is completed and confirmed.</p>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Order</TableHead>
@@ -56,8 +56,7 @@ export default async function DealerPayoutsPage() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

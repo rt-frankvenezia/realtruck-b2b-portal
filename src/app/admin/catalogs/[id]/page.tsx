@@ -2,12 +2,15 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CatalogInfoForm } from '@/components/admin/CatalogInfoForm'
 import { CatalogAvailabilitySection } from '@/components/admin/CatalogAvailabilitySection'
 import { CatalogDealerAssignment } from '@/components/admin/CatalogDealerAssignment'
 import { RestrictionRuleManager } from '@/components/admin/RestrictionRuleManager'
 import { PURCHASE_ACCESS_LABEL } from '@/lib/restrictions'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function AdminCatalogDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -44,65 +47,67 @@ export default async function AdminCatalogDetailPage({ params }: { params: Promi
         {catalog.description && <p className="text-muted-foreground mt-1">{catalog.description}</p>}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Catalog Information</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Catalog Information</h2>
+        </div>
+        <div className={PANEL_BODY}>
           <CatalogInfoForm catalog={catalog} />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {restrictionGroup ? (
         <>
-          <Card>
-            <CardHeader>
+          <div className={PANEL}>
+            <div className={PANEL_HEADER}>
               <div className="flex items-center justify-between">
-                <CardTitle>Availability — Default Access</CardTitle>
+                <h2 className="font-semibold text-white">Availability — Default Access</h2>
                 <Badge variant={restrictionGroup.default_access === 'allowed' ? 'success' : 'destructive'}>
                   {PURCHASE_ACCESS_LABEL[restrictionGroup.default_access]}
                 </Badge>
               </div>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className={PANEL_BODY}>
               <CatalogAvailabilitySection restrictionGroup={restrictionGroup} />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Availability Rules</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className={PANEL}>
+            <div className={PANEL_HEADER}>
+              <h2 className="font-semibold text-white">Availability Rules</h2>
+            </div>
+            <div className={PANEL_BODY}>
               <RestrictionRuleManager
                 restrictionGroupId={restrictionGroup.id}
                 rules={restrictionRules}
                 defaultAccess={restrictionGroup.default_access}
               />
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </>
       ) : (
-        <Card>
-          <CardHeader><CardTitle>Availability</CardTitle></CardHeader>
-          <CardContent>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">Availability</h2>
+          </div>
+          <div className={PANEL_BODY}>
             <p className="text-sm text-muted-foreground">No availability configuration attached to this catalog.</p>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Dealers</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Dealers</h2>
+        </div>
+        <div className={PANEL_BODY}>
           <CatalogDealerAssignment
             catalogId={catalog.id}
             restrictionGroupId={catalog.restriction_group_id}
             initialDealers={dealers ?? []}
           />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

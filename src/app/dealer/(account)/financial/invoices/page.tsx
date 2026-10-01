@@ -4,11 +4,12 @@ import { Receipt } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { INVOICE_STATUS_LABEL, INVOICE_STATUS_VARIANT, formatCurrency, formatDate } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 type InvoiceStatus = Database['public']['Enums']['invoice_status']
 const STATUS_FILTERS: InvoiceStatus[] = ['open', 'past_due', 'payment_processing', 'paid']
@@ -136,11 +137,11 @@ export default async function InvoiceCenterPage({
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <Card>
-      <CardContent className="flex flex-col items-center gap-3 py-16 text-center">
+    <div className={PANEL}>
+      <div className="flex flex-col items-center gap-3 py-16 text-center px-4">
         <Receipt size={40} className="text-muted-foreground/40" />
         <p className="text-sm text-muted-foreground">{message}</p>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

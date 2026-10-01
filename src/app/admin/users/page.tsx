@@ -1,13 +1,15 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CreateUserDialog } from '@/components/admin/CreateUserDialog'
 import { SortableHeader } from '@/components/admin/SortableHeader'
 import { USER_ROLE_LABEL, USER_STATUS_LABEL, USER_STATUS_VARIANT } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 
 type UserRole = Database['public']['Enums']['user_role']
 type UserStatus = Database['public']['Enums']['user_status']
@@ -106,30 +108,30 @@ export default async function AdminUsersPage({
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Card>
-          <CardHeader>
-            <CardDescription>Total Users</CardDescription>
-            <CardTitle className="text-3xl">{stats.total}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Active Users</CardDescription>
-            <CardTitle className="text-3xl">{stats.active}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Pending Invites</CardDescription>
-            <CardTitle className="text-3xl">{stats.pendingInvites}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardDescription>Admin Users</CardDescription>
-            <CardTitle className="text-3xl">{stats.admins}</CardTitle>
-          </CardHeader>
-        </Card>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Total Users</p>
+            <h2 className="font-semibold text-white text-3xl">{stats.total}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Active Users</p>
+            <h2 className="font-semibold text-white text-3xl">{stats.active}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Pending Invites</p>
+            <h2 className="font-semibold text-white text-3xl">{stats.pendingInvites}</h2>
+          </div>
+        </div>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <p className="text-sm text-white/70">Admin Users</p>
+            <h2 className="font-semibold text-white text-3xl">{stats.admins}</h2>
+          </div>
+        </div>
       </div>
 
       <form className="flex gap-2">
@@ -176,9 +178,8 @@ export default async function AdminUsersPage({
         })}
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>
@@ -225,8 +226,7 @@ export default async function AdminUsersPage({
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

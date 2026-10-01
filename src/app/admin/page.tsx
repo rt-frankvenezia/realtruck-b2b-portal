@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { InstallationKPIDashboard } from '@/components/shared/InstallationKPIDashboard'
 import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 
 const TIER_LABEL: Record<string, string> = {
   healthy: 'Healthy',
@@ -58,18 +60,17 @@ export default async function AdminOversightPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-4">
         {tierOrder.map((tier) => (
-          <Card key={tier}>
-            <CardHeader>
-              <CardDescription>{TIER_LABEL[tier]}</CardDescription>
-              <CardTitle className="text-3xl">{sorted.filter((c) => c.health_tier === tier).length}</CardTitle>
-            </CardHeader>
-          </Card>
+          <div key={tier} className={PANEL}>
+            <div className={PANEL_HEADER}>
+              <p className="text-sm text-white/70">{TIER_LABEL[tier]}</p>
+              <h2 className="font-semibold text-white text-3xl">{sorted.filter((c) => c.health_tier === tier).length}</h2>
+            </div>
+          </div>
         ))}
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Company</TableHead>
@@ -111,8 +112,7 @@ export default async function AdminOversightPage() {
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

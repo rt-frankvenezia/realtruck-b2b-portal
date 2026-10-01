@@ -5,8 +5,9 @@ import { AlertTriangle, Clock, CreditCard, Info, Receipt, Wallet } from 'lucide-
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
@@ -57,8 +58,8 @@ export default async function FinancialOverviewPage() {
     return (
       <div className="flex flex-col gap-6">
         <h1 className="text-2xl font-semibold">Financial Overview</h1>
-        <Card>
-          <CardContent className="flex flex-col items-center gap-4 py-16 text-center">
+        <div className={PANEL}>
+          <div className="flex flex-col items-center gap-4 py-16 text-center px-4">
             <CreditCard size={32} className="text-muted-foreground" />
             <div className="max-w-md">
               <p className="font-semibold">You don&apos;t have active credit terms yet.</p>
@@ -69,8 +70,8 @@ export default async function FinancialOverviewPage() {
             <Button render={<Link href="/dealer/credit" />} nativeButton={false}>
               Apply for Terms
             </Button>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     )
   }
@@ -167,8 +168,8 @@ export default async function FinancialOverviewPage() {
         </Alert>
       )}
 
-      <Card>
-        <CardContent className="flex flex-col gap-6 pt-6">
+      <div className={PANEL}>
+        <div className="flex flex-col gap-6 p-6">
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
             <SummaryStat label="Outstanding Balance" value={formatCurrency(account.outstanding_balance)} />
             <SummaryStat
@@ -210,11 +211,11 @@ export default async function FinancialOverviewPage() {
               Statements
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="flex flex-col gap-4 pt-6">
+      <div className={PANEL}>
+        <div className="flex flex-col gap-4 p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold">Recent Activity</h2>
             {hasFinancialPermission(user.profile.role, 'view_payments') && (
@@ -246,19 +247,19 @@ export default async function FinancialOverviewPage() {
               ))}
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardContent className="flex flex-col gap-4 pt-6">
+      <div className={PANEL}>
+        <div className="flex flex-col gap-4 p-6">
           <h2 className="font-semibold">Account Details</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
             <DetailRow label="Payment Terms" value={account.payment_terms ? PAYMENT_TERMS_LABEL[account.payment_terms] : '—'} />
             <DetailRow label="Credit Hold Status" value={CREDIT_HOLD_STATUS_LABEL[account.credit_hold_status]} />
             <DetailRow label="Effective Date" value={formatDate(account.effective_date)} />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

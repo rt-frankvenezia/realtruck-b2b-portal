@@ -2,10 +2,11 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { DEALER_STATUS_LABEL, DEALER_STATUS_VARIANT, formatCurrency, formatDate } from '@/lib/status-labels'
 import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function DealerInstallationsPage() {
   if (!INSTALLATIONS_ENABLED) redirect('/dealer')
@@ -22,9 +23,8 @@ export default async function DealerInstallationsPage() {
         <p className="text-muted-foreground">Track every order from scheduling through verification and payout.</p>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Order</TableHead>
@@ -63,8 +63,7 @@ export default async function DealerInstallationsPage() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

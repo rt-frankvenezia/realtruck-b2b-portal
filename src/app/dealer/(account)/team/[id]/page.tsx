@@ -2,10 +2,13 @@ import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserStatusSelect } from '@/components/admin/UserStatusSelect'
 import { UserLocationAssignment } from '@/components/dealer/UserLocationAssignment'
 import { USER_ROLE_LABEL, formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function DealerTeamMemberPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -36,12 +39,12 @@ export default async function DealerTeamMemberPage({ params }: { params: Promise
         <UserStatusSelect userId={member.id} status={member.status} />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Details</CardTitle>
-          <CardDescription>Role changes require a RealTruck admin.</CardDescription>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Details</h2>
+          <p className="text-sm text-white/70">Role changes require a RealTruck admin.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3 p-4">
           <div>
             <p className="text-xs font-medium text-muted-foreground">Email</p>
             <p>{member.email}</p>
@@ -58,22 +61,22 @@ export default async function DealerTeamMemberPage({ params }: { params: Promise
             <p className="text-xs font-medium text-muted-foreground">Last Login</p>
             <p>{member.last_login_at ? formatDate(member.last_login_at) : 'Never'}</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {member.role === 'location_admin' && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Location Assignments</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">Location Assignments</h2>
+          </div>
+          <div className={PANEL_BODY}>
             <UserLocationAssignment
               userId={member.id}
               assignedLocationIds={(assignedLocations ?? []).map((l) => l.location_id)}
               availableLocations={availableLocations}
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )

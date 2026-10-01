@@ -4,10 +4,11 @@ import { CheckCircle, FileText } from 'lucide-react'
 import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { StartApplicationButton } from '@/components/dealer/credit/StartApplicationButton'
 import { CreditApplicationStatusView } from '@/components/dealer/credit/CreditApplicationStatusView'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function CreditApplicationPage() {
   const user = await getCurrentUser()
@@ -33,8 +34,8 @@ export default async function CreditApplicationPage() {
           <h1 className="text-2xl font-semibold">Credit Application</h1>
           <p className="text-muted-foreground">Apply for payment terms to order on credit instead of by card.</p>
         </div>
-        <Card>
-          <CardContent className="flex flex-col items-center gap-4 py-16 text-center">
+        <div className={PANEL}>
+          <div className="flex flex-col items-center gap-4 py-16 text-center px-4">
             <div className="flex size-14 items-center justify-center rounded-full bg-muted">
               <FileText size={28} className="text-muted-foreground" />
             </div>
@@ -50,8 +51,8 @@ export default async function CreditApplicationPage() {
             ) : (
               <p className="text-sm text-muted-foreground">Contact your dealer admin to start a credit application.</p>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     )
   }

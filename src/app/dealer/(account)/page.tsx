@@ -4,8 +4,9 @@ import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { InstallationKPIDashboard } from '@/components/shared/InstallationKPIDashboard'
 import { OrderProgressStepper } from '@/components/shared/OrderProgressStepper'
@@ -103,8 +104,8 @@ export default async function DealerDashboardPage() {
           </div>
           <div className="flex flex-col gap-4">
             {(recentOrders ?? []).map((order) => (
-              <Card key={order.id}>
-                <CardContent className="flex items-center justify-between gap-4 pt-6">
+              <div key={order.id} className={PANEL}>
+                <div className="flex items-center justify-between gap-4 p-6">
                   <div className="flex-1">
                     <OrderProgressStepper status={order.status} />
                     <p className="mt-2 text-sm text-muted-foreground">
@@ -114,8 +115,8 @@ export default async function DealerDashboardPage() {
                   <Button size="sm" render={<Link href={`/dealer/orders/${order.id}`} />} nativeButton={false}>
                     View Order
                   </Button>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -137,8 +138,8 @@ function CreditStatusCard({
     const onHold = account.credit_hold_status !== 'none'
 
     return (
-      <Card>
-        <CardContent className="flex flex-col gap-3 pt-6">
+      <div className={PANEL}>
+        <div className="flex flex-col gap-3 p-6">
           <div className="flex items-center gap-1.5 text-xs font-semibold uppercase text-muted-foreground">
             Available Credit
             <Tooltip>
@@ -167,14 +168,14 @@ function CreditStatusCard({
           <Link href="/dealer/financial" className="text-sm text-primary hover:underline">
             View Financial Overview
           </Link>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     )
   }
 
   return (
-    <Card>
-      <CardContent className="flex flex-col gap-3 pt-6">
+    <div className={PANEL}>
+      <div className="flex flex-col gap-3 p-6">
         <div className="text-xs font-semibold uppercase text-muted-foreground">Credit Terms</div>
         {application ? (
           <>
@@ -195,8 +196,8 @@ function CreditStatusCard({
             </Button>
           </>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }
 
@@ -210,8 +211,8 @@ function InvoicesDueCard({
   pastDueCount: number
 }) {
   return (
-    <Card>
-      <CardContent className="flex flex-col gap-3 pt-6">
+    <div className={PANEL}>
+      <div className="flex flex-col gap-3 p-6">
         <div className="text-xs font-semibold uppercase text-muted-foreground">Invoices Due</div>
         {invoices.length === 0 ? (
           <p className="text-sm text-muted-foreground">No open invoices.</p>
@@ -232,7 +233,7 @@ function InvoicesDueCard({
         <Link href="/dealer/financial/invoices" className="text-sm text-primary hover:underline">
           View Invoices
         </Link>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

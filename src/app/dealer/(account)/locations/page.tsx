@@ -1,11 +1,12 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
-import { Card, CardContent } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CreateLocationDialog } from '@/components/admin/CreateLocationDialog'
 import { LOCATION_STATUS_LABEL, LOCATION_STATUS_VARIANT } from '@/lib/status-labels'
 import { Badge } from '@/components/ui/badge'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function DealerLocationsPage() {
   const user = await getCurrentUser()
@@ -29,9 +30,8 @@ export default async function DealerLocationsPage() {
         {user?.profile.company_id && <CreateLocationDialog companyId={user.profile.company_id} />}
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Name</TableHead>
@@ -64,8 +64,7 @@ export default async function DealerLocationsPage() {
               )}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }

@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { CustomerOrderActions } from '@/components/customer/CustomerOrderActions'
 import { CUSTOMER_FACING_STATUS_LABEL, CUSTOMER_FACING_STATUS_VARIANT, formatCurrency, formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function AccountOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -36,22 +39,22 @@ export default async function AccountOrderDetailPage({ params }: { params: Promi
       </div>
 
       {awaitingResponse && (
-        <Card>
-          <CardHeader>
-            <CardTitle>How did your installation go?</CardTitle>
-            <CardDescription>Your dealer has submitted their documentation — let us know it&apos;s all good, or flag an issue.</CardDescription>
-          </CardHeader>
-          <CardContent>
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">How did your installation go?</h2>
+            <p className="text-sm text-white/70">Your dealer has submitted their documentation — let us know it&apos;s all good, or flag an issue.</p>
+          </div>
+          <div className={PANEL_BODY}>
             <CustomerOrderActions installationId={installation.id} />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Order details</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Order details</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-4 text-sm sm:grid-cols-3 p-4">
           <div>
             <p className="text-xs font-medium text-muted-foreground">Cap Model</p>
             <p>{installation.cap_model ?? '—'}</p>
@@ -72,22 +75,22 @@ export default async function AccountOrderDetailPage({ params }: { params: Promi
             <p className="text-xs font-medium text-muted-foreground">Scheduled Installation</p>
             <p>{formatDate(installation.scheduled_installation_date)}</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {installation.locations && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Installing dealer</CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm">
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">Installing dealer</h2>
+          </div>
+          <div className="text-sm p-4">
             <p className="font-medium">{installation.locations.name}</p>
             <p className="text-muted-foreground">
               {installation.locations.city}, {installation.locations.state}
             </p>
             {installation.locations.phone_number && <p className="text-muted-foreground">{installation.locations.phone_number}</p>}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
     </div>
   )

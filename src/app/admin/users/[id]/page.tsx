@@ -1,9 +1,12 @@
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Building2, CheckCircle2, MapPin } from 'lucide-react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { UserStatusSelect } from '@/components/admin/UserStatusSelect'
 import { USER_ROLE_LABEL, ROLE_PERMISSIONS, formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function AdminUserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -41,23 +44,23 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>User Information</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm">
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">User Information</h2>
+          </div>
+          <div className="flex flex-col gap-3 text-sm p-4">
             <Field label="Email" value={user.email} />
             <Field label="Phone" value={user.phone_number} />
             <Field label="Created" value={formatDate(user.created_at)} />
             <Field label="Last Login" value={user.last_login_at ? formatDate(user.last_login_at) : 'Never'} />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Access & Permissions</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4 text-sm">
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">Access &amp; Permissions</h2>
+          </div>
+          <div className="flex flex-col gap-4 text-sm p-4">
             {user.companies && (
               <div>
                 <p className="mb-1 text-xs font-medium text-muted-foreground">Company</p>
@@ -96,8 +99,8 @@ export default async function AdminUserDetailPage({ params }: { params: Promise<
                 ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
     </div>
   )

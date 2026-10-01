@@ -2,11 +2,14 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { CatalogPricingSection } from '@/components/admin/CatalogPricingSection'
 import { PricingRuleManager } from '@/components/admin/PricingRuleManager'
 import { formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function AdminPricingGroupDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -49,11 +52,11 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
         {pricingGroup.description && <p className="text-muted-foreground mt-1">{pricingGroup.description}</p>}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Group Information</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Group Information</h2>
+        </div>
+        <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3 p-4">
           <div>
             <p className="text-xs font-medium text-muted-foreground">Effective Date</p>
             <p>{pricingGroup.effective_date ? formatDate(pricingGroup.effective_date) : '—'}</p>
@@ -66,33 +69,32 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
             <p className="text-xs font-medium text-muted-foreground">Created</p>
             <p>{formatDate(pricingGroup.created_at)}</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Base Discount &amp; Volume Tiers</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Base Discount &amp; Volume Tiers</h2>
+        </div>
+        <div className={PANEL_BODY}>
           <CatalogPricingSection pricingGroup={pricingGroup} baseTiers={baseTiers ?? []} />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Pricing Rules</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Pricing Rules</h2>
+        </div>
+        <div className={PANEL_BODY}>
           <PricingRuleManager pricingGroupId={pricingGroup.id} rules={rules} />
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Assigned Dealers</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Assigned Dealers</h2>
+        </div>
+        <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Company</TableHead>
@@ -123,8 +125,7 @@ export default async function AdminPricingGroupDetailPage({ params }: { params: 
               ))}
             </TableBody>
           </Table>
-        </CardContent>
-      </Card>
+      </div>
     </div>
   )
 }
