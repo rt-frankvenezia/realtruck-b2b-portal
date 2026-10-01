@@ -1,9 +1,10 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { OrderProgressStepper } from '@/components/shared/OrderProgressStepper'
 import { PRODUCT_ORDER_STATUS_LABEL, formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 
 export default async function OrderHistoryPage() {
   const supabase = await createClient()
@@ -18,8 +19,8 @@ export default async function OrderHistoryPage() {
 
       <div className="flex flex-col gap-4">
         {(orders ?? []).map((order) => (
-          <Card key={order.id}>
-            <CardContent className="flex flex-col gap-4 pt-6">
+          <div key={order.id} className={PANEL}>
+            <div className="flex flex-col gap-4 p-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">
                   <p className="mb-2 text-sm font-semibold uppercase tracking-wide">
@@ -72,13 +73,13 @@ export default async function OrderHistoryPage() {
                   </Button>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
         {(orders ?? []).length === 0 && (
-          <Card>
-            <CardContent className="pt-6 text-center text-sm text-muted-foreground">No orders yet.</CardContent>
-          </Card>
+          <div className={PANEL}>
+            <div className="p-6 text-center text-sm text-muted-foreground">No orders yet.</div>
+          </div>
         )}
       </div>
     </div>

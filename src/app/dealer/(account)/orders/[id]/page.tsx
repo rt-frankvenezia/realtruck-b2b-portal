@@ -1,11 +1,15 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { OrderProgressStepper } from '@/components/shared/OrderProgressStepper'
 import { PRODUCT_ORDER_STATUS_LABEL, formatCurrency, formatDate } from '@/lib/status-labels'
+
+const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+const PANEL_BODY = 'p-4'
 
 export default async function OrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -25,8 +29,9 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <Link href="/dealer/orders" className="text-sm text-muted-foreground hover:underline">
-          ← Back to Order History
+        <Link href="/dealer/orders" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ChevronLeft size={14} />
+          Back to Order History
         </Link>
         <div className="flex gap-2">
           <Button variant="outline">Download Invoice</Button>
@@ -41,26 +46,28 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
         <OrderProgressStepper status={order.status} />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Order Details</CardTitle>
-        </CardHeader>
-        <CardContent className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-3">
+      {/* Order Details */}
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Order Details</h2>
+        </div>
+        <div className={`${PANEL_BODY} grid grid-cols-1 gap-4 text-sm sm:grid-cols-3`}>
           <Field label="Order Date" value={formatDate(order.order_date)} />
           <Field label="Order Number" value={order.order_number} />
           <Field label="Payment Method" value={order.payment_method} />
           {order.tracking_number && <Field label="Tracking" value={order.tracking_number} />}
           <Field label="Est. Delivery" value={formatDate(order.estimated_delivery_date)} />
           {order.po_number && <Field label="PO Number" value={order.po_number} />}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Dealer Information</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4 text-sm">
+        {/* Dealer Information */}
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">Dealer Information</h2>
+          </div>
+          <div className={`${PANEL_BODY} flex flex-col gap-4 text-sm`}>
             <div>
               <p className="text-xs font-medium text-muted-foreground">Location</p>
               <p className="font-medium">{locationRow?.name ?? '—'}</p>
@@ -77,14 +84,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
               <p className="font-medium">{order.ordered_by_name}</p>
               <p className="text-muted-foreground">{order.ordered_by_email}</p>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Customer Information</CardTitle>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-3 text-sm">
+        {/* Customer Information */}
+        <div className={PANEL}>
+          <div className={PANEL_HEADER}>
+            <h2 className="font-semibold text-white">Customer Information</h2>
+          </div>
+          <div className={`${PANEL_BODY} flex flex-col gap-3 text-sm`}>
             <Field label="Name" value={order.customer_name} />
             <Field label="Email" value={order.customer_email} />
             <Field label="Phone" value={order.customer_phone} />
@@ -97,56 +105,55 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ id
                   .join(', ') || null
               }
             />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Order Items</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Product</TableHead>
-                <TableHead className="text-right">Qty</TableHead>
-                <TableHead className="text-right">Price</TableHead>
-                <TableHead className="text-right">Total</TableHead>
+      {/* Order Items */}
+      <div className={PANEL}>
+        <div className={PANEL_HEADER}>
+          <h2 className="font-semibold text-white">Order Items</h2>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Product</TableHead>
+              <TableHead className="text-right">Qty</TableHead>
+              <TableHead className="text-right">Price</TableHead>
+              <TableHead className="text-right">Total</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {(items ?? []).map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
+                  <p className="font-medium">{item.product_name}</p>
+                  {item.sku && <p className="text-xs text-muted-foreground">SKU: {item.sku}</p>}
+                </TableCell>
+                <TableCell className="text-right">{item.quantity}</TableCell>
+                <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
+                <TableCell className="text-right">{formatCurrency(item.total)}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {(items ?? []).map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    <p className="font-medium">{item.product_name}</p>
-                    {item.sku && <p className="text-xs text-muted-foreground">SKU: {item.sku}</p>}
-                  </TableCell>
-                  <TableCell className="text-right">{item.quantity}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
-                  <TableCell className="text-right">{formatCurrency(item.total)}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <div className="flex justify-end border-t p-4">
-            <div className="flex flex-col gap-1 text-sm">
-              <div className="flex justify-between gap-8">
-                <span className="text-muted-foreground">Subtotal:</span>
-                <span>{formatCurrency(order.subtotal)}</span>
-              </div>
-              <div className="flex justify-between gap-8">
-                <span className="text-muted-foreground">Tax:</span>
-                <span>{formatCurrency(order.tax)}</span>
-              </div>
-              <div className="flex justify-between gap-8 text-base font-semibold">
-                <span>Total:</span>
-                <span>{formatCurrency(order.total)}</span>
-              </div>
+            ))}
+          </TableBody>
+        </Table>
+        <div className="flex justify-end border-t p-4">
+          <div className="flex flex-col gap-1 text-sm">
+            <div className="flex justify-between gap-8">
+              <span className="text-muted-foreground">Subtotal:</span>
+              <span>{formatCurrency(order.subtotal)}</span>
+            </div>
+            <div className="flex justify-between gap-8">
+              <span className="text-muted-foreground">Tax:</span>
+              <span>{formatCurrency(order.tax)}</span>
+            </div>
+            <div className="flex justify-between gap-8 text-base font-semibold">
+              <span>Total:</span>
+              <span>{formatCurrency(order.total)}</span>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
