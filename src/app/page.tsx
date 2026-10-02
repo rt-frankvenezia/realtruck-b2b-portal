@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
-import { ArrowRight, Building2, DollarSign, MessageSquareQuote, Receipt, Search, Tag, Truck, Wallet } from 'lucide-react'
+import { ArrowRight, Building2, DollarSign, FolderOpen, MessageSquareQuote, Receipt, Search, Tag, Truck, Wallet } from 'lucide-react'
 import { getCurrentUser, type CurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -122,10 +122,11 @@ type QuickLink = {
 }
 
 const DEALER_QUICK_LINKS: QuickLink[] = [
-  { href: '/dealer/orders',    label: 'Order History',  description: 'View and track your recent orders',    icon: Receipt },
-  { href: '/dealer/quotes',    label: 'Quotes',         description: 'Manage A.R.E. cap leads',              icon: MessageSquareQuote },
-  {                            label: 'SKU Lookup',     description: 'Find applications for any part',       icon: Search },
-  {                            label: 'Promotions',     description: 'Current deals and marketing materials', icon: Tag },
+  { href: '/dealer/orders',    label: 'Order History',    description: 'View and track your recent orders',    icon: Receipt },
+  { href: '/dealer/quotes',    label: 'Quotes',           description: 'Manage A.R.E. cap leads',              icon: MessageSquareQuote },
+  {                            label: 'SKU Lookup',       description: 'Find applications for any part',       icon: Search },
+  {                            label: 'Dealer Resources', description: 'Marketing assets and sell sheets',     icon: FolderOpen },
+  {                            label: 'Promotions',       description: 'Current deals and marketing materials', icon: Tag },
 ]
 
 const ADMIN_QUICK_LINKS: QuickLink[] = [
@@ -241,7 +242,7 @@ async function LoggedInHome({
 
           {!isRealtruckAdmin && <VehicleFitmentWidget />}
 
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
             {quickLinks.map(({ href, label, description, icon: Icon }) => {
               const inner = (
                 <>
