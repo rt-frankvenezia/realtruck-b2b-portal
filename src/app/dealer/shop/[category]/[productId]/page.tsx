@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Ban, Check, CheckCircle2, Package, ShieldCheck, Star, Truck } from 'lucide-react'
@@ -118,9 +119,26 @@ export default async function ProductDetailPage({
 
       <div className="flex flex-col gap-8 lg:flex-row">
         <div className="flex-1">
-          <div className="flex aspect-4/3 items-center justify-center rounded-lg border bg-muted">
-            <Package size={96} className="text-muted-foreground/40" />
-          </div>
+          {(() => {
+            const images = (product as unknown as { images?: string[] }).images
+            const heroSrc = images?.[0]
+            return heroSrc ? (
+              <div className="overflow-hidden rounded-lg border bg-muted">
+                <Image
+                  src={heroSrc}
+                  alt={product.name}
+                  width={1050}
+                  height={750}
+                  className="w-full object-cover"
+                  priority
+                />
+              </div>
+            ) : (
+              <div className="flex aspect-4/3 items-center justify-center rounded-lg border bg-muted">
+                <Package size={96} className="text-muted-foreground/40" />
+              </div>
+            )
+          })()}
 
           {product.highlights.length > 0 && (
             <div className="mt-10 flex flex-col gap-3">
