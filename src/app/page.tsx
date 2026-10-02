@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
-import { Building2, DollarSign, FolderOpen, Megaphone, MessageSquareQuote, Receipt, Search, Tag, Truck, Wallet } from 'lucide-react'
+import { ArrowRight, Building2, DollarSign, MessageSquareQuote, Receipt, Search, Tag, Truck, Wallet } from 'lucide-react'
 import { getCurrentUser, type CurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
@@ -68,7 +68,7 @@ function LoggedOutHome({
     <div className="min-h-screen bg-white">
       <SiteHeader variant="dealer" context="account" shopCategories={shopCategories} />
 
-      <div className="relative overflow-hidden bg-[#1c1c1e] py-20 text-white">
+      <div className="relative overflow-hidden bg-[#1c1c1e] py-28 text-white">
         {/* Hero background image */}
         <Image
           src="/hero-trucks.jpg"
@@ -112,24 +112,27 @@ function LoggedOutHome({
 }
 
 // href omitted = decorative, rendered but not a real link (SKU Lookup,
-// Promotions, Announcements have no backing feature yet — same posture as
-// the Order Portal sidebar item: looks completely normal, just not
-// wrapped in a Link, no muted/dimmed treatment or "external" indicator).
-type QuickLink = { href?: string; label: string; icon: React.ComponentType<{ size?: number; className?: string }> }
+// Promotions have no backing feature yet — same posture as the Order Portal
+// sidebar item: looks completely normal, just not wrapped in a Link).
+type QuickLink = {
+  href?: string
+  label: string
+  description: string
+  icon: React.ComponentType<{ size?: number; className?: string }>
+}
 
 const DEALER_QUICK_LINKS: QuickLink[] = [
-  { href: '/dealer/orders', label: 'Order History', icon: Receipt },
-  { href: '/dealer/resources', label: 'Dealer Resources', icon: FolderOpen },
-  { label: 'SKU Lookup', icon: Search },
-  { label: 'Promotions', icon: Tag },
-  { label: 'Announcements', icon: Megaphone },
+  { href: '/dealer/orders',    label: 'Order History',  description: 'View and track your recent orders',    icon: Receipt },
+  { href: '/dealer/quotes',    label: 'Quotes',         description: 'Manage A.R.E. cap leads',              icon: MessageSquareQuote },
+  {                            label: 'SKU Lookup',     description: 'Find applications for any part',       icon: Search },
+  {                            label: 'Promotions',     description: 'Current deals and marketing materials', icon: Tag },
 ]
 
 const ADMIN_QUICK_LINKS: QuickLink[] = [
-  { href: '/admin', label: 'Admin Dashboard', icon: Wallet },
-  { href: '/admin/companies', label: 'Companies', icon: Building2 },
-  { href: '/admin/quotes', label: 'Quotes', icon: MessageSquareQuote },
-  { href: '/admin/pricing-groups', label: 'Pricing Groups', icon: DollarSign },
+  { href: '/admin',                  label: 'Admin Dashboard', description: 'Overview and activity',          icon: Wallet },
+  { href: '/admin/companies',        label: 'Companies',       description: 'Manage dealer accounts',         icon: Building2 },
+  { href: '/admin/quotes',           label: 'Quotes',          description: 'Review A.R.E. quotes',           icon: MessageSquareQuote },
+  { href: '/admin/pricing-groups',   label: 'Pricing Groups',  description: 'Configure dealer price tiers',   icon: DollarSign },
 ]
 
 const FITMENT_YEARS = Array.from({ length: 10 }, (_, i) => 2026 - i)
@@ -144,39 +147,44 @@ const FITMENT_BEDS = ['5.5 ft Bed', '6.5 ft Bed', '8 ft Bed']
 // apply a filter.
 function VehicleFitmentWidget() {
   return (
-    <div className="mt-6 flex flex-col gap-4 rounded-lg bg-white p-5 text-[#1c1c1e] sm:flex-row sm:items-end">
-      <div className="flex items-start gap-2 sm:pr-4">
-        <Truck size={20} className="mt-0.5 shrink-0" />
+    <div className="mt-6 flex items-stretch overflow-hidden rounded-lg bg-white text-[#1c1c1e]">
+      {/* Left label */}
+      <div className="flex items-center gap-3 border-r border-gray-200 px-5 py-4">
+        <Truck size={18} className="shrink-0 text-gray-500" />
         <div>
-          <div className="text-sm font-bold">Select Your Vehicle</div>
-          <div className="text-xs text-muted-foreground">Guarantees parts fitment</div>
+          <div className="text-xs font-bold uppercase tracking-wide">Select Your Vehicle</div>
+          <div className="text-[11px] text-gray-400">Guarantees parts fitment</div>
         </div>
       </div>
-      <div className="grid flex-1 grid-cols-2 gap-3 sm:grid-cols-4">
-        <FitmentSelect label="Year" options={FITMENT_YEARS.map(String)} />
-        <FitmentSelect label="Make" options={FITMENT_MAKES} />
-        <FitmentSelect label="Model" options={FITMENT_MODELS} />
-        <FitmentSelect label="Bed" options={FITMENT_BEDS} />
+      {/* Selects — no border, divided by hairlines */}
+      <div className="flex flex-1 divide-x divide-gray-200">
+        <FitmentSelect options={FITMENT_YEARS.map(String)} />
+        <FitmentSelect options={FITMENT_MAKES} />
+        <FitmentSelect options={FITMENT_MODELS} />
+        <FitmentSelect options={FITMENT_BEDS} />
       </div>
-      <Button render={<Link href="/dealer/shop" />} nativeButton={false} className="bg-[#FFC60B] font-semibold text-[#1c1c1e] hover:bg-[#e5b109]">
-        Shop Now
-      </Button>
+      {/* CTA */}
+      <div className="flex items-center px-3">
+        <Button render={<Link href="/dealer/shop" />} nativeButton={false} className="whitespace-nowrap bg-[#FFC60B] font-bold text-[#1c1c1e] hover:bg-[#e5b109]">
+          Shop Now
+        </Button>
+      </div>
     </div>
   )
 }
 
-function FitmentSelect({ label, options }: { label: string; options: string[] }) {
+function FitmentSelect({ options }: { options: string[] }) {
   return (
-    <label className="flex flex-col gap-1">
-      <span className="text-xs font-semibold uppercase text-muted-foreground">{label}</span>
-      <select className="rounded-md border px-2 py-1.5 text-sm" defaultValue={options[0]}>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </select>
-    </label>
+    <select
+      className="w-full cursor-pointer appearance-none bg-transparent px-4 py-4 text-sm font-medium outline-none"
+      defaultValue={options[0]}
+    >
+      {options.map((option) => (
+        <option key={option} value={option}>
+          {option}
+        </option>
+      ))}
+    </select>
   )
 }
 
@@ -214,7 +222,7 @@ async function LoggedInHome({
         shopCategories={shopCategories}
       />
 
-      <div className="relative overflow-hidden bg-[#1c1c1e] py-14 text-white">
+      <div className="relative overflow-hidden bg-[#1c1c1e] py-24 text-white">
         {/* Hero background image */}
         <Image
           src="/hero-trucks.jpg"
@@ -233,20 +241,30 @@ async function LoggedInHome({
 
           {!isRealtruckAdmin && <VehicleFitmentWidget />}
 
-          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {quickLinks.map(({ href, label, icon: Icon }) =>
-              href ? (
-                <Link key={label} href={href} className="rounded-lg border border-white/10 bg-white/5 p-4 transition-colors hover:bg-white/10">
-                  <Icon size={20} className="text-[#FFC60B]" />
-                  <div className="mt-2 text-sm font-semibold">{label}</div>
+          <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {quickLinks.map(({ href, label, description, icon: Icon }) => {
+              const inner = (
+                <>
+                  <div className="mb-3 flex justify-center">
+                    <Icon size={22} className="text-[#FFC60B]" />
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-sm font-bold text-white">{label}</span>
+                    <ArrowRight size={13} className="shrink-0 text-white/50" />
+                  </div>
+                  <p className="mt-1 text-xs leading-relaxed text-white/50">{description}</p>
+                </>
+              )
+              return href ? (
+                <Link key={label} href={href} className="rounded-lg border border-white/10 bg-white/10 p-5 transition-colors hover:bg-white/15">
+                  {inner}
                 </Link>
               ) : (
-                <div key={label} className="rounded-lg border border-white/10 bg-white/5 p-4">
-                  <Icon size={20} className="text-[#FFC60B]" />
-                  <div className="mt-2 text-sm font-semibold">{label}</div>
+                <div key={label} className="rounded-lg border border-white/10 bg-white/10 p-5">
+                  {inner}
                 </div>
               )
-            )}
+            })}
           </div>
         </div>
       </div>
