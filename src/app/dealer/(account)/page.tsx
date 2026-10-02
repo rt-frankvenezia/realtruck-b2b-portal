@@ -1,6 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
-import { AlertTriangle, ArrowRight, CreditCard, FileText, Info, Megaphone, Package, Receipt, ShoppingCart } from 'lucide-react'
+import { AlertTriangle, CreditCard, Info, Receipt } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
@@ -42,14 +41,12 @@ export default async function DealerDashboardPage() {
   // match what the nav exposes.
   let isAreDealer = false
   let creditEligible = !companyId // RT admin (no company) sees everything
-  let companyName: string | undefined
   if (companyId) {
     const { data: company } = await supabase
       .from('companies')
-      .select('name, is_are_dealer, credit_eligible')
+      .select('is_are_dealer, credit_eligible')
       .eq('id', companyId)
       .maybeSingle()
-    companyName = company?.name ?? undefined
     isAreDealer = Boolean(company?.is_are_dealer)
     creditEligible = !isAreDealer || Boolean(company?.credit_eligible)
   }
@@ -116,71 +113,12 @@ export default async function DealerDashboardPage() {
     ? getAnnouncements(isAreDealer, creditEligible)
     : []
 
-  const dealerTypeLabel = isAreDealer && creditEligible
-    ? 'A.R.E. + Transactional Dealer'
-    : isAreDealer
-    ? 'A.R.E. Dealer'
-    : creditEligible && companyId
-    ? 'Transactional Dealer'
-    : undefined
-
-  const firstName = user?.profile.name?.split(' ')[0] ?? user?.profile.name
-
   return (
     <div className="flex flex-col gap-6">
-      {/* ── Hero Banner ──────────────────────────────────────────── */}
-      {companyId && (
-        <div className="relative -mx-8 -mt-8 mb-2 overflow-hidden">
-          <Image
-            src="/products/mx4/mx4-05.jpg"
-            alt=""
-            width={1440}
-            height={400}
-            className="h-[340px] w-full object-cover object-top"
-            priority
-          />
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/82" />
-          {/* Warm yellow glow from left */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#FFC60B]/10 via-transparent to-transparent" />
-          {/* Yellow left accent bar */}
-          <div className="absolute inset-y-0 left-0 w-1.5 bg-[#FFC60B]" />
-
-          {/* Content */}
-          <div className="absolute inset-0 flex flex-col justify-between px-10 py-8">
-            <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#FFC60B]">
-                Dealer Portal
-              </p>
-              <h1 className="text-4xl font-bold leading-tight text-white">
-                Welcome back, {firstName}
-              </h1>
-              {(companyName || dealerTypeLabel) && (
-                <p className="mt-1.5 text-sm text-white/55">
-                  {[companyName, dealerTypeLabel].filter(Boolean).join(' · ')}
-                </p>
-              )}
-            </div>
-
-            {/* Quick-action tiles */}
-            <div className="flex flex-wrap gap-3">
-              {isAreDealer && (
-                <HeroTile href="/dealer/quotes" label="Quotes" description="Manage A.R.E. quotes" icon={<FileText size={16} />} />
-              )}
-              {companyId && (
-                <HeroTile href="/dealer/shop" label="Shop Catalog" description="Browse 1M+ accessories" icon={<ShoppingCart size={16} />} />
-              )}
-              {creditEligible && companyId && (
-                <HeroTile href="/dealer/orders" label="Order History" description="View and track orders" icon={<Package size={16} />} />
-              )}
-              {showCreditCard && (
-                <HeroTile href="/dealer/financial" label="Financial" description="Credit &amp; invoices" icon={<CreditCard size={16} />} />
-              )}
-              <HeroTile href="/dealer/announcements" label="Announcements" description="News and updates" icon={<Megaphone size={16} />} />
-            </div>
-          </div>
-        </div>
-      )}
+      <div>
+        <h1 className="text-2xl font-semibold">Welcome back, {user?.profile.name}</h1>
+        <p className="text-muted-foreground">Here&apos;s what&apos;s happening across your dealership.</p>
+      </div>
 
       <AnnouncementsPanel announcements={announcements} limit={4} />
 
@@ -268,32 +206,6 @@ export default async function DealerDashboardPage() {
         </div>
       )}
     </div>
-  )
-}
-
-function HeroTile({
-  href,
-  label,
-  description,
-  icon,
-}: {
-  href: string
-  label: string
-  description: string
-  icon: React.ReactNode
-}) {
-  return (
-    <Link
-      href={href}
-      className="flex min-w-[160px] items-center gap-3 rounded-lg border border-white/20 bg-white/10 px-4 py-3 backdrop-blur-sm transition-colors hover:bg-white/18"
-    >
-      <span className="shrink-0 text-[#FFC60B]">{icon}</span>
-      <div className="min-w-0">
-        <p className="text-sm font-semibold text-white">{label}</p>
-        <p className="truncate text-xs text-white/55">{description}</p>
-      </div>
-      <ArrowRight size={13} className="ml-auto shrink-0 text-white/35" />
-    </Link>
   )
 }
 

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { redirect } from 'next/navigation'
 import { Building2, DollarSign, FolderOpen, Megaphone, MessageSquareQuote, Receipt, Search, Tag, Truck, Wallet } from 'lucide-react'
 import { getCurrentUser, type CurrentUser } from '@/lib/auth'
@@ -67,8 +68,22 @@ function LoggedOutHome({
     <div className="min-h-screen bg-white">
       <SiteHeader variant="dealer" context="account" shopCategories={shopCategories} />
 
-      <div className="bg-[#1c1c1e] py-20 text-white">
-        <div className="mx-auto grid max-w-[1440px] gap-10 px-8 lg:grid-cols-[1.3fr_1fr] lg:items-center">
+      <div className="relative overflow-hidden bg-[#1c1c1e] py-20 text-white">
+        {/* Hero background image */}
+        <Image
+          src="/hero-trucks.jpg"
+          alt=""
+          fill
+          className="object-cover object-center"
+          style={{ filter: 'brightness(0.35) contrast(1.05)' }}
+          priority
+        />
+        {/* Gradient: fully opaque black on left (text side), semi-transparent on right */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1c1c1e] from-40% via-[#1c1c1e]/80 to-[#1c1c1e]/55" />
+        {/* Yellow left accent bar */}
+        <div className="absolute inset-y-0 left-0 w-1.5 bg-[#FFC60B]" />
+
+        <div className="relative mx-auto grid max-w-[1440px] gap-10 px-8 lg:grid-cols-[1.3fr_1fr] lg:items-center">
           <div>
             <p className="text-sm font-bold uppercase tracking-wider text-[#FFC60B]">Dealer Program</p>
             <h1 className="mt-3 text-4xl font-bold leading-tight sm:text-5xl">
@@ -199,8 +214,20 @@ async function LoggedInHome({
         shopCategories={shopCategories}
       />
 
-      <div className="bg-[#1c1c1e] py-14 text-white">
-        <div className="mx-auto max-w-[1440px] px-8">
+      <div className="relative overflow-hidden bg-[#1c1c1e] py-14 text-white">
+        {/* Hero background image */}
+        <Image
+          src="/hero-trucks.jpg"
+          alt=""
+          fill
+          className="object-cover object-center"
+          style={{ filter: 'brightness(0.35) contrast(1.05)' }}
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1c1c1e] from-30% via-[#1c1c1e]/75 to-[#1c1c1e]/50" />
+        <div className="absolute inset-y-0 left-0 w-1.5 bg-[#FFC60B]" />
+
+        <div className="relative mx-auto max-w-[1440px] px-8">
           <h1 className="text-3xl font-bold">Welcome back, {user.profile.name}</h1>
           <p className="mt-1 text-neutral-300">{companyName ?? 'RealTruck Admin'}</p>
 
