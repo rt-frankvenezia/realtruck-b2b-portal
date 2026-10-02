@@ -39,7 +39,7 @@ export function DemoUserSwitcher() {
   }
 
   return (
-    <div className="fixed bottom-4 left-4 z-50">
+    <div data-demo-switcher className="fixed bottom-4 right-4 z-50">
       <div
         style={{
           background: '#1E1E1E',

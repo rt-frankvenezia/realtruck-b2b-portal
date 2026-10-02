@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { AlertTriangle, CreditCard, Info, Receipt } from 'lucide-react'
+import { AlertTriangle, CreditCard, Info, Megaphone, Receipt } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
+const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
+
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { InstallationKPIDashboard } from '@/components/shared/InstallationKPIDashboard'
 import { OrderProgressStepper } from '@/components/shared/OrderProgressStepper'
@@ -17,8 +19,31 @@ import {
   CREDIT_APPLICATION_STATUS_VARIANT,
   INVOICE_STATUS_LABEL,
   INVOICE_STATUS_VARIANT,
+  QUOTE_STATUS_LABEL,
+  QUOTE_STATUS_VARIANT,
 } from '@/lib/status-labels'
 import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
+
+type Announcement = { date: string; title: string; tag: string }
+
+const ANNOUNCEMENTS_ARE: Announcement[] = [
+  { date: '2026-10-01', title: 'New A.R.E. MX-Series now available for 2025 Toyota Tacoma — order lead time 6–8 weeks', tag: 'Product' },
+  { date: '2026-09-22', title: 'Q4 lead response goal: acknowledge all new leads within 24 hours of submission', tag: 'Operations' },
+  { date: '2026-09-10', title: '3D Configurator update: eight new exterior colors added for MX and DS Series', tag: 'Tools' },
+  { date: '2026-08-28', title: 'Warranty registration now requires online submission within 30 days of installation', tag: 'Policy' },
+]
+
+const ANNOUNCEMENTS_TRANSACTIONAL: Announcement[] = [
+  { date: '2026-10-01', title: 'October promotional pricing is now active — check your pricing group for current discounts', tag: 'Pricing' },
+  { date: '2026-09-25', title: 'Standard shipping lead times: 5–7 business days through Q4 2026', tag: 'Shipping' },
+  { date: '2026-09-18', title: 'New SKUs added: UnderCover Elite LX Hard Cover lineup for 2025 Ford F-150', tag: 'Product' },
+  { date: '2026-09-05', title: 'Net 30 payment terms renewal — contact your rep if your annual credit review is approaching', tag: 'Billing' },
+]
+
+function quoteDisplayNum(id: string): string {
+  const n = parseInt(id.split('-').pop() ?? '0', 16)
+  return `26-${71000 + (n % 1000)}`
+}
 
 export default async function DealerDashboardPage() {
   const user = await getCurrentUser()
@@ -26,34 +51,60 @@ export default async function DealerDashboardPage() {
   const role = user?.profile.role
   const companyId = user?.profile.company_id ?? null
 
+  // Determine dealer type — mirrors the layout's logic so dashboard widgets
+  // match what the nav exposes.
+  let isAreDealer = false
+  let creditEligible = !companyId // RT admin (no company) sees everything
+  if (companyId) {
+    const { data: company } = await supabase
+      .from('companies')
+      .select('is_are_dealer, credit_eligible')
+      .eq('id', companyId)
+      .maybeSingle()
+    isAreDealer = Boolean(company?.is_are_dealer)
+    creditEligible = !isAreDealer || Boolean(company?.credit_eligible)
+  }
+
   const showCreditCard =
+    creditEligible &&
     Boolean(companyId) &&
     role !== undefined &&
     (hasFinancialPermission(role, 'view_credit_summary') ||
       hasFinancialPermission(role, 'submit_credit_application') ||
       hasFinancialPermission(role, 'view_credit_status'))
-  const showInvoicesCard = Boolean(companyId) && role !== undefined && hasFinancialPermission(role, 'view_invoices')
+  const showInvoicesCard = creditEligible && Boolean(companyId) && role !== undefined && hasFinancialPermission(role, 'view_invoices')
 
-  const [{ data: kpi }, { data: recentOrders }, { data: creditAccount }, { data: invoiceRows }] = await Promise.all([
-    INSTALLATIONS_ENABLED ? supabase.rpc('installation_kpi_metrics') : Promise.resolve({ data: null }),
-    supabase.from('product_orders').select('*').order('order_date', { ascending: false }).limit(3),
-    showCreditCard
-      ? supabase
-          .from('credit_accounts')
-          .select('available_credit, credit_limit, past_due_balance, credit_hold_status')
-          .eq('company_id', companyId!)
-          .in('status', ['active', 'on_hold'])
-          .maybeSingle()
-      : Promise.resolve({ data: null }),
-    showInvoicesCard
-      ? supabase
-          .from('invoices')
-          .select('id, invoice_number, due_date, remaining_balance, status')
-          .eq('company_id', companyId!)
-          .in('status', ['open', 'past_due'])
-          .order('due_date', { ascending: true })
-      : Promise.resolve({ data: null }),
-  ])
+  const [{ data: kpi }, { data: recentOrders }, { data: creditAccount }, { data: invoiceRows }, { data: recentQuotes }] =
+    await Promise.all([
+      INSTALLATIONS_ENABLED ? supabase.rpc('installation_kpi_metrics') : Promise.resolve({ data: null }),
+      creditEligible && companyId
+        ? supabase.from('product_orders').select('*').eq('company_id', companyId).order('order_date', { ascending: false }).limit(3)
+        : Promise.resolve({ data: null }),
+      showCreditCard
+        ? supabase
+            .from('credit_accounts')
+            .select('available_credit, credit_limit, past_due_balance, credit_hold_status')
+            .eq('company_id', companyId!)
+            .in('status', ['active', 'on_hold'])
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      showInvoicesCard
+        ? supabase
+            .from('invoices')
+            .select('id, invoice_number, due_date, remaining_balance, status')
+            .eq('company_id', companyId!)
+            .in('status', ['open', 'past_due'])
+            .order('due_date', { ascending: true })
+        : Promise.resolve({ data: null }),
+      isAreDealer && companyId
+        ? supabase
+            .from('quotes')
+            .select('id, customer_name, vehicle_year, vehicle_make, vehicle_model, status, created_at')
+            .eq('company_id', companyId)
+            .order('created_at', { ascending: false })
+            .limit(3)
+        : Promise.resolve({ data: null }),
+    ])
   const metrics = kpi?.[0]
 
   let latestApplication: { status: keyof typeof CREDIT_APPLICATION_STATUS_LABEL; reference_number: string } | null = null
@@ -72,12 +123,46 @@ export default async function DealerDashboardPage() {
   const totalDue = invoices.reduce((sum, inv) => sum + inv.remaining_balance, 0)
   const pastDueCount = invoices.filter((inv) => inv.status === 'past_due').length
 
+  // Announcements scoped by dealer type; combined dealers get both lists merged and sorted
+  const announcements: Announcement[] = companyId
+    ? isAreDealer && creditEligible
+      ? [...ANNOUNCEMENTS_ARE, ...ANNOUNCEMENTS_TRANSACTIONAL]
+          .sort((a, b) => b.date.localeCompare(a.date))
+          .slice(0, 5)
+      : isAreDealer
+      ? ANNOUNCEMENTS_ARE
+      : ANNOUNCEMENTS_TRANSACTIONAL
+    : [] // RT admin sees no dealer-specific announcements
+
   return (
     <div className="flex flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold">Welcome back, {user?.profile.name}</h1>
         <p className="text-muted-foreground">Here&apos;s what&apos;s happening across your dealership.</p>
       </div>
+
+      {announcements.length > 0 && (
+        <div className={PANEL}>
+          <div className={`${PANEL_HEADER} flex items-center justify-between`}>
+            <span className="flex items-center gap-2 text-sm font-semibold text-white">
+              <Megaphone size={15} />
+              Announcements
+            </span>
+            <span className="text-xs text-white/40">From RealTruck</span>
+          </div>
+          <div className="divide-y divide-[#f0f0f0]">
+            {announcements.map((ann, i) => (
+              <div key={i} className="flex items-start gap-4 px-4 py-3">
+                <span className="w-24 shrink-0 pt-0.5 text-xs text-muted-foreground">{formatDate(ann.date)}</span>
+                <span className="flex-1 text-sm">{ann.title}</span>
+                <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                  {ann.tag}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {(showCreditCard || showInvoicesCard) && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -94,7 +179,7 @@ export default async function DealerDashboardPage() {
         />
       )}
 
-      {(recentOrders ?? []).length > 0 && (
+      {creditEligible && (recentOrders ?? []).length > 0 && (
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-lg font-semibold">Recent Orders</h2>
@@ -119,6 +204,47 @@ export default async function DealerDashboardPage() {
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {isAreDealer && (recentQuotes ?? []).length > 0 && (
+        <div className={PANEL}>
+          <div className={`${PANEL_HEADER} flex items-center justify-between`}>
+            <span className="text-sm font-semibold text-white">Recent Quotes</span>
+            <Link href="/dealer/quotes" className="text-xs text-white/60 hover:text-white">
+              View all
+            </Link>
+          </div>
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-[#f0f0f0] bg-[#fafafa]">
+                <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Quote ID</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Status</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Customer</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Vehicle</th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Date</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#f0f0f0]">
+              {(recentQuotes ?? []).map((q) => (
+                <tr key={q.id}>
+                  <td className="px-4 py-3">
+                    <Link href={`/dealer/quotes/${q.id}`} className="text-sm font-medium text-primary hover:underline">
+                      {quoteDisplayNum(q.id)}
+                    </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    <Badge variant={QUOTE_STATUS_VARIANT[q.status]}>{QUOTE_STATUS_LABEL[q.status]}</Badge>
+                  </td>
+                  <td className="px-4 py-3 text-sm">{q.customer_name}</td>
+                  <td className="px-4 py-3 text-sm text-muted-foreground">
+                    {q.vehicle_year} {q.vehicle_make} {q.vehicle_model}
+                  </td>
+                  <td className="px-4 py-3 text-sm text-muted-foreground">{formatDate(q.created_at)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

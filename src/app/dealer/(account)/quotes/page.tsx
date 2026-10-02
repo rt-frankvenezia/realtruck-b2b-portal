@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { AlertCircle, FileText, TrendingUp, CheckCircle2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
+import { getCurrentUser } from '@/lib/auth'
 import { Badge } from '@/components/ui/badge'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT } from '@/lib/status-labels'
@@ -23,13 +24,16 @@ function quoteDisplayNum(id: string): string {
 }
 
 export default async function DealerQuotesPage() {
+  const user = await getCurrentUser()
   const supabase = await createClient()
+  const companyId = user?.profile.company_id
   const [{ data: quotes }, { data: locations }] = await Promise.all([
     supabase
       .from('quotes')
       .select('id, customer_name, customer_email, vehicle_year, vehicle_make, vehicle_model, status, created_at, location_id')
+      .eq('company_id', companyId!)
       .order('created_at', { ascending: false }),
-    supabase.from('locations').select('id, code, name, city, state'),
+    supabase.from('locations').select('id, code, name, city, state').eq('company_id', companyId!),
   ])
 
   type LocRow = { id: string; code: string; name: string; city: string; state: string }
