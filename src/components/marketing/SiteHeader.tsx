@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Bell, ChevronDown, MessageCircle, Phone, ShoppingCart, MapPin, User } from 'lucide-react'
+import { Bell, ChevronDown, Megaphone, MessageCircle, Phone, ShoppingCart, MapPin, User } from 'lucide-react'
 import { CartBadge } from '@/components/customer/CartBadge'
 import { DealerCartBadge } from '@/components/dealer/DealerCartBadge'
 import { AccountMenu } from '@/components/marketing/AccountMenu'
@@ -19,6 +19,7 @@ export function SiteHeader({
   locationLabel,
   shopCategories,
   showDealerCart,
+  announcementCount,
 }: {
   variant?: 'customer' | 'dealer' | 'admin'
   context?: 'storefront' | 'account'
@@ -28,6 +29,7 @@ export function SiteHeader({
   locationLabel?: string
   shopCategories?: { name: string; slug: string }[]
   showDealerCart?: boolean
+  announcementCount?: number
 }) {
   const isCustomer = variant === 'customer'
   const homeHref = isCustomer ? (userEmail ? '/account' : '/build') : variant === 'admin' ? '/admin' : '/dealer'
@@ -84,25 +86,39 @@ export function SiteHeader({
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <button type="button" aria-label="Notifications" className="text-white transition-colors hover:text-[#FFC60B]">
-              <Bell size={22} className="text-[#FFC60B]" />
-            </button>
+          <div className="flex items-center gap-5">
+            {/* Announcements: dealer/admin get a nav link; customers get the generic bell */}
+            {!isCustomer ? (
+              <Link
+                href="/dealer/announcements"
+                aria-label="Announcements"
+                className="relative text-white transition-colors hover:text-[#FFC60B]"
+              >
+                <Megaphone size={22} className="text-[#FFC60B]" />
+                {announcementCount !== undefined && announcementCount > 0 && (
+                  <span className="absolute -right-1.5 -top-1.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#FFC60B] px-1 text-[10px] font-bold leading-none text-[#1E1E1E]">
+                    {announcementCount}
+                  </span>
+                )}
+              </Link>
+            ) : (
+              <button type="button" aria-label="Notifications" className="text-white transition-colors hover:text-[#FFC60B]">
+                <Bell size={22} className="text-[#FFC60B]" />
+              </button>
+            )}
 
-            <button className="hidden items-center gap-3 text-white transition-colors hover:text-[#FFC60B] sm:flex">
+            <button
+              aria-label="Live Chat"
+              className="hidden text-white transition-colors hover:text-[#FFC60B] sm:block"
+            >
               <MessageCircle size={22} className="text-[#FFC60B]" />
-              <div className="text-left">
-                <div className="text-sm font-semibold">Live Chat</div>
-                <div className="text-xs opacity-90">Chat with an Expert</div>
-              </div>
             </button>
 
-            <button className="hidden items-center gap-3 text-white transition-colors hover:text-[#FFC60B] md:flex">
+            <button
+              aria-label="Call us"
+              className="hidden text-white transition-colors hover:text-[#FFC60B] md:block"
+            >
               <Phone size={22} className="text-[#FFC60B]" />
-              <div className="text-left">
-                <div className="text-sm font-semibold">877-123-4567</div>
-                <div className="text-xs opacity-90">Sales and Service Hours</div>
-              </div>
             </button>
 
             <AccountMenu homeHref={homeHref} accountLabel={accountLabel} loggedIn={Boolean(userEmail)}>

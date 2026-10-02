@@ -1,10 +1,12 @@
 import Link from 'next/link'
-import { AlertTriangle, CreditCard, Info, Megaphone, Receipt } from 'lucide-react'
+import { AlertTriangle, CreditCard, Info, Receipt } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
 import { hasFinancialPermission } from '@/lib/financial-permissions'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { AnnouncementsPanel } from '@/components/dealer/AnnouncementsPanel'
+import { getAnnouncements } from '@/lib/announcements'
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
@@ -23,22 +25,6 @@ import {
   QUOTE_STATUS_VARIANT,
 } from '@/lib/status-labels'
 import { INSTALLATIONS_ENABLED } from '@/lib/feature-flags'
-
-type Announcement = { date: string; title: string; tag: string }
-
-const ANNOUNCEMENTS_ARE: Announcement[] = [
-  { date: '2026-10-01', title: 'New A.R.E. MX-Series now available for 2025 Toyota Tacoma — order lead time 6–8 weeks', tag: 'Product' },
-  { date: '2026-09-22', title: 'Q4 lead response goal: acknowledge all new leads within 24 hours of submission', tag: 'Operations' },
-  { date: '2026-09-10', title: '3D Configurator update: eight new exterior colors added for MX and DS Series', tag: 'Tools' },
-  { date: '2026-08-28', title: 'Warranty registration now requires online submission within 30 days of installation', tag: 'Policy' },
-]
-
-const ANNOUNCEMENTS_TRANSACTIONAL: Announcement[] = [
-  { date: '2026-10-01', title: 'October promotional pricing is now active — check your pricing group for current discounts', tag: 'Pricing' },
-  { date: '2026-09-25', title: 'Standard shipping lead times: 5–7 business days through Q4 2026', tag: 'Shipping' },
-  { date: '2026-09-18', title: 'New SKUs added: UnderCover Elite LX Hard Cover lineup for 2025 Ford F-150', tag: 'Product' },
-  { date: '2026-09-05', title: 'Net 30 payment terms renewal — contact your rep if your annual credit review is approaching', tag: 'Billing' },
-]
 
 function quoteDisplayNum(id: string): string {
   const n = parseInt(id.split('-').pop() ?? '0', 16)
@@ -123,16 +109,9 @@ export default async function DealerDashboardPage() {
   const totalDue = invoices.reduce((sum, inv) => sum + inv.remaining_balance, 0)
   const pastDueCount = invoices.filter((inv) => inv.status === 'past_due').length
 
-  // Announcements scoped by dealer type; combined dealers get both lists merged and sorted
-  const announcements: Announcement[] = companyId
-    ? isAreDealer && creditEligible
-      ? [...ANNOUNCEMENTS_ARE, ...ANNOUNCEMENTS_TRANSACTIONAL]
-          .sort((a, b) => b.date.localeCompare(a.date))
-          .slice(0, 5)
-      : isAreDealer
-      ? ANNOUNCEMENTS_ARE
-      : ANNOUNCEMENTS_TRANSACTIONAL
-    : [] // RT admin sees no dealer-specific announcements
+  const announcements = companyId
+    ? getAnnouncements(isAreDealer, creditEligible)
+    : []
 
   return (
     <div className="flex flex-col gap-6">
@@ -141,28 +120,7 @@ export default async function DealerDashboardPage() {
         <p className="text-muted-foreground">Here&apos;s what&apos;s happening across your dealership.</p>
       </div>
 
-      {announcements.length > 0 && (
-        <div className={PANEL}>
-          <div className={`${PANEL_HEADER} flex items-center justify-between`}>
-            <span className="flex items-center gap-2 text-sm font-semibold text-white">
-              <Megaphone size={15} />
-              Announcements
-            </span>
-            <span className="text-xs text-white/40">From RealTruck</span>
-          </div>
-          <div className="divide-y divide-[#f0f0f0]">
-            {announcements.map((ann, i) => (
-              <div key={i} className="flex items-start gap-4 px-4 py-3">
-                <span className="w-24 shrink-0 pt-0.5 text-xs text-muted-foreground">{formatDate(ann.date)}</span>
-                <span className="flex-1 text-sm">{ann.title}</span>
-                <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                  {ann.tag}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <AnnouncementsPanel announcements={announcements} limit={4} />
 
       {(showCreditCard || showInvoicesCard) && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

@@ -3,6 +3,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { createClient } from '@/lib/supabase/server'
 import { SiteHeader } from '@/components/marketing/SiteHeader'
 import { DealerCartProvider } from '@/components/dealer/DealerCartContext'
+import { getAnnouncements } from '@/lib/announcements'
 
 // realtruck_admin is allowed in here too (not just dealer_admin/location_admin/
 // staff) so RT admin can reuse the same rich quote/installation detail pages
@@ -36,9 +37,17 @@ export default async function DealerLayout({ children }: { children: React.React
   const { data: categories } = await supabase.from('product_categories').select('name, slug').order('sort_order')
   const shopCategories = categories ?? []
 
+  let announcementCount: number | undefined
   if (user && role !== 'realtruck_admin' && user.profile.company_id) {
-    const { data: company } = await supabase.from('companies').select('name').eq('id', user.profile.company_id).maybeSingle()
+    const { data: company } = await supabase
+      .from('companies')
+      .select('name, is_are_dealer, credit_eligible')
+      .eq('id', user.profile.company_id)
+      .maybeSingle()
     companyName = company?.name ?? undefined
+    const isAreDealer = Boolean(company?.is_are_dealer)
+    const isTransactional = !isAreDealer || Boolean(company?.credit_eligible)
+    announcementCount = getAnnouncements(isAreDealer, isTransactional).length
 
     if (role === 'location_admin') {
       const { data: assignment } = await supabase
@@ -73,6 +82,7 @@ export default async function DealerLayout({ children }: { children: React.React
           locationLabel={locationLabel}
           shopCategories={shopCategories}
           showDealerCart={Boolean(user) && role !== 'realtruck_admin'}
+          announcementCount={announcementCount}
         />
         <div className="mx-auto max-w-[1440px] px-8 py-8">{children}</div>
       </DealerCartProvider>
