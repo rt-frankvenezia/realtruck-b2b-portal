@@ -52,6 +52,17 @@ export const DEMO_USERS: DemoUser[] = [
     company: 'Big Sky Truck Outfitters',
     dealerType: 'ARE + Transactional',
   },
+  // ── Transactional dealer with pending credit application ─
+  {
+    id: '33333333-3333-3333-3333-000000000009',
+    name: 'Alex Rivera',
+    email: 'alex@pacifictruck.example',
+    role: 'dealer_admin',
+    company_id: '11111111-1111-1111-1111-000000000005',
+    avatarInitials: 'AR',
+    company: 'Pacific Truck & Accessories',
+    dealerType: 'Transactional (Credit Pending)',
+  },
   // ── ARE-only (quotes, no transactional ordering) ─────
   {
     id: '33333333-3333-3333-3333-000000000008',

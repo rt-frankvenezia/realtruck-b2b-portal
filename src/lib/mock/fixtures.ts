@@ -448,6 +448,26 @@ export const COMPANIES = [
     dealer_admin_id: null,
     created_at: '2026-04-15T00:00:00Z',
   },
+  // Transactional dealer with a pending credit application (no active account yet)
+  {
+    id: '11111111-1111-1111-1111-000000000005',
+    name: 'Pacific Truck & Accessories',
+    code: 'PTA-005',
+    status: 'active',
+    billing_address: '2201 Harbor Blvd',
+    billing_city: 'Costa Mesa',
+    billing_state: 'CA',
+    billing_postal_code: '92627',
+    billing_country: 'US',
+    is_are_dealer: false,
+    installation_pricing: {},
+    supported_tiers: ['tier-1', 'tier-2'],
+    pricing_group_id: '44444444-4444-4444-4444-000000000002',
+    catalog_id: 'cat00001-0000-0000-0000-000000000001',
+    credit_eligible: true,
+    dealer_admin_id: '33333333-3333-3333-3333-000000000009',
+    created_at: '2026-08-01T00:00:00Z',
+  },
 ]
 
 export const LOCATIONS = [
@@ -617,6 +637,20 @@ export const USERS = [
     last_login_at: '2026-08-10T00:00:00Z',
     created_at: '2026-04-01T00:00:00Z',
     updated_at: '2026-08-10T00:00:00Z',
+  },
+  // Pacific Truck & Accessories — transactional dealer with pending credit application
+  {
+    id: '33333333-3333-3333-3333-000000000009',
+    name: 'Alex Rivera',
+    email: 'alex@pacifictruck.example',
+    phone_number: '949-555-0177',
+    role: 'dealer_admin',
+    status: 'active',
+    company_id: '11111111-1111-1111-1111-000000000005',
+    internal_notes: null,
+    last_login_at: '2026-09-30T12:00:00Z',
+    created_at: '2026-08-01T00:00:00Z',
+    updated_at: '2026-09-30T12:00:00Z',
   },
   // Summit Cap Outfitters — ARE-only dealer admin
   {
@@ -2181,6 +2215,44 @@ export const AUDIT_LOG = [
 ]
 
 export const CREDIT_APPLICATIONS = [
+  // Pacific Truck & Accessories — application under review, no active account yet
+  {
+    id: 'c4444444-4444-4444-4444-000000000003',
+    reference_number: 'CA-2026-0047',
+    company_id: '11111111-1111-1111-1111-000000000005',
+    status: 'draft',
+    created_at: '2026-09-12T00:00:00Z',
+    last_saved_at: '2026-09-14T00:00:00Z',
+    submitted_at: null,
+    reviewed_at: null,
+    approved_at: null,
+    activated_at: null,
+    legal_business_name: 'Pacific Truck & Accessories Inc.',
+    business_type: 'Corporation',
+    year_established: 2018,
+    federal_tax_id_last_four: '8812',
+    business_address: '2201 Harbor Blvd',
+    business_city: 'Costa Mesa',
+    business_state: 'CA',
+    business_postal_code: '92627',
+    ap_contact_name: 'Alex Rivera',
+    ap_contact_email: 'alex@pacifictruck.example',
+    ap_contact_phone: '949-555-0177',
+    requested_credit_limit: 40000,
+    requested_payment_terms: 'net_30',
+    estimated_monthly_purchases: 12000,
+    business_match_status: 'matched',
+    duns_number: '07-442-9918',
+    matched_legal_name: 'Pacific Truck & Accessories Inc.',
+    match_confidence: 91,
+    matched_at: '2026-09-16T00:00:00Z',
+    certified_by_name: 'Alex Rivera',
+    certified_at: '2026-09-15T00:00:00Z',
+    approved_credit_limit: null,
+    approved_payment_terms: null,
+    effective_date: null,
+    dealer_facing_message: 'Your application is currently being reviewed by our credit team. We will notify you within 3–5 business days.',
+  },
   {
     id: 'c4444444-4444-4444-4444-000000000001',
     reference_number: 'CA-2026-0001',
