@@ -7,6 +7,7 @@ import { QuoteStatusActions } from '@/components/dealer/QuoteStatusActions'
 import { QuoteActivityTimeline } from '@/components/dealer/QuoteActivityTimeline'
 import { QuoteLineItemsEditor } from '@/components/dealer/QuoteLineItemsEditor'
 import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignDialog'
+import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL } from '@/lib/quote-config'
 
@@ -145,6 +146,17 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
           </div>
         </div>
       </div>
+
+      {/* LEER configuration panel */}
+      {(quote as any).brand === 'LEER' && (
+        <LeerConfigurePanel
+          quoteId={quote.id}
+          configurationMethod={(quote as any).configuration_method ?? null}
+          originalRequestedProduct={(quote as any).original_requested_product ?? null}
+          configurationSnapshot={(quote as any).configuration_snapshot ?? null}
+          hasLineItems={(lineItems ?? []).length > 0}
+        />
+      )}
 
       {/* Line items */}
       <QuoteLineItemsEditor
