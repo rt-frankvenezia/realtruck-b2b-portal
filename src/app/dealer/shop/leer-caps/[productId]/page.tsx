@@ -1,10 +1,52 @@
-import fs from 'fs'
-import path from 'path'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ChevronLeft } from 'lucide-react'
 import { LeerConfigurator } from '@/components/dealer/LeerConfigurator'
 import catalogData from '@/lib/leer/data/catalog.json'
+
+// Static imports — Next.js can trace these; avoids fs.readFileSync path issues on Vercel
+import kit_10113214 from '@/lib/leer/data/kits/10113214.json'
+import bom_10113214 from '@/lib/leer/data/kits/10113214.bom.json'
+import kit_3488646 from '@/lib/leer/data/kits/3488646.json'
+import bom_3488646 from '@/lib/leer/data/kits/3488646.bom.json'
+import kit_3187051 from '@/lib/leer/data/kits/3187051.json'
+import bom_3187051 from '@/lib/leer/data/kits/3187051.bom.json'
+import kit_3209539 from '@/lib/leer/data/kits/3209539.json'
+import bom_3209539 from '@/lib/leer/data/kits/3209539.bom.json'
+import kit_3187173 from '@/lib/leer/data/kits/3187173.json'
+import bom_3187173 from '@/lib/leer/data/kits/3187173.bom.json'
+import kit_3591889 from '@/lib/leer/data/kits/3591889.json'
+import bom_3591889 from '@/lib/leer/data/kits/3591889.bom.json'
+import kit_3546703 from '@/lib/leer/data/kits/3546703.json'
+import bom_3546703 from '@/lib/leer/data/kits/3546703.bom.json'
+import kit_3760056 from '@/lib/leer/data/kits/3760056.json'
+import bom_3760056 from '@/lib/leer/data/kits/3760056.bom.json'
+import kit_5716833 from '@/lib/leer/data/kits/5716833.json'
+import bom_5716833 from '@/lib/leer/data/kits/5716833.bom.json'
+
+const KIT_DATA: Record<string, any> = {
+  '10113214': kit_10113214,
+  '3488646':  kit_3488646,
+  '3187051':  kit_3187051,
+  '3209539':  kit_3209539,
+  '3187173':  kit_3187173,
+  '3591889':  kit_3591889,
+  '3546703':  kit_3546703,
+  '3760056':  kit_3760056,
+  '5716833':  kit_5716833,
+}
+
+const BOM_DATA: Record<string, any> = {
+  '10113214': bom_10113214,
+  '3488646':  bom_3488646,
+  '3187051':  bom_3187051,
+  '3209539':  bom_3209539,
+  '3187173':  bom_3187173,
+  '3591889':  bom_3591889,
+  '3546703':  bom_3546703,
+  '3760056':  bom_3760056,
+  '5716833':  bom_5716833,
+}
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
@@ -12,14 +54,14 @@ const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 type ProductId = '100s' | '100rcc' | 'acc-mt3'
 
 const FAMILY_MAP: Record<ProductId, string> = {
-  '100s': '100S',
-  '100rcc': '100RCC',
+  '100s':    '100S',
+  '100rcc':  '100RCC',
   'acc-mt3': 'ACC-MT3',
 }
 
 const FAMILY_LABEL: Record<ProductId, string> = {
-  '100s': 'LEER 100S — Fiberglass Sport Cap',
-  '100rcc': 'LEER 100RCC — Fiberglass Rear Corner Cap',
+  '100s':    'LEER 100S — Fiberglass Sport Cap',
+  '100rcc':  'LEER 100RCC — Fiberglass Rear Corner Cap',
   'acc-mt3': 'LEER ACC-MT3 — Aluminum Cap',
 }
 
@@ -50,7 +92,6 @@ export default async function LeerCapsPage({
     historical: boolean
   }>
 
-  // Back link
   const backLink = (
     <Link
       href={returnUrl}
@@ -61,7 +102,6 @@ export default async function LeerCapsPage({
     </Link>
   )
 
-  // ACC-MT3: aluminum — no configurator
   if (productId === 'acc-mt3') {
     return (
       <div className="flex flex-col gap-6">
@@ -71,9 +111,7 @@ export default async function LeerCapsPage({
             <div className="flex items-center gap-2.5">
               <span className="text-xs font-bold uppercase tracking-wider text-[#FFC60B]">LEER</span>
               <h1 className="font-semibold text-white">{familyLabel}</h1>
-              <span className="ml-1 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70">
-                Aluminum
-              </span>
+              <span className="ml-1 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70">Aluminum</span>
             </div>
           </div>
           <div className="px-6 py-5">
@@ -94,24 +132,14 @@ export default async function LeerCapsPage({
     )
   }
 
-  // Fiberglass: filter catalog kits for this family, exclude historical
-  const familyKits = allCatalogKits.filter(
-    (k) => k.family === familyCode && !k.historical,
-  )
-
+  const familyKits = allCatalogKits.filter((k) => k.family === familyCode && !k.historical)
   if (familyKits.length === 0) notFound()
-
-  // Load raw kit and BOM JSON for each non-historical kit
-  const kitsDir = path.join(process.cwd(), 'src/lib/leer/data/kits')
 
   const kitModels: Record<string, any> = {}
   const kitBoms: Record<string, any> = {}
-
   for (const kit of familyKits) {
-    const kitPath = path.join(kitsDir, `${kit.id}.json`)
-    const bomPath = path.join(kitsDir, `${kit.id}.bom.json`)
-    kitModels[kit.id] = JSON.parse(fs.readFileSync(kitPath, 'utf-8'))
-    kitBoms[kit.id] = JSON.parse(fs.readFileSync(bomPath, 'utf-8'))
+    kitModels[kit.id] = KIT_DATA[kit.id]
+    kitBoms[kit.id] = BOM_DATA[kit.id]
   }
 
   return (
@@ -122,18 +150,11 @@ export default async function LeerCapsPage({
           <div className="flex items-center gap-2.5">
             <span className="text-xs font-bold uppercase tracking-wider text-[#FFC60B]">LEER</span>
             <h1 className="font-semibold text-white">{familyLabel}</h1>
-            <span className="ml-1 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70">
-              Fiberglass
-            </span>
+            <span className="ml-1 rounded bg-white/10 px-2 py-0.5 text-xs text-white/70">Fiberglass</span>
           </div>
         </div>
         <LeerConfigurator
-          kits={familyKits.map((k) => ({
-            id: k.id,
-            title: k.title,
-            fitment: k.fitment,
-            family: k.family,
-          }))}
+          kits={familyKits.map((k) => ({ id: k.id, title: k.title, fitment: k.fitment, family: k.family }))}
           kitModels={kitModels}
           kitBoms={kitBoms}
           quoteId={quoteId}

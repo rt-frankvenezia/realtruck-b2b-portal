@@ -1,34 +1,73 @@
+'use client'
+
 import Link from 'next/link'
-import { CheckCircle2, Settings } from 'lucide-react'
+import { useState } from 'react'
+import { CheckCircle2, Settings, Star } from 'lucide-react'
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 
-const LEER_FAMILIES = [
-  {
-    id: '100s',
-    name: 'LEER 100XQ Sport',
-    badge: 'Fiberglass',
-    description: 'Sport profile, premium gel-coat finish',
-  },
-  {
-    id: '100rcc',
-    name: 'LEER 100 RCC',
-    badge: 'Fiberglass',
-    description: 'Rear corner cap design, flush-mount profile',
-  },
-  {
-    id: 'acc-mt3',
-    name: 'LEER ACC-MT3',
-    badge: 'Aluminum',
-    description: 'All-aluminum construction, economical entry point',
-  },
-]
-
-type Snapshot = { kit?: string; selections?: Record<string, string> }
+// Maps a cap name / family hint to the configurator productId route segment
+function toProductId(name: string): '100s' | '100rcc' | 'acc-mt3' {
+  const u = name.toUpperCase()
+  if (u.includes('RCC')) return '100rcc'
+  if (u.includes('ACC') || u.includes('ALUMINUM')) return 'acc-mt3'
+  return '100s'
+}
 
 function configureUrl(productId: string, quoteId: string) {
   return `/dealer/shop/leer-caps/${productId}?quoteId=${quoteId}&returnUrl=/dealer/quotes/${quoteId}`
+}
+
+type Brand = 'LEER' | 'Century' | 'Snugtop'
+type Snapshot = { kit?: string; selections?: Record<string, string> }
+
+type CapEntry = { name: string; productId: '100s' | '100rcc' | 'acc-mt3' | null }
+
+const BRAND_CAPS: Record<Brand, CapEntry[]> = {
+  LEER: [
+    { name: 'LEER 100XQ Sport',   productId: '100s' },
+    { name: 'LEER 100R',          productId: '100s' },
+    { name: 'LEER 100RCC',        productId: '100rcc' },
+    { name: 'LEER 100L',          productId: '100s' },
+    { name: 'LEER 100XR',         productId: '100s' },
+    { name: 'LEER 100RL',         productId: '100s' },
+    { name: 'LEER 180',           productId: '100s' },
+    { name: 'LEER 122',           productId: '100s' },
+    { name: 'LEER 228',           productId: '100s' },
+    { name: 'LEER 350MR',         productId: '100s' },
+    { name: 'LEER Premier',       productId: '100s' },
+  ],
+  Century: [
+    { name: 'Century 100XQ',  productId: null },
+    { name: 'Century 100R',   productId: null },
+    { name: 'Century 100RCC', productId: null },
+    { name: 'Century 100L',   productId: null },
+    { name: 'Century 100XR',  productId: null },
+    { name: 'Century 100RL',  productId: null },
+    { name: 'Century 180',    productId: null },
+    { name: 'Century 122',    productId: null },
+    { name: 'Century 228',    productId: null },
+    { name: 'Century 350MR',  productId: null },
+  ],
+  Snugtop: [
+    { name: 'Snugtop Rebel',       productId: null },
+    { name: 'Snugtop Super Sport',  productId: null },
+    { name: 'Snugtop Rebel XL',    productId: null },
+    { name: 'Snugtop WorkTop',     productId: null },
+    { name: 'Snugtop Sportsman',   productId: null },
+    { name: 'Snugtop Construck',   productId: null },
+    { name: 'Snugtop Ridgeline',   productId: null },
+  ],
+}
+
+const BRANDS: Brand[] = ['LEER', 'Century', 'Snugtop']
+
+function guessBrand(product: string): Brand {
+  const u = product.toUpperCase()
+  if (u.includes('CENTURY')) return 'Century'
+  if (u.includes('SNUGTOP')) return 'Snugtop'
+  return 'LEER'
 }
 
 export function LeerConfigurePanel({
@@ -51,7 +90,10 @@ export function LeerConfigurePanel({
     ? configurationSnapshot.kit.split('-')[0].toLowerCase()
     : '100s'
 
-  // Aluminum: no configurator — manual line items only
+  const defaultBrand: Brand = originalRequestedProduct ? guessBrand(originalRequestedProduct) : 'LEER'
+  const [activeBrand, setActiveBrand] = useState<Brand>(defaultBrand)
+
+  // Aluminum: no configurator
   if (isAluminum) {
     return (
       <div className={PANEL}>
@@ -71,7 +113,7 @@ export function LeerConfigurePanel({
     )
   }
 
-  // Fiberglass — already configured via snapshot
+  // Fiberglass — already configured
   if (isConfigured) {
     return (
       <div className={PANEL}>
@@ -108,44 +150,90 @@ export function LeerConfigurePanel({
     )
   }
 
-  // Fiberglass — unconfigured, prompt dealer to select product and configure
+  // Unconfigured fiberglass — show picker
+  const requestedProductId = originalRequestedProduct ? toProductId(originalRequestedProduct) : null
+  const caps = BRAND_CAPS[activeBrand]
+
   return (
     <div className={PANEL}>
       <div className={PANEL_HEADER}>
         <div className="flex items-center gap-2.5">
           <span className="text-xs font-bold uppercase tracking-wider text-[#FFC60B]">LEER</span>
-          <h2 className="font-semibold text-white">Fiberglass Cap — Configuration Required</h2>
+          <h2 className="font-semibold text-white">Fiberglass Cap — Select &amp; Configure</h2>
         </div>
       </div>
-      <div className="px-4 py-4">
-        {originalRequestedProduct && (
-          <p className="mb-4 text-sm text-muted-foreground">
-            Customer requested:{' '}
-            <span className="font-medium text-foreground">{originalRequestedProduct}</span>
-          </p>
-        )}
-        <p className="mb-3 text-sm font-medium text-foreground">
-          Select a product family to begin configuring:
-        </p>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-          {LEER_FAMILIES.map((family) => (
-            <Link
-              key={family.id}
-              href={configureUrl(family.id, quoteId)}
-              className="group flex flex-col gap-1.5 rounded border border-[#d5d5d5] p-4 transition-colors hover:border-[#1E1E1E] hover:bg-muted/20"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <span className="text-sm font-semibold leading-tight">{family.name}</span>
-                <span className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-                  {family.badge}
-                </span>
+
+      <div className="flex flex-col gap-4 p-4">
+        {/* Customer-requested cap — featured */}
+        {originalRequestedProduct && requestedProductId && (
+          <div className="rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-2.5">
+                <Star size={14} className="mt-0.5 shrink-0 text-[#FFC60B]" fill="currentColor" />
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-[#FFC60B]">Customer Requested</p>
+                  <p className="mt-0.5 text-sm font-semibold">{originalRequestedProduct}</p>
+                </div>
               </div>
-              <p className="text-xs text-muted-foreground">{family.description}</p>
-              <span className="mt-1 text-xs font-semibold text-primary group-hover:underline">
+              <Link
+                href={configureUrl(requestedProductId, quoteId)}
+                className="shrink-0 rounded bg-[#1E1E1E] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#333]"
+              >
                 Configure →
-              </span>
-            </Link>
-          ))}
+              </Link>
+            </div>
+          </div>
+        )}
+
+        {/* Brand tabs + cap list */}
+        <div>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            {originalRequestedProduct ? 'Or configure a different cap:' : 'Select a cap to configure:'}
+          </p>
+
+          {/* Brand tabs */}
+          <div className="flex gap-1 border-b border-[#d5d5d5]">
+            {BRANDS.map((brand) => (
+              <button
+                key={brand}
+                onClick={() => setActiveBrand(brand)}
+                className={`px-4 py-2 text-sm font-semibold transition-colors ${
+                  activeBrand === brand
+                    ? 'border-b-2 border-[#FFC60B] text-[#1E1E1E] -mb-px'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {brand}
+                <span className="ml-1.5 text-[10px] font-normal text-muted-foreground/60">
+                  ({BRAND_CAPS[brand].length})
+                </span>
+              </button>
+            ))}
+          </div>
+
+          {/* Cap grid */}
+          <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+            {caps.map((cap) => (
+              cap.productId ? (
+                <Link
+                  key={cap.name}
+                  href={configureUrl(cap.productId, quoteId)}
+                  className="group flex items-center justify-between rounded border border-[#d5d5d5] px-3 py-2 text-sm hover:border-[#1E1E1E] hover:bg-muted/10"
+                >
+                  <span className="font-medium leading-tight">{cap.name}</span>
+                  <span className="ml-2 shrink-0 text-xs text-muted-foreground group-hover:text-primary">→</span>
+                </Link>
+              ) : (
+                <div
+                  key={cap.name}
+                  className="flex items-center justify-between rounded border border-dashed border-[#d5d5d5] px-3 py-2 text-sm"
+                >
+                  <span className="text-muted-foreground">{cap.name}</span>
+                  <span className="ml-2 shrink-0 rounded bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">Soon</span>
+                </div>
+              )
+            ))}
+          </div>
         </div>
       </div>
     </div>
