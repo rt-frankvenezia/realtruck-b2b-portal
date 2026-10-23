@@ -279,7 +279,20 @@ class MockQueryBuilder {
     }
 
     const base = FIXTURE_MAP[this.table] ?? []
-    let rows = this.applyFilters(base)
+    // Back-fill LEER-integration fields on existing ARE quotes so callers always
+    // get a complete shape without editing every individual fixture object.
+    const normalizedBase = this.table === 'quotes'
+      ? base.map((q: any) => ({
+          brand: ['spam', 'invalid'].includes(q.status) ? null : 'ARE',
+          configuration_method: ['spam', 'invalid'].includes(q.status) ? null : 'are-consumer',
+          original_requested_product: null,
+          configuration_snapshot: null,
+          external_order_number: null,
+          ordered_externally_at: null,
+          ...q,
+        }))
+      : base
+    let rows = this.applyFilters(normalizedBase)
 
     if (this.orderCol) {
       const col = this.orderCol

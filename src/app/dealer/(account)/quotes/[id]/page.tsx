@@ -8,6 +8,7 @@ import { QuoteActivityTimeline } from '@/components/dealer/QuoteActivityTimeline
 import { QuoteLineItemsEditor } from '@/components/dealer/QuoteLineItemsEditor'
 import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignDialog'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
+import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL } from '@/lib/quote-config'
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
@@ -132,6 +133,15 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
             <Field label="Quote ID" value={displayNum} />
             <Field label="Created" value={createdAt} />
             {location && <Field label="Location" value={`${location.name} (${location.code})`} />}
+            {(quote as any).brand && (
+              <Field label="Brand" value={QUOTE_BRAND_LABEL[(quote as any).brand] ?? (quote as any).brand} />
+            )}
+            {(quote as any).source && (
+              <Field label="Source" value={QUOTE_SOURCE_LABEL[(quote as any).source] ?? (quote as any).source} />
+            )}
+            {(quote as any).original_requested_product && (
+              <Field label="Requested Product" value={(quote as any).original_requested_product} />
+            )}
           </div>
         </div>
       </div>
