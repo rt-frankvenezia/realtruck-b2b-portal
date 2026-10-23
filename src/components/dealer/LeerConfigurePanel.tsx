@@ -7,57 +7,74 @@ import { CheckCircle2, Settings, Star } from 'lucide-react'
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 
-// Maps a cap name / family hint to the configurator productId route segment
-function toProductId(name: string): '100s' | '100rcc' | 'acc-mt3' {
+// Catalog product IDs for configurable LEER fiberglass cap families
+const LEER_PRODUCT_IDS: Record<string, string> = {
+  '100s':   'b1111111-0000-0000-0000-000000000016',
+  '100rcc': 'b1111111-0000-0000-0000-000000000017',
+}
+
+// Map from kit ID (numeric string) → kit family slug
+const KIT_FAMILY: Record<string, string> = {
+  '10113214': '100s',
+  '3488646':  '100rcc',
+  '3187051':  '100rcc',
+  '3209539':  '100rcc',
+  '3187173':  '100rcc',
+}
+
+// Maps a cap name to the kit family slug
+function toKitFamily(name: string): '100s' | '100rcc' | null {
   const u = name.toUpperCase()
   if (u.includes('RCC')) return '100rcc'
-  if (u.includes('ACC') || u.includes('ALUMINUM')) return 'acc-mt3'
+  if (u.includes('ACC') || u.includes('ALUMINUM')) return null
   return '100s'
 }
 
-function configureUrl(productId: string, quoteId: string) {
-  return `/dealer/shop/leer-caps/${productId}?quoteId=${quoteId}&returnUrl=/dealer/quotes/${quoteId}`
+function configureUrl(kitFamily: string, quoteId: string): string {
+  const productId = LEER_PRODUCT_IDS[kitFamily]
+  if (!productId) return '#'
+  return `/dealer/shop/leer-fiberglass-caps/${productId}?quoteId=${quoteId}&returnUrl=/dealer/quotes/${quoteId}`
 }
 
 type Brand = 'LEER' | 'Century' | 'Snugtop'
 type Snapshot = { kit?: string; selections?: Record<string, string> }
 
-type CapEntry = { name: string; productId: '100s' | '100rcc' | 'acc-mt3' | null }
+type CapEntry = { name: string; kitFamily: '100s' | '100rcc' | null }
 
 const BRAND_CAPS: Record<Brand, CapEntry[]> = {
   LEER: [
-    { name: 'LEER 100XQ Sport',   productId: '100s' },
-    { name: 'LEER 100R',          productId: '100s' },
-    { name: 'LEER 100RCC',        productId: '100rcc' },
-    { name: 'LEER 100L',          productId: '100s' },
-    { name: 'LEER 100XR',         productId: '100s' },
-    { name: 'LEER 100RL',         productId: '100s' },
-    { name: 'LEER 180',           productId: '100s' },
-    { name: 'LEER 122',           productId: '100s' },
-    { name: 'LEER 228',           productId: '100s' },
-    { name: 'LEER 350MR',         productId: '100s' },
-    { name: 'LEER Premier',       productId: '100s' },
+    { name: 'LEER 100XQ Sport',   kitFamily: '100s' },
+    { name: 'LEER 100R',          kitFamily: '100s' },
+    { name: 'LEER 100RCC',        kitFamily: '100rcc' },
+    { name: 'LEER 100L',          kitFamily: '100s' },
+    { name: 'LEER 100XR',         kitFamily: '100s' },
+    { name: 'LEER 100RL',         kitFamily: '100s' },
+    { name: 'LEER 180',           kitFamily: '100s' },
+    { name: 'LEER 122',           kitFamily: '100s' },
+    { name: 'LEER 228',           kitFamily: '100s' },
+    { name: 'LEER 350MR',         kitFamily: '100s' },
+    { name: 'LEER Premier',       kitFamily: '100s' },
   ],
   Century: [
-    { name: 'Century 100XQ',  productId: null },
-    { name: 'Century 100R',   productId: null },
-    { name: 'Century 100RCC', productId: null },
-    { name: 'Century 100L',   productId: null },
-    { name: 'Century 100XR',  productId: null },
-    { name: 'Century 100RL',  productId: null },
-    { name: 'Century 180',    productId: null },
-    { name: 'Century 122',    productId: null },
-    { name: 'Century 228',    productId: null },
-    { name: 'Century 350MR',  productId: null },
+    { name: 'Century 100XQ',  kitFamily: null },
+    { name: 'Century 100R',   kitFamily: null },
+    { name: 'Century 100RCC', kitFamily: null },
+    { name: 'Century 100L',   kitFamily: null },
+    { name: 'Century 100XR',  kitFamily: null },
+    { name: 'Century 100RL',  kitFamily: null },
+    { name: 'Century 180',    kitFamily: null },
+    { name: 'Century 122',    kitFamily: null },
+    { name: 'Century 228',    kitFamily: null },
+    { name: 'Century 350MR',  kitFamily: null },
   ],
   Snugtop: [
-    { name: 'Snugtop Rebel',       productId: null },
-    { name: 'Snugtop Super Sport',  productId: null },
-    { name: 'Snugtop Rebel XL',    productId: null },
-    { name: 'Snugtop WorkTop',     productId: null },
-    { name: 'Snugtop Sportsman',   productId: null },
-    { name: 'Snugtop Construck',   productId: null },
-    { name: 'Snugtop Ridgeline',   productId: null },
+    { name: 'Snugtop Rebel',       kitFamily: null },
+    { name: 'Snugtop Super Sport',  kitFamily: null },
+    { name: 'Snugtop Rebel XL',    kitFamily: null },
+    { name: 'Snugtop WorkTop',     kitFamily: null },
+    { name: 'Snugtop Sportsman',   kitFamily: null },
+    { name: 'Snugtop Construck',   kitFamily: null },
+    { name: 'Snugtop Ridgeline',   kitFamily: null },
   ],
 }
 
@@ -87,7 +104,7 @@ export function LeerConfigurePanel({
   const isConfigured = Boolean(configurationSnapshot?.kit)
   const selectionCount = Object.keys(configurationSnapshot?.selections ?? {}).length
   const familyId = configurationSnapshot?.kit
-    ? configurationSnapshot.kit.split('-')[0].toLowerCase()
+    ? (KIT_FAMILY[configurationSnapshot.kit] ?? '100s')
     : '100s'
 
   const defaultBrand: Brand = originalRequestedProduct ? guessBrand(originalRequestedProduct) : 'LEER'
@@ -151,7 +168,7 @@ export function LeerConfigurePanel({
   }
 
   // Unconfigured fiberglass — show picker
-  const requestedProductId = originalRequestedProduct ? toProductId(originalRequestedProduct) : null
+  const requestedKitFamily = originalRequestedProduct ? toKitFamily(originalRequestedProduct) : null
   const caps = BRAND_CAPS[activeBrand]
 
   return (
@@ -165,7 +182,7 @@ export function LeerConfigurePanel({
 
       <div className="flex flex-col gap-4 p-4">
         {/* Customer-requested cap — featured */}
-        {originalRequestedProduct && requestedProductId && (
+        {originalRequestedProduct && requestedKitFamily && (
           <div className="rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 p-4">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-start gap-2.5">
@@ -176,7 +193,7 @@ export function LeerConfigurePanel({
                 </div>
               </div>
               <Link
-                href={configureUrl(requestedProductId, quoteId)}
+                href={configureUrl(requestedKitFamily, quoteId)}
                 className="shrink-0 rounded bg-[#1E1E1E] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#333]"
               >
                 Configure →
@@ -214,10 +231,10 @@ export function LeerConfigurePanel({
           {/* Cap grid */}
           <div className="mt-3 grid grid-cols-2 gap-1.5 sm:grid-cols-3">
             {caps.map((cap) => (
-              cap.productId ? (
+              cap.kitFamily ? (
                 <Link
                   key={cap.name}
-                  href={configureUrl(cap.productId, quoteId)}
+                  href={configureUrl(cap.kitFamily, quoteId)}
                   className="group flex items-center justify-between rounded border border-[#d5d5d5] px-3 py-2 text-sm hover:border-[#1E1E1E] hover:bg-muted/10"
                 >
                   <span className="font-medium leading-tight">{cap.name}</span>

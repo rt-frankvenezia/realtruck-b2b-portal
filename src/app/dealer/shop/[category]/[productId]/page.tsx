@@ -11,15 +11,52 @@ import { VolumePricingPanel } from '@/components/dealer/VolumePricingPanel'
 import { ProductCard } from '@/components/dealer/ProductCard'
 import { RecordRecentlyViewed } from '@/components/dealer/RecordRecentlyViewed'
 import { FitmentTable } from '@/components/dealer/FitmentTable'
+import { LeerConfigurator } from '@/components/dealer/LeerConfigurator'
 import { formatCurrency, CATALOG_INVENTORY_STATUS_LABEL, CATALOG_INVENTORY_STATUS_VARIANT } from '@/lib/status-labels'
 import type { PricingTier } from '@/lib/pricing'
+import catalogData from '@/lib/leer/data/catalog.json'
+import kit_10113214 from '@/lib/leer/data/kits/10113214.json'
+import bom_10113214 from '@/lib/leer/data/kits/10113214.bom.json'
+import kit_3488646 from '@/lib/leer/data/kits/3488646.json'
+import bom_3488646 from '@/lib/leer/data/kits/3488646.bom.json'
+import kit_3187051 from '@/lib/leer/data/kits/3187051.json'
+import bom_3187051 from '@/lib/leer/data/kits/3187051.bom.json'
+import kit_3209539 from '@/lib/leer/data/kits/3209539.json'
+import bom_3209539 from '@/lib/leer/data/kits/3209539.bom.json'
+import kit_3187173 from '@/lib/leer/data/kits/3187173.json'
+import bom_3187173 from '@/lib/leer/data/kits/3187173.bom.json'
+import kit_3591889 from '@/lib/leer/data/kits/3591889.json'
+import bom_3591889 from '@/lib/leer/data/kits/3591889.bom.json'
+import kit_3546703 from '@/lib/leer/data/kits/3546703.json'
+import bom_3546703 from '@/lib/leer/data/kits/3546703.bom.json'
+import kit_3760056 from '@/lib/leer/data/kits/3760056.json'
+import bom_3760056 from '@/lib/leer/data/kits/3760056.bom.json'
+import kit_5716833 from '@/lib/leer/data/kits/5716833.json'
+import bom_5716833 from '@/lib/leer/data/kits/5716833.bom.json'
+
+const LEER_KIT_DATA: Record<string, any> = {
+  '10113214': kit_10113214, '3488646': kit_3488646, '3187051': kit_3187051,
+  '3209539': kit_3209539,  '3187173': kit_3187173, '3591889': kit_3591889,
+  '3546703': kit_3546703,  '3760056': kit_3760056, '5716833': kit_5716833,
+}
+const LEER_BOM_DATA: Record<string, any> = {
+  '10113214': bom_10113214, '3488646': bom_3488646, '3187051': bom_3187051,
+  '3209539': bom_3209539,   '3187173': bom_3187173, '3591889': bom_3591889,
+  '3546703': bom_3546703,   '3760056': bom_3760056, '5716833': bom_5716833,
+}
+const LEER_FAMILY_CODE: Record<string, string> = { '100s': '100S', '100rcc': '100RCC' }
 
 export default async function ProductDetailPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ category: string; productId: string }>
+  searchParams: Promise<Record<string, string | undefined>>
 }) {
   const { category: categorySlug, productId } = await params
+  const sp = await searchParams
+  const quoteId = sp.quoteId
+  const returnUrl = sp.returnUrl ?? (quoteId ? `/dealer/quotes/${quoteId}` : undefined)
 
   const user = await getCurrentUser()
   const showDealerPricing = Boolean(user)
@@ -101,6 +138,99 @@ export default async function ProductDetailPage({
 
   // mapPrice is the base for group-discounted dealer pricing
   const mapPrice = product.map_price
+
+  // LEER configurable cap — build kit data and short-circuit to configurator layout
+  const leerKitFamily = (product as any).leer_kit_family as string | undefined
+  if (leerKitFamily) {
+    const familyCode = LEER_FAMILY_CODE[leerKitFamily]
+    const allCatalogKits = (catalogData as any).kits as Array<{ id: string; sku: string; title: string; family: string; fitment: string; historical: boolean }>
+    const familyKits = allCatalogKits.filter((k) => k.family === familyCode && !k.historical)
+    const kitModels: Record<string, any> = {}
+    const kitBoms: Record<string, any> = {}
+    for (const kit of familyKits) {
+      kitModels[kit.id] = LEER_KIT_DATA[kit.id]
+      kitBoms[kit.id] = LEER_BOM_DATA[kit.id]
+    }
+
+    return (
+      <div className="flex flex-col gap-6">
+        <RecordRecentlyViewed userId={user?.profile.id ?? undefined} productId={product.id} />
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Link href="/dealer/shop" className="hover:text-foreground">Shop</Link>
+          <span>/</span>
+          <Link href={`/dealer/shop/${categorySlug}`} className="hover:text-foreground">{category.name}</Link>
+          <span>/</span>
+          <span className="font-medium text-foreground">{product.name}</span>
+        </div>
+
+        <div className="flex flex-col gap-8 lg:flex-row">
+          {/* Left: product info */}
+          <div className="flex-1 flex flex-col gap-10">
+            <div className="flex aspect-4/3 items-center justify-center rounded-lg border bg-muted">
+              <Package size={96} className="text-muted-foreground/40" />
+            </div>
+            {product.highlights.length > 0 && (
+              <div className="flex flex-col gap-3">
+                <h2 className="text-xl font-semibold">Product Highlights</h2>
+                <ul className="flex flex-col gap-2">
+                  {product.highlights.map((highlight: string) => (
+                    <li key={highlight} className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground">
+                      <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-primary" />
+                      {highlight}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            <div className="flex flex-col gap-3">
+              <h2 className="text-xl font-semibold">Description</h2>
+              <p className="text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+            </div>
+            {Object.keys((product.specifications ?? {}) as Record<string, string>).length > 0 && (
+              <div className="flex flex-col gap-3">
+                <h2 className="text-xl font-semibold">Specifications</h2>
+                <div className="grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2">
+                  {Object.entries((product.specifications ?? {}) as Record<string, string>).map(([key, value]) => (
+                    <div key={key} className="flex items-start justify-between gap-4 border-b pb-2">
+                      <span className="text-sm font-medium text-muted-foreground">{key}</span>
+                      <span className="text-right text-sm">{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Right: configurator */}
+          <div className="w-full shrink-0 lg:w-[480px]">
+            <div className="pb-5">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">LEER</p>
+              <h1 className="font-brand text-4xl uppercase leading-tight">{product.name}</h1>
+              <p className="mt-1 text-sm text-muted-foreground">SKU: {product.sku}</p>
+            </div>
+            {quoteId ? (
+              <div className="mb-4 rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 px-4 py-3 text-sm">
+                Configuring for quote — selections save directly to your quote.
+              </div>
+            ) : (
+              <div className="mb-4 rounded border border-muted px-4 py-3 text-sm text-muted-foreground">
+                Open this page from a quote to save your configuration.
+              </div>
+            )}
+            <div className="overflow-hidden rounded border border-[#d5d5d5] bg-white">
+              <LeerConfigurator
+                kits={familyKits.map((k) => ({ id: k.id, title: k.title, fitment: k.fitment, family: k.family }))}
+                kitModels={kitModels}
+                kitBoms={kitBoms}
+                quoteId={quoteId}
+                returnUrl={returnUrl}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col gap-6">

@@ -74,9 +74,9 @@ function buildLineItems(
     })
 
   const constraints = (result as any).constraints
-  const sel = (result as any).sel
+  const sel = (result as any).selections
   for (const seg of visibleSegments) {
-    const allowed = optionsFor(kit, constraints, seg.key)
+    const allowed = optionsFor(kit, seg, constraints.get(seg.key))
     if (!allowed || allowed.length === 0) continue
     const code = sel[seg.key] ?? ''
     if (!code) continue
@@ -136,7 +136,7 @@ export function LeerConfigurator({
 
   const est = useMemo((): any => {
     if (!kit || !bom || !result) return null
-    return baseEstimate(kit, bom, (result as any).sel) as any
+    return baseEstimate(kit, bom, (result as any).selections) as any
   }, [kit, bom, result])
 
   // Build sorted visible segments
@@ -155,7 +155,7 @@ export function LeerConfigurator({
         return (a.pel ?? 0) - (b.pel ?? 0)
       })
       .filter((s: any) => {
-        const allowed = optionsFor(kit, constraints, s.key)
+        const allowed = optionsFor(kit, s, constraints.get(s.key))
         return allowed && allowed.length > 0
       })
   }, [kit, result])
@@ -163,7 +163,7 @@ export function LeerConfigurator({
   // Determine if all required segments are filled
   const allRequiredFilled = useMemo(() => {
     if (!kit || !result) return false
-    const sel = (result as any).sel
+    const sel = (result as any).selections
     return visibleSegments
       .filter((s: any) => s.req === 'R')
       .every((s: any) => {
@@ -188,7 +188,7 @@ export function LeerConfigurator({
     if (!quoteId || !kit || !bom || !result || !est) return
     setSaving(true)
     try {
-      const snapshot = { kit: kitId, selections: (result as any).sel }
+      const snapshot = { kit: kitId, selections: (result as any).selections }
       const lineItems = buildLineItems(kit, bom, result, est, kitModels[kitId], quoteId)
 
       const supabase = createClient()
@@ -248,8 +248,8 @@ export function LeerConfigurator({
         {/* Segment cards */}
         <div className="flex-1 divide-y divide-[#d5d5d5]">
           {visibleSegments.map((seg) => {
-            const allowed: string[] = optionsFor(kit, (result as any).constraints, seg.key) ?? []
-            const currentCode = (result as any).sel[seg.key] ?? ''
+            const allowed: string[] = optionsFor(kit, seg, (result as any).constraints.get(seg.key)) ?? []
+            const currentCode = (result as any).selections[seg.key] ?? ''
 
             return (
               <div key={seg.key} className="px-6 py-4">
@@ -264,7 +264,7 @@ export function LeerConfigurator({
                 <div className="flex flex-wrap gap-2">
                   {allowed.map((code) => {
                     const label = seg.labels?.get(code) ?? code
-                    const price = optionBase(kit, bom, (result as any).sel, seg.key, code)
+                    const price = optionBase(kit, bom, (result as any).selections, seg.key, code)
                     const isSelected = currentCode === code
 
                     return (

@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
   // Ensure kit JSON files are bundled with the serverless function on Vercel
   // (fs.readFileSync paths aren't statically traceable, so we include them explicitly)
   outputFileTracingIncludes: {
-    '/dealer/shop/leer-caps/[productId]': ['./src/lib/leer/**/*'],
+    '/dealer/shop/[category]/[productId]': ['./src/lib/leer/**/*'],
   },
 };
 
