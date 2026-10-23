@@ -8,6 +8,7 @@ import { QuoteActivityTimeline } from '@/components/dealer/QuoteActivityTimeline
 import { QuoteLineItemsEditor } from '@/components/dealer/QuoteLineItemsEditor'
 import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignDialog'
 import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
+import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL } from '@/lib/quote-config'
 
@@ -164,6 +165,15 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
         lineItems={lineItems ?? []}
         taxRate={quote.tax_rate}
       />
+
+      {/* LEER external order panel */}
+      {(quote as any).brand === 'LEER' && (quote as any).configuration_method === 'leer-aluminum' && (
+        <ExternalOrderPanel
+          quoteId={quote.id}
+          initialOrderNumber={(quote as any).external_order_number ?? null}
+          orderedAt={(quote as any).ordered_externally_at ?? null}
+        />
+      )}
 
       {/* Message To Customer */}
       <div className={PANEL}>
