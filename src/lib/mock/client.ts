@@ -416,10 +416,24 @@ export function createMockClient(userId?: string) {
 
         case 'send_quote': {
           const { p_quote_id } = params ?? {}
+          const now = new Date().toISOString()
           const arr = FIXTURE_MAP['quotes']
           if (arr && p_quote_id) {
             const idx = arr.findIndex((q: any) => q.id === p_quote_id)
-            if (idx !== -1) arr[idx] = { ...arr[idx], status: 'quote_sent', updated_at: new Date().toISOString() }
+            if (idx !== -1) arr[idx] = { ...arr[idx], status: 'quote_sent', updated_at: now }
+          }
+          const actArr = FIXTURE_MAP['quote_activity']
+          if (actArr && p_quote_id) {
+            actArr.unshift({
+              id: randomUUID(),
+              quote_id: p_quote_id,
+              type: 'status_change',
+              message: 'Quote sent to customer',
+              is_internal: false,
+              actor_id: resolvedUserId,
+              created_at: now,
+              users: { name: demoUser.name },
+            })
           }
           return { data: { success: true }, error: null }
         }

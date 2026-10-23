@@ -9,6 +9,7 @@ import { QuoteLineItemsEditor } from '@/components/dealer/QuoteLineItemsEditor'
 import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignDialog'
 import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
 import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
+import { SendQuotePanel } from '@/components/dealer/SendQuotePanel'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL } from '@/lib/quote-config'
 
@@ -175,22 +176,8 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
         />
       )}
 
-      {/* Message To Customer */}
-      <div className={PANEL}>
-        <div className={PANEL_HEADER}>
-          <h2 className="font-semibold text-white">Message To Customer</h2>
-        </div>
-        <div className={PANEL_BODY}>
-          <div className="flex flex-col gap-1.5">
-            <label className="text-sm text-muted-foreground">Message</label>
-            <textarea
-              rows={4}
-              placeholder="Enter your message here..."
-              className="w-full resize-none rounded border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-          </div>
-        </div>
-      </div>
+      {/* Message To Customer / Send Quote */}
+      <SendQuotePanel quoteId={quote.id} status={quote.status} />
 
       {/* Activity */}
       <div className={PANEL}>

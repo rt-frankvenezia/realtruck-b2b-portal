@@ -10,11 +10,10 @@ import type { Database } from '@/lib/database.types'
 
 type QuoteStatus = Database['public']['Enums']['quote_status']
 
-// Mirrors transition_quote_status's graph, purely for which buttons to
-// offer — the RPC is the actual authority and re-validates regardless.
+// quote_sent is excluded here — sending is handled by SendQuotePanel below the line items.
 const NEXT_STATUSES: Record<QuoteStatus, QuoteStatus[]> = {
   new: ['working', 'lost'],
-  working: ['quote_sent', 'lost'],
+  working: ['lost'],
   quote_sent: ['converted', 'lost'],
   converted: [],
   lost: [],
@@ -40,41 +39,16 @@ export function QuoteStatusActions({ quoteId, status }: { quoteId: string; statu
     })
   }
 
-  function handleSendQuote() {
-    startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.rpc('send_quote', { p_quote_id: quoteId })
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-      toast.success('Quote sent')
-      router.refresh()
-    })
-  }
-
   const nextStatuses = NEXT_STATUSES[status]
   if (nextStatuses.length === 0) return null
 
   return (
     <div className="flex items-center gap-2">
-      {nextStatuses
-        .filter((s) => s !== 'quote_sent')
-        .map((s) => (
-          <Button key={s} size="sm" variant="outline" onClick={() => handleTransition(s)} disabled={isPending}>
-            Mark {QUOTE_STATUS_LABEL[s]}
-          </Button>
-        ))}
-      {(status === 'new' || status === 'working') && (
-        <Button
-          size="sm"
-          onClick={handleSendQuote}
-          disabled={isPending}
-          className="bg-[#FFC60B] text-[#1E1E1E] hover:bg-[#FFC60B]/90 font-semibold uppercase tracking-wide"
-        >
-          Send Quote
+      {nextStatuses.map((s) => (
+        <Button key={s} size="sm" variant="outline" onClick={() => handleTransition(s)} disabled={isPending}>
+          Mark {QUOTE_STATUS_LABEL[s]}
         </Button>
-      )}
+      ))}
     </div>
   )
 }
