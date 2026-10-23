@@ -28,6 +28,7 @@ type Props = {
   quoteId?: string
   returnUrl?: string
   vehicleYear?: string
+  discountRate?: number
 }
 
 const TRUCK_YEAR_KEY = '11676031|1'
@@ -120,6 +121,7 @@ export function LeerConfigurator({
   quoteId,
   returnUrl,
   vehicleYear,
+  discountRate,
 }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -358,10 +360,31 @@ export function LeerConfigurator({
         <div className="flex items-center gap-4 px-4 py-4">
           {/* Price + progress */}
           <div className="flex-1 min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              List Estimate — Not Dealer Net
-            </p>
-            <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(est.total)}</p>
+            {est.total !== null ? (
+              <div className="flex items-end gap-4">
+                {discountRate !== undefined && discountRate > 0 ? (
+                  <>
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Your Price</p>
+                      <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(est.total * (1 - discountRate))}</p>
+                    </div>
+                    <div className="pb-0.5">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MAP</p>
+                      <p className="text-lg font-medium text-muted-foreground">{formatCurrency(est.total)}</p>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">List Estimate</p>
+                    <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(est.total)}</p>
+                  </>
+                )}
+              </div>
+            ) : (
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                Price builds as you configure
+              </p>
+            )}
             <p className="mt-0.5 text-xs text-muted-foreground">
               {visibleSegments.filter((s) => (result as any).selections[s.key]).length} of {visibleSegments.length} answered
               {est.unpriced > 0 && ` · ${est.unpriced} unpriced`}

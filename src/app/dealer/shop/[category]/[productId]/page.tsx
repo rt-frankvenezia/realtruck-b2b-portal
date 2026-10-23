@@ -156,15 +156,25 @@ export default async function ProductDetailPage({
     const leerWarranty = leerSpecs.warranty
 
     // Fetch quote vehicle so we can display it and auto-fill Truck Year
-    let quoteVehicle: { vehicle_year: number | null; vehicle_make: string | null; vehicle_model: string | null } | null = null
+    let quoteVehicle: { vehicle_year: number | null; vehicle_make: string | null; vehicle_model: string | null; customer_name: string | null } | null = null
     if (quoteId) {
-      const { data } = await supabase.from('quotes').select('vehicle_year, vehicle_make, vehicle_model').eq('id', quoteId).maybeSingle()
+      const { data } = await supabase.from('quotes').select('vehicle_year, vehicle_make, vehicle_model, customer_name').eq('id', quoteId).maybeSingle()
       quoteVehicle = data
     }
     const vehicleDisplay = quoteVehicle?.vehicle_year && quoteVehicle?.vehicle_make && quoteVehicle?.vehicle_model
       ? `${quoteVehicle.vehicle_year} ${quoteVehicle.vehicle_make} ${quoteVehicle.vehicle_model}`
       : null
     const vehicleYear = quoteVehicle?.vehicle_year ? String(quoteVehicle.vehicle_year) : undefined
+    const quoteCustomerName = quoteVehicle?.customer_name ?? null
+    const quoteDisplayNumber = quoteId ? `Q-${parseInt(quoteId.split('-').pop() ?? '0', 10).toString().padStart(4, '0')}` : null
+
+    const leerMapPrice = (product as any).map_price as number | null
+    const leerDealerPrice = (product as any).dealer_price as number | null
+    const leerDiscountRate = pricingTiers?.[0]?.discountPercent
+      ? pricingTiers[0].discountPercent / 100
+      : leerDealerPrice && leerMapPrice
+        ? 1 - leerDealerPrice / leerMapPrice
+        : 0.20
 
     return (
       <div className="flex flex-col gap-6">
@@ -180,26 +190,6 @@ export default async function ProductDetailPage({
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left: product info */}
           <div className="flex min-w-0 flex-1 flex-col gap-6">
-            {/* Trust badges */}
-            <div className="flex flex-wrap gap-4 border-y py-3">
-              <div className="flex items-center gap-1.5">
-                <Truck size={15} className="text-green-600" />
-                <span className="text-sm font-medium">Free Shipping</span>
-              </div>
-              {leerWarranty && (
-                <div className="flex items-center gap-1.5">
-                  <ShieldCheck size={15} className="text-green-600" />
-                  <span className="text-sm font-medium">{leerWarranty}</span>
-                </div>
-              )}
-              {leerSpecs['paint match'] && (
-                <div className="flex items-center gap-1.5">
-                  <Check size={15} className="text-green-600" />
-                  <span className="text-sm font-medium">{leerSpecs['paint match']}</span>
-                </div>
-              )}
-            </div>
-
             {/* Image gallery */}
             <div className="flex gap-3">
               <div className="flex shrink-0 flex-col gap-2">
@@ -251,11 +241,33 @@ export default async function ProductDetailPage({
           {/* Right: identity + fitment + configurator */}
           <div className="w-full shrink-0 lg:w-[500px]">
             {/* Product identity */}
-            <div className="mb-4">
+            <div className="mb-3">
               <p className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">LEER</p>
               <h1 className="font-brand text-3xl uppercase leading-tight">{product.name}</h1>
               <p className="mt-1.5 text-sm text-muted-foreground">SKU: {product.sku}</p>
             </div>
+
+            {/* Starting price block */}
+            {(leerDealerPrice || leerMapPrice) && (
+              <div className="mb-4 border-t border-b py-3">
+                <div className="flex divide-x">
+                  {leerDealerPrice && (
+                    <div className="pr-5">
+                      <p className="text-xs text-muted-foreground">Your Price</p>
+                      <p className="text-xl font-bold">Starting at {formatCurrency(leerDealerPrice)}</p>
+                    </div>
+                  )}
+                  {leerMapPrice && (
+                    <div className={leerDealerPrice ? 'pl-5' : ''}>
+                      <p className="text-xs text-muted-foreground">MAP</p>
+                      <p className={`${leerDealerPrice ? 'text-lg font-medium text-muted-foreground' : 'text-xl font-bold'}`}>
+                        Starting at {formatCurrency(leerMapPrice)}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Guaranteed fitment block */}
             <div className="mb-4 flex items-center justify-between rounded border border-muted bg-muted/40 px-4 py-3">
@@ -274,8 +286,15 @@ export default async function ProductDetailPage({
             </div>
 
             {quoteId && (
-              <div className="mb-4 rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 px-4 py-3 text-sm">
-                Configuring for quote — selections save directly to your quote.
+              <div className="mb-4 rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 px-4 py-3">
+                <p className="text-xs font-bold uppercase tracking-widest text-[#A04B23]">
+                  Configuring for Quote
+                </p>
+                <p className="mt-0.5 text-sm font-medium text-foreground">
+                  {quoteDisplayNumber}
+                  {quoteCustomerName && <span className="text-muted-foreground"> — {quoteCustomerName}</span>}
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">Selections save directly to this quote.</p>
               </div>
             )}
 
@@ -287,6 +306,7 @@ export default async function ProductDetailPage({
                 quoteId={quoteId}
                 returnUrl={returnUrl}
                 vehicleYear={vehicleYear}
+                discountRate={leerDiscountRate}
               />
             </div>
           </div>
