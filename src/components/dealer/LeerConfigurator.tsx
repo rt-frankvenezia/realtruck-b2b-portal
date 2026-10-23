@@ -28,6 +28,7 @@ type Props = {
   quoteId?: string
   returnUrl?: string
   vehicleYear?: string
+  baseDealerPrice?: number
   baseMapPrice?: number
   discountRate?: number
 }
@@ -86,14 +87,14 @@ function buildLineItems(
     const code = sel[seg.key] ?? ''
     if (!code) continue
     const price = optionBase(kit, bom, sel, seg.key, code)
-    if (typeof price === 'number' && price > 0) {
+    if (code) {
       const label = seg.labels?.get(code) ?? code
       items.push({
         quote_id: quoteId,
         description: `${seg.label}: ${label}`,
         sku: null,
-        price,
-        msrp: price,
+        price: typeof price === 'number' ? price : 0,
+        msrp: typeof price === 'number' ? price : 0,
         quantity: 1,
         is_required: false,
         type: 'option',
@@ -122,6 +123,7 @@ export function LeerConfigurator({
   quoteId,
   returnUrl,
   vehicleYear,
+  baseDealerPrice,
   baseMapPrice,
   discountRate,
 }: Props) {
@@ -245,6 +247,14 @@ export function LeerConfigurator({
   }
 
   const runningMap = baseMapPrice !== undefined ? baseMapPrice + optionsTotal : null
+  // Use catalog dealer_price as the base so the footer matches the top-of-page display,
+  // then add discounted option costs on top. Avoids diverging when the tier discount
+  // differs from the discount already baked into the catalog price.
+  const runningDealerPrice = baseDealerPrice !== undefined
+    ? baseDealerPrice + optionsTotal * (1 - (discountRate ?? 0))
+    : runningMap !== null && discountRate !== undefined
+      ? runningMap * (1 - discountRate)
+      : null
 
   return (
     <div className="flex flex-col gap-0">
@@ -373,25 +383,27 @@ export function LeerConfigurator({
       <div className="sticky bottom-0 border-t border-[#d5d5d5] bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.07)]">
         <div className="px-4 pt-4 pb-3">
           {/* Price */}
-          {runningMap !== null && (
+          {(runningDealerPrice !== null || runningMap !== null) && (
             <div className="mb-1 flex items-end gap-4">
-              {discountRate !== undefined && discountRate > 0 ? (
+              {runningDealerPrice !== null ? (
                 <>
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Your Price</p>
-                    <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(runningMap * (1 - discountRate))}</p>
+                    <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(runningDealerPrice)}</p>
                   </div>
-                  <div className="pb-0.5">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MAP</p>
-                    <p className="text-lg font-medium text-muted-foreground">{formatCurrency(runningMap)}</p>
-                  </div>
+                  {runningMap !== null && (
+                    <div className="pb-0.5">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MAP</p>
+                      <p className="text-lg font-medium text-muted-foreground">{formatCurrency(runningMap)}</p>
+                    </div>
+                  )}
                 </>
-              ) : (
+              ) : runningMap !== null ? (
                 <div>
                   <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">List Price</p>
                   <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(runningMap)}</p>
                 </div>
-              )}
+              ) : null}
             </div>
           )}
           {/* Progress */}

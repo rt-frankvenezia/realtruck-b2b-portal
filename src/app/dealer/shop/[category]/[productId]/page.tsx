@@ -306,6 +306,7 @@ export default async function ProductDetailPage({
                 quoteId={quoteId}
                 returnUrl={returnUrl}
                 vehicleYear={vehicleYear}
+                baseDealerPrice={leerDealerPrice ?? undefined}
                 baseMapPrice={leerMapPrice ?? undefined}
                 discountRate={leerDiscountRate}
               />
