@@ -1,0 +1,2516 @@
+{
+  "id": "3187051",
+  "sku": "96886",
+  "title": "100RCC 65DR",
+  "family": "100RCC",
+  "fitment": "02-08 DODGE RAM RC/QC 6'5\"",
+  "mcu": "2511",
+  "dynamic": null,
+  "depth": "rules-only",
+  "historical": false,
+  "source": "BQ export data/ (F3290/1/2/21 + F3282/3, MCU 2511). No F3293 in this export.",
+  "asOf": "2026-09-28",
+  "levels": [
+    {
+      "kit": "3187051",
+      "seq": 0,
+      "name": "100RCC 65DR",
+      "litm": "96886"
+    }
+  ],
+  "segments": [
+    {
+      "kit": "3187051",
+      "pel": 10,
+      "label": "Paint - Dodge",
+      "req": "R",
+      "dval": "",
+      "sy": "59C",
+      "rt": "AB",
+      "options": [
+        [
+          "*CARBON",
+          "Carbon Fiber w/ Stripes"
+        ],
+        [
+          "*FLEETB",
+          "Fleet Black Paint"
+        ],
+        [
+          "*FLEETS",
+          "Fleet Standard"
+        ],
+        [
+          "*FLEETW",
+          "Fleet White Paint"
+        ],
+        [
+          "*GC",
+          "GC  White Paint-Black Trim"
+        ],
+        [
+          "*NONE",
+          "No Paint"
+        ],
+        [
+          "*NP",
+          "NP  Misc. Paint Color-Text Box"
+        ],
+        [
+          "*PF",
+          "Paint Formula Attached"
+        ],
+        [
+          "*PR",
+          "Primer Gel-No Paint-CAPS ONLY"
+        ],
+        [
+          "*PRT",
+          "Primer Gel-No Paint-TONNE ONLY"
+        ],
+        [
+          "AXR",
+          "AXR Brilliant Black (OEM)"
+        ],
+        [
+          "DGY",
+          "DGY Dove Gray C8228FL"
+        ],
+        [
+          "G7J",
+          "G7J Unrippened Green WA136X"
+        ],
+        [
+          "P06",
+          "P06 Angel Green"
+        ],
+        [
+          "P07",
+          "P07 Stone Gray"
+        ],
+        [
+          "P61",
+          "P61 CASE IH RED"
+        ],
+        [
+          "P62",
+          "P62 Omaha Orange"
+        ],
+        [
+          "P64",
+          "P64 Light Cream"
+        ],
+        [
+          "P72",
+          "P72 New HOlland Blue"
+        ],
+        [
+          "PAC",
+          "PAC Silver Met      -MED-B9141"
+        ],
+        [
+          "PAG",
+          "PAG Dark Ceramic Gray"
+        ],
+        [
+          "PAR",
+          "PAR Maximum Steel Met"
+        ],
+        [
+          "PAU",
+          "PAU Granite Crystal Met"
+        ],
+        [
+          "PB3",
+          "PB3 Intense Blue PM -MED-B9822"
+        ],
+        [
+          "PB4",
+          "PB4 Cosmo Blue"
+        ],
+        [
+          "PB5",
+          "PB5 Electric Blue Effect-V4"
+        ],
+        [
+          "PB7",
+          "PB7 Patrt Blue-V7PM -DRK-F7991"
+        ],
+        [
+          "PB8",
+          "PB8 Midnight Blue Effect-V7"
+        ],
+        [
+          "PBJ*",
+          "PBJ*Atlntc Blue V7PM-DRK-M8742"
+        ],
+        [
+          "PBJ-",
+          "PBJ-Hydro Blue"
+        ],
+        [
+          "PBS",
+          "PBS Deep Water Blue-V7"
+        ],
+        [
+          "PBT",
+          "PBT Patrot Blue PMV7-DRK-F7992"
+        ],
+        [
+          "PBU",
+          "PBU True Blue"
+        ],
+        [
+          "PBV",
+          "PBV Blackberry Effect"
+        ],
+        [
+          "PBW",
+          "PBW Dp Sapphire Blue-DRK-M2496"
+        ],
+        [
+          "PC4",
+          "PC4 Lapis Blue      -MED-B9531"
+        ],
+        [
+          "PCA",
+          "PCA FROSTBITE"
+        ],
+        [
+          "PCG",
+          "PCG River Rock"
+        ],
+        [
+          "PCH",
+          "PCH Brilliant Blue  -DRK-B9452"
+        ],
+        [
+          "PCJ",
+          "PCJ Dark Blue PC    -DRK-B9453"
+        ],
+        [
+          "PCL",
+          "PCL Blue Streak Pearl"
+        ],
+        [
+          "PCN",
+          "PCN Dp Amethst PC   -DRK-B9736"
+        ],
+        [
+          "PCU",
+          "PCU Dp Amethst PC   -DRK-B9751"
+        ],
+        [
+          "PDA",
+          "PDA Light Greystone"
+        ],
+        [
+          "PDM",
+          "PDM Mineral Grey Eff-V7"
+        ],
+        [
+          "PDN*",
+          "PDN* CERAMIC GRAY"
+        ],
+        [
+          "PDR",
+          "PDR Graphite Gray PM-V2-M6963"
+        ],
+        [
+          "PDS",
+          "PDS ANVIL"
+        ],
+        [
+          "PE4",
+          "PE4 Colorado Red    -MED-B8811"
+        ],
+        [
+          "PEA",
+          "PEA Chili Pepper Red-MED-B9823"
+        ],
+        [
+          "PEL",
+          "PEL Inferno Red PM  -MED-F7996"
+        ],
+        [
+          "PEP",
+          "PEP Western Brown"
+        ],
+        [
+          "PF2",
+          "PF2 SPITFIRE ORANGE"
+        ],
+        [
+          "PFA*",
+          "PFA*Prairie Pearl"
+        ],
+        [
+          "PFA+",
+          "PFA+Lt Driftwood    -MED-B9263"
+        ],
+        [
+          "PFB",
+          "PFB Sublime Green Effect"
+        ],
+        [
+          "PFF",
+          "PFF Lt Pewter PM    -MED-M2498"
+        ],
+        [
+          "PFK",
+          "PFK Driftwood Pearl Metallic"
+        ],
+        [
+          "PFP",
+          "PFP OLIVE GREEN"
+        ],
+        [
+          "PG4",
+          "PG4 Hunter Green Met-DRK-B9264"
+        ],
+        [
+          "PG8",
+          "PG8 Forest Green PM -DRK-B9609"
+        ],
+        [
+          "PGC",
+          "PGC Light Green Effect"
+        ],
+        [
+          "PGF",
+          "PGF Green PC        -DRK-B9328"
+        ],
+        [
+          "PGK",
+          "PGK TANK GREEN"
+        ],
+        [
+          "PGS",
+          "PGS Emerald Green   -DRK-B9460"
+        ],
+        [
+          "PGT",
+          "PGT Deep Forest Green Effect"
+        ],
+        [
+          "PGV",
+          "PGV DARK PEARL GREEN"
+        ],
+        [
+          "PGV*",
+          "PGV* GATOR"
+        ],
+        [
+          "PGW",
+          "PGW Timberline Green-DRK-P4029"
+        ],
+        [
+          "PGX",
+          "PGX Sarsaprilla Sage Effect"
+        ],
+        [
+          "PGZ",
+          "PGZ Black Forest Green"
+        ],
+        [
+          "PJA",
+          "PJA Tequila Sunrise Eff 858136"
+        ],
+        [
+          "PJC",
+          "PJC Lt Khaki Effect-V4"
+        ],
+        [
+          "PJN",
+          "PJN Green PC        -DRK-B9533"
+        ],
+        [
+          "PJR*",
+          "PJR*Rescue Green Effect"
+        ],
+        [
+          "PJR+",
+          "PJR+Onyx Green PM   -DRK-M2497"
+        ],
+        [
+          "PKG",
+          "PKG Light Sandstone"
+        ],
+        [
+          "PKJ",
+          "PKJ Lt Almond PM    -MED-M8759"
+        ],
+        [
+          "PKL",
+          "PKL Austin Tan-V4"
+        ],
+        [
+          "PL4",
+          "PL4 Header Orange"
+        ],
+        [
+          "PLB",
+          "PLB Copperhead"
+        ],
+        [
+          "PM4",
+          "PM4 Claret Red PM   -MED-B8821"
+        ],
+        [
+          "PMD",
+          "PMD Medium Red PM   -MED-B9626"
+        ],
+        [
+          "PMQ",
+          "PMQ Deep Lava Red PM-MED-P5426"
+        ],
+        [
+          "PP4",
+          "PP4 Satin Jade Green-MED-P4032"
+        ],
+        [
+          "PPG",
+          "PPG Dark Spruce PM  -DRK-B9630"
+        ],
+        [
+          "PPX",
+          "PPX PATRIOT BLUE II EFFECT"
+        ],
+        [
+          "PQM",
+          "PQM Jade SG         -MED-B9620"
+        ],
+        [
+          "PR3",
+          "PR3 High Performance Red"
+        ],
+        [
+          "PR4",
+          "PR4 Flame Red/Pop-V4-MED-B9326"
+        ],
+        [
+          "PR8+",
+          "PR8+Deep Molten Red -DRK-P4680"
+        ],
+        [
+          "PR8-",
+          "PR8 Director Red    -DRK-B9235"
+        ],
+        [
+          "PRC",
+          "PRC Radiant Fire    -MED-B9517"
+        ],
+        [
+          "PRF",
+          "PRF Radiant Fire    -MED-B9230"
+        ],
+        [
+          "PRH",
+          "PRH Blaze Red Crystal Eff-V4"
+        ],
+        [
+          "PRJ*",
+          "PRJ*Blaze Red Crystal-V5-P4030"
+        ],
+        [
+          "PRJ-",
+          "PRJ-Inferno Red-V4"
+        ],
+        [
+          "PRP",
+          "PRP Deep Cherry Red"
+        ],
+        [
+          "PRV*",
+          "PRV Dk Garnet Red PM-DRK-M0405"
+        ],
+        [
+          "PRV=",
+          "PRV 2016 DODGE TRI COAT"
+        ],
+        [
+          "PRX",
+          "PRX Passion Red"
+        ],
+        [
+          "PS2",
+          "PS2 Bright Slv-V4 PM-MED-F7999"
+        ],
+        [
+          "PS4",
+          "PS4 Bright Platinum -MED-B9462"
+        ],
+        [
+          "PS7",
+          "PS7 Dark Silver Met -MED-B9137"
+        ],
+        [
+          "PSB",
+          "PSB Bright Slvr V4PM-MED-B9883"
+        ],
+        [
+          "PSC#",
+          "PSC BILLIT SILVER 2019+"
+        ],
+        [
+          "PSC*",
+          "PSC Lt Artic Gray PC-MED-B9340"
+        ],
+        [
+          "PSE",
+          "PSE ZYNITH SLVR/TRIPLE NICKLE"
+        ],
+        [
+          "PTA",
+          "PTA Mojave Sand"
+        ],
+        [
+          "PTL",
+          "PTL Sierra Bronze PM-DRK-F9247"
+        ],
+        [
+          "PTW",
+          "PTW Rugged Brown Met"
+        ],
+        [
+          "PU1",
+          "PU1 Dark Chestnut   -DRK-B9732"
+        ],
+        [
+          "PU3",
+          "PU3 Chestnut        -DRK-B9737"
+        ],
+        [
+          "PUG",
+          "PUG BLACK GOLD"
+        ],
+        [
+          "PUS",
+          "PUS Blazing Saddle Effect"
+        ],
+        [
+          "PUW",
+          "PUW WALNUT BROWN MET"
+        ],
+        [
+          "PV3",
+          "PV3 Amber Fire      -MED-F9248"
+        ],
+        [
+          "PV6",
+          "PV6 Sunburst Orange-V4"
+        ],
+        [
+          "PVE",
+          "PVE Mango-"
+        ],
+        [
+          "PVG",
+          "PVG Mango Tango PC"
+        ],
+        [
+          "PVL",
+          "PVL Amber Fire PM   -MED-M0404"
+        ],
+        [
+          "PVP",
+          "PVP GO MANGO - 942106"
+        ],
+        [
+          "PW1",
+          "PW1 Stone White BC-V1LGT-B9622"
+        ],
+        [
+          "PW6",
+          "PW6 Brite White BC  -LGT-B8834"
+        ],
+        [
+          "PW7",
+          "PW7 Bright White-V1 -LGT-B8833"
+        ],
+        [
+          "PWA",
+          "PWA BRIGHT WHITE"
+        ],
+        [
+          "PWD",
+          "PWD IVORY PEARL TRI-COAT"
+        ],
+        [
+          "PWG",
+          "PWG Cool Vanilla-V2"
+        ],
+        [
+          "PWH",
+          "PWH Funk White Effect Tri-Coat"
+        ],
+        [
+          "PWL",
+          "PWL White Gold Effect"
+        ],
+        [
+          "PWQ",
+          "PWQ Pearl White Tri-coat"
+        ],
+        [
+          "PX8",
+          "PX8 Black-V7        -DRK-F0204"
+        ],
+        [
+          "PX9",
+          "PX9 Black B/C       -DRK-F0206"
+        ],
+        [
+          "PXB",
+          "PXB BLACK CLEARCOAT"
+        ],
+        [
+          "PXJ",
+          "PXJ Diamond Black"
+        ],
+        [
+          "PXQ",
+          "PXQ Black 939616"
+        ],
+        [
+          "PXR",
+          "PXR Brill Blk Crys-V7DRK-P2235"
+        ],
+        [
+          "PY3",
+          "PY3 Prowler Yellow  -LGT-B9854"
+        ],
+        [
+          "PYB",
+          "PYB Detonator Yellow-V1"
+        ],
+        [
+          "PYH",
+          "PYH Solar Yellow    -LGT-B9845"
+        ],
+        [
+          "PYV",
+          "PYV Stinger Yellow"
+        ],
+        [
+          "RFK",
+          "RFK Lt Driftwood    -MED-B9570"
+        ],
+        [
+          "RXF",
+          "RXF-JET BLACK OEM (DODGE)"
+        ],
+        [
+          "SG8",
+          "SG8 Forest Green PC -DRK-B9609"
+        ],
+        [
+          "SH1",
+          "SH1 Magenta         -MED-B9615"
+        ],
+        [
+          "SJG",
+          "SJG Moss Green      -DRK-B9619"
+        ],
+        [
+          "SPLATTER",
+          "WILD BOAR SPLATTER PAINT"
+        ],
+        [
+          "VB3",
+          "VB3 Intense Blue Met-MED-B9822"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 15,
+      "label": "Variant",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59C",
+      "rt": "BA",
+      "options": [
+        [
+          "0",
+          "Alt. #0"
+        ],
+        [
+          "1",
+          "Alt. #1"
+        ],
+        [
+          "2",
+          "Alt. #2"
+        ],
+        [
+          "3",
+          "Alt. #3"
+        ],
+        [
+          "4",
+          "Alt. #4"
+        ],
+        [
+          "5",
+          "Alt. #5"
+        ],
+        [
+          "6",
+          "Alt. #6"
+        ],
+        [
+          "9",
+          "Alt. #9"
+        ],
+        [
+          "*GAS",
+          "Use Gas Cap As Reference"
+        ],
+        [
+          "*NONE",
+          "No Variant - Use OEM"
+        ],
+        [
+          "*SPEC",
+          "Special Variant - See Text Box"
+        ],
+        [
+          "01",
+          "VARIANT 1"
+        ],
+        [
+          "02",
+          "VARIANT 2"
+        ],
+        [
+          "05",
+          "VARIANT 5"
+        ],
+        [
+          "A",
+          "Alt. #A"
+        ],
+        [
+          "B",
+          "Alt. #B"
+        ],
+        [
+          "C",
+          "Alt. #C"
+        ],
+        [
+          "CF01",
+          "Alt. CF01"
+        ],
+        [
+          "D",
+          "Alt. #D"
+        ],
+        [
+          "E",
+          "Alt. #E"
+        ],
+        [
+          "F",
+          "Alt. #F"
+        ],
+        [
+          "H",
+          "Alt. #H"
+        ],
+        [
+          "H2",
+          "VARIANT H2"
+        ],
+        [
+          "S1",
+          "VARIANT S1"
+        ],
+        [
+          "S2",
+          "VARIANT S2"
+        ],
+        [
+          "T2",
+          "VARIANT T2"
+        ],
+        [
+          "T7",
+          "VARIANT T7"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 30,
+      "label": "Headliner - Standard",
+      "req": "R",
+      "dval": "BLACK",
+      "sy": "59E",
+      "rt": "DF",
+      "options": [
+        [
+          "*OMIT",
+          "Omit Headliner"
+        ],
+        [
+          "BLACK",
+          "Black Headliner"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 35,
+      "label": "Bulb Seal Option",
+      "req": "R",
+      "dval": "BULB",
+      "sy": "59F",
+      "rt": "WA",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BULB",
+          "Double Bulb Seal"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 40,
+      "label": "Front Options - CC's",
+      "req": "R",
+      "dval": "PIC",
+      "sy": "59C",
+      "rt": "FT",
+      "options": [
+        [
+          "*NONE",
+          "Solid Front - No Cut"
+        ],
+        [
+          "FDSLD",
+          "Fold Down Front Slider"
+        ],
+        [
+          "FPIC",
+          "Framed Front Picture"
+        ],
+        [
+          "FSW",
+          "Framed Front Slider"
+        ],
+        [
+          "PIC",
+          "Roped-In Front Picture"
+        ],
+        [
+          "REFSW",
+          "Removeable Front Slider"
+        ],
+        [
+          "REPIC",
+          "Removeable Front Picture"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 50,
+      "label": "DS Options - 180CC/100RCC",
+      "req": "R",
+      "dval": "",
+      "sy": "59F",
+      "rt": "GV",
+      "options": [
+        [
+          "BSDS",
+          "No Window-(Reinforced Side)-DS"
+        ],
+        [
+          "PADDS",
+          "Painted Access Door - DS"
+        ],
+        [
+          "SSDS",
+          "Side Slider - DS"
+        ],
+        [
+          "WDDS",
+          "Windoor - DS"
+        ],
+        [
+          "WSDS",
+          "Windoor/Slider - DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 60,
+      "label": "PS Options - 180CC/100RCC",
+      "req": "R",
+      "dval": "",
+      "sy": "59F",
+      "rt": "IV",
+      "options": [
+        [
+          "BSPS",
+          "No Window-(Reinforced Side)-PS"
+        ],
+        [
+          "PADPS",
+          "Painted Access Door - PS"
+        ],
+        [
+          "SSPS",
+          "Side Slider - PS"
+        ],
+        [
+          "WDPS",
+          "Windoor - PS"
+        ],
+        [
+          "WSPS",
+          "Windoor/Slider - PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 61,
+      "label": "CODEABLE T-HANDLE",
+      "req": "R",
+      "dval": "",
+      "sy": "59L",
+      "rt": "CH",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BOLTDS",
+          "CODEABLE HANDLE DS DOOR"
+        ],
+        [
+          "BOLTPS",
+          "CODEABLE HANDLE PS DOOR"
+        ],
+        [
+          "CHBS",
+          "CODEABLE HANDLE DS/PS DOOR"
+        ],
+        [
+          "CHDS",
+          "CODEABLE HANDLE DS DOOR"
+        ],
+        [
+          "CHPS",
+          "CODEABLE HANDLE PS DOOR"
+        ],
+        [
+          "MHBS",
+          "MECHANICAL HANDLE DS/PS DOOR"
+        ],
+        [
+          "MHDS",
+          "MECHANICAL HANDLE DS DOOR"
+        ],
+        [
+          "MHPS",
+          "MECHANICAL HANDLE PS DOOR"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 62,
+      "label": "Pet Screen Option",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "PS",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "PSBS",
+          "Screen Protector on Both Sides"
+        ],
+        [
+          "PSDS",
+          "Screen Protector on DS"
+        ],
+        [
+          "PSPS",
+          "Screen Protector on PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 65,
+      "label": "DS Toolbox Option - CC's",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "TB",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "A",
+          "'A' Toolbox DS"
+        ],
+        [
+          "B",
+          "'B' Toolbox DS"
+        ],
+        [
+          "C",
+          "'C' Toolbox DS"
+        ],
+        [
+          "D",
+          "'D' Toolbox DS"
+        ],
+        [
+          "E",
+          "'E' Toolbox DS"
+        ],
+        [
+          "F",
+          "'F' Toolbox DS"
+        ],
+        [
+          "G",
+          "'G' Toolbox DS"
+        ],
+        [
+          "H",
+          "'H' Toolbox DS"
+        ],
+        [
+          "I",
+          "'I' Toolbox DS"
+        ],
+        [
+          "J",
+          "'J' Toolbox DS"
+        ],
+        [
+          "K",
+          "'K' Toolbox DS"
+        ],
+        [
+          "L",
+          "'L' Toolbox DS"
+        ],
+        [
+          "M",
+          "'M' Toolbox DS"
+        ],
+        [
+          "N",
+          "'N' Toolbox DS"
+        ],
+        [
+          "O",
+          "'O' Toolbox DS"
+        ],
+        [
+          "P",
+          "'P' Toolbox DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 66,
+      "label": "PS Toolbox Option - CC's",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "TC",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "A",
+          "'A' Toolbox PS"
+        ],
+        [
+          "B",
+          "'B' Toolbox PS"
+        ],
+        [
+          "C",
+          "'C' Toolbox PS"
+        ],
+        [
+          "D",
+          "'D' Toolbox PS"
+        ],
+        [
+          "E",
+          "'E' Toolbox PS"
+        ],
+        [
+          "F",
+          "'F' Toolbox PS"
+        ],
+        [
+          "G",
+          "'G' Toolbox PS"
+        ],
+        [
+          "H",
+          "'H' Toolbox PS"
+        ],
+        [
+          "I",
+          "'I' Toolbox PS"
+        ],
+        [
+          "J",
+          "'J' Toolbox PS"
+        ],
+        [
+          "K",
+          "'K' Toolbox PS"
+        ],
+        [
+          "L",
+          "'L' Toolbox PS"
+        ],
+        [
+          "M",
+          "'M' Toolbox PS"
+        ],
+        [
+          "N",
+          "'N' Toolbox PS"
+        ],
+        [
+          "O",
+          "'O' Toolbox PS"
+        ],
+        [
+          "P",
+          "'P' Toolbox PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 68,
+      "label": "DS Storage Solutions",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "TD",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "O",
+          "42\" Parts Bin DS"
+        ],
+        [
+          "P",
+          "48\" Parts Bin DS"
+        ],
+        [
+          "Q",
+          "60\" Parts Bin DS"
+        ],
+        [
+          "R",
+          "48\" Shelf Unit w/Bins DS"
+        ],
+        [
+          "S",
+          "60\" Shelf Unit w/Bins DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 69,
+      "label": "PS Storage Solutions",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "TE",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "O",
+          "42\" Parts Bin PS"
+        ],
+        [
+          "P",
+          "48\" Parts Bin PS"
+        ],
+        [
+          "Q",
+          "60\" Parts Bin PS"
+        ],
+        [
+          "R",
+          "48\" Shelf Unit w/Bins PS"
+        ],
+        [
+          "S",
+          "60\" Shelf Unit w/Bins PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 70,
+      "label": "Headliner - Inside Toolbox",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "DY",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BHDLBS",
+          "Black TLB Headliner-Both Sides"
+        ],
+        [
+          "BHDLDS",
+          "Black TLB Headliner-DS"
+        ],
+        [
+          "BHDLPS",
+          "Black TLB Headliner-PS"
+        ],
+        [
+          "GHDLBS",
+          "Gray TLB Headliner-Both Sides"
+        ],
+        [
+          "GHDLDS",
+          "Gray TLB Headliner-DS"
+        ],
+        [
+          "GHDLPS",
+          "Gray TLB Headliner-PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 75,
+      "label": "Toolbox Non-Slip Mat - DS",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59C",
+      "rt": "HD",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "MATDS",
+          "Toolbox Non-Slip Mat - DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 76,
+      "label": "Toolbox Non-Slip Mat - PS",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59C",
+      "rt": "JF",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "MATPS",
+          "Toolbox Non-Slip Mat - PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 110,
+      "label": "Rear Door Option-Commercial",
+      "req": "R",
+      "dval": "STD",
+      "sy": "59F",
+      "rt": "OE",
+      "options": [
+        [
+          "SOLIDA",
+          "Solid Rad. Door w/Alum - 2T"
+        ],
+        [
+          "SOLIDF",
+          "Solid Rad. Door w/FBG - DROP T"
+        ],
+        [
+          "STD",
+          "Standard Radius 2T Door"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 111,
+      "label": "CODEABLE HANDLE ON REAR DOOR",
+      "req": "R",
+      "dval": "",
+      "sy": "59L",
+      "rt": "DH",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BOLT",
+          "CODEABLE T-HANDLE REAR DOOR"
+        ],
+        [
+          "RDCH",
+          "CODEABLE HANDLE ON REAR DOOR"
+        ],
+        [
+          "RDMH",
+          "MECHANICAL HANDLE ON REAR DOOR"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 140,
+      "label": "INTERIOR LIGHTING",
+      "req": "R",
+      "dval": "12VA",
+      "sy": "59N",
+      "rt": "54",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "12VA",
+          "A Option - 12V LED"
+        ],
+        [
+          "12VB",
+          "B Option - 12V LED"
+        ],
+        [
+          "12VC",
+          "C Option - 12V LED"
+        ],
+        [
+          "12VD",
+          "D Option - 12V LED"
+        ],
+        [
+          "12VE",
+          "E Option - 12V LED"
+        ],
+        [
+          "12VF",
+          "F Option - 12V LED"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 143,
+      "label": "Gas Prop Switch Option-Sides",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59L",
+      "rt": "WW",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "GPSA",
+          "Gas Prop Switch Qty-1"
+        ],
+        [
+          "GPSB",
+          "Gas Prop Switch Qty-2"
+        ],
+        [
+          "GPSC",
+          "Gas Prop Switch Qty-3"
+        ],
+        [
+          "GPSD",
+          "Gas Prop Switch Qty-4"
+        ],
+        [
+          "GPSE",
+          "Gas Prop Switch Qty-5"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 144,
+      "label": "FUSE BOX OPTION",
+      "req": "R",
+      "dval": "FUSE",
+      "sy": "59N",
+      "rt": "68",
+      "options": [
+        [
+          "*NONE",
+          "NONE"
+        ],
+        [
+          "FUSE",
+          "FUSE BOX"
+        ],
+        [
+          "FUSE100S",
+          "FUSE BOX 100S"
+        ],
+        [
+          "FUSE21",
+          "FUSE BOX 180CC"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 145,
+      "label": "3 Outlet 12V Receptacle",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59C",
+      "rt": "RC",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "12V RECEP",
+          "3 Outlet 12V Receptacle"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 150,
+      "label": "Top Rack System Option - CC's",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59E",
+      "rt": "NG",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "KARGO",
+          "Kargo Master-PRO III Cap Mount"
+        ],
+        [
+          "RACK",
+          "Tracker II System w/o Fairing"
+        ],
+        [
+          "RACKR",
+          "Wing Bar System w/o Fairing"
+        ],
+        [
+          "TRACK",
+          "Thule Track Only"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 151,
+      "label": "Load Bar Option",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "ND",
+      "options": [
+        [
+          "47",
+          "47\" AERO BLADE BARS - SILVER"
+        ],
+        [
+          "50",
+          "50\" TRACKER II BARS - COMPACT"
+        ],
+        [
+          "53",
+          "53\" AERO BLADE BARS - SILVER"
+        ],
+        [
+          "58",
+          "58\" TRACKER II BARS - FS & COM"
+        ],
+        [
+          "65",
+          "65\" TRACKER II BARS - FULLSIZE"
+        ],
+        [
+          "78",
+          "78\" TRACKER II BARS - FS & SD"
+        ],
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "47B",
+          "47\" AERO BLADE BARS - BLACK"
+        ],
+        [
+          "53B",
+          "53\" AERO BLADE BARS - BLACK"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 152,
+      "label": "Kargo Master PRO3 Base Mounts",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59E",
+      "rt": "NH",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BASE",
+          "KARGO MASTER PRO3 BASE MOUNT"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 155,
+      "label": "PRIME DESIGN RACK SYSTEM",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "85",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "ALU6",
+          "ALURACK 6' / 88\"        AR1906"
+        ],
+        [
+          "ALU8",
+          "ALURACK 8' / 116\"       AR1907"
+        ],
+        [
+          "PBC",
+          "ERGO SGL CLAMP RACK        PBC"
+        ],
+        [
+          "PCC",
+          "ERGO DBL CLAMP RACK        PCC"
+        ],
+        [
+          "PCR",
+          "ERGO SGL CLMP/SGL ROT RACK PCR"
+        ],
+        [
+          "PRR",
+          "ERGO DBL ROTATION RACK     PRR"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 156,
+      "label": "PRIME DESIGN MOUNTING BASE",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "86",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "180CC",
+          "ERGO RACK SLOPE BASE  MPK-0008"
+        ],
+        [
+          "ACC100RCC",
+          "ERGO RACK FLAT BASE   MPK-0007"
+        ],
+        [
+          "ALUFLAT",
+          "ALURACK FLAT BASE     MAK-0035"
+        ],
+        [
+          "ALUSLOPE",
+          "ALURACK SLOPE BASE    MAK-0034"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 157,
+      "label": "PRIME DESIGN HOOK & BAR",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "87",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "ALUDS",
+          "ALURACK DS QUICK CLAMP     ACX"
+        ],
+        [
+          "ALUDUAL",
+          "ALURACK DS/PS QUICK CLAMPS"
+        ],
+        [
+          "ALUPS",
+          "ALURACK PS QUICK CLAMP     AXC"
+        ],
+        [
+          "HOOK",
+          "ERGORACK HOOK/BAR ASSEMBLY ALB"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 158,
+      "label": "PRIME DESIGN LIGHT BRACKET",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "88",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BOTH",
+          "ERGORACK GO & STROBE BRACKET"
+        ],
+        [
+          "CONDUIT",
+          "ERGORACK CONDUIT TUBE CON-8010"
+        ],
+        [
+          "CONSTROBE",
+          "ERGORACK CONDUIT W/STROBE BRKT"
+        ],
+        [
+          "GO",
+          "ERGORACK GO BRACKET   ASH-8601"
+        ],
+        [
+          "STROBE",
+          "ERGORACK STROBE BRKT  ASH-8611"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 160,
+      "label": "Cargo Hook Option",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "CH",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BSHOOK",
+          "8 Cargo Hooks (4 DS + 4 PS)"
+        ],
+        [
+          "DSHOOK",
+          "4 Cargo Hooks on DS"
+        ],
+        [
+          "PSHOOK",
+          "4 Cargo Hooks on PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 165,
+      "label": "Tailgate Option-Dodge Ram",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59C",
+      "rt": "TH",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "TAILGATE06",
+          "Tailgate Cap 06-08 Dodge Ram"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 180,
+      "label": "Clamp Option - J BOLT",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59F",
+      "rt": "ZA",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "JBOLT",
+          "J-Bolt Clamps"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 185,
+      "label": "Logo Option",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59G",
+      "rt": "XB",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "A&A TOP",
+          "Mile High Edition Logos"
+        ],
+        [
+          "BULLDOG",
+          "Bulldog Logos"
+        ],
+        [
+          "CAPIT",
+          "Cap-it/NON ALBERTA GLASS DOOR"
+        ],
+        [
+          "CAPITAR",
+          "Cap-it/ALBERTA RADIUS DOOR"
+        ],
+        [
+          "CAPITR",
+          "Cap-it/NON-ALBERTA RADIUS DOOR"
+        ],
+        [
+          "CENTURY",
+          "Century Logos"
+        ],
+        [
+          "LEER",
+          "Leer Logos"
+        ],
+        [
+          "LINE X",
+          "Line X Logos"
+        ],
+        [
+          "LOGO",
+          "Cap-it/ALBERTA GLASS DOOR"
+        ],
+        [
+          "NOLOGO",
+          "Do Not Apply Any Logos"
+        ],
+        [
+          "NW",
+          "Northwest Special"
+        ],
+        [
+          "RAVEN",
+          "Raven Logos"
+        ],
+        [
+          "READYCAP",
+          "Ready Cap Logos"
+        ],
+        [
+          "SNUGPRO",
+          "SnugPro Logos"
+        ],
+        [
+          "SNUGPROCH",
+          "Snug Pro CH Commercial"
+        ],
+        [
+          "SNUGTOP",
+          "SnugTop Logos"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 200,
+      "label": "Leer Locker Sport Series 6'",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59C",
+      "rt": "L6",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "LOCKER6",
+          "LEER Locker Sport Series 60\""
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3187051",
+      "pel": 998,
+      "label": "VIN#",
+      "req": "O",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    }
+  ],
+  "rules": [
+    {
+      "kit": "3187051",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 50,
+          "valr": "EQ",
+          "ativ": "PADDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 65,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "A",
+            "C",
+            "B",
+            "*NONE",
+            "A",
+            "C",
+            "B",
+            "*NONE"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 2,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 60,
+          "valr": "EQ",
+          "ativ": "PADPS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 66,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "B",
+            "*NONE",
+            "A",
+            "C",
+            "A",
+            "C",
+            "*NONE",
+            "B"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 3,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 143,
+          "valr": "EQ",
+          "ativ": "GPSD"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 143,
+          "valr": "NE",
+          "ativ": "GPSD"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 4,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 143,
+          "valr": "EQ",
+          "ativ": "GPSE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 143,
+          "valr": "NE",
+          "ativ": "GPSE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 5,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU8"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 155,
+          "valr": "NE",
+          "ativ": "ALU8"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 6,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ACC100RCC"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 7,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "180CC"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 8,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 157,
+          "valr": "NE",
+          "ativ": "HOOK"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 9,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 158,
+          "valr": "NE",
+          "ativ": "BOTH"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 10,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 158,
+          "valr": "NE",
+          "ativ": "GO"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 11,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 158,
+          "valr": "NE",
+          "ativ": "STROBE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 12,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PBC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUFLAT"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 13,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PBC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUSLOPE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 14,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUFLAT"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 15,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUSLOPE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 16,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUFLAT"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 17,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUSLOPE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 18,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PRR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUFLAT"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 19,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PRR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "ALUSLOPE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 20,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "RACK"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 151,
+          "valr": "NE",
+          "ativ": "47"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 21,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "RACK"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 151,
+          "valr": "NE",
+          "ativ": "53"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 22,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "RACKR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 151,
+          "valr": "NE",
+          "ativ": "50"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 23,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "RACKR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 151,
+          "valr": "NE",
+          "ativ": "50"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 24,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "RACKR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 151,
+          "valr": "NE",
+          "ativ": "50"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 25,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "RACKR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 151,
+          "valr": "NE",
+          "ativ": "58"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 26,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "KARGO"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 152,
+          "valr": "EQ",
+          "ativ": "BASE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 27,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "KARGO"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 152,
+          "valr": "EQ",
+          "ativ": "BASE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 28,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 200,
+          "valr": "EQ",
+          "ativ": "LOCKER6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 65,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 29,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 200,
+          "valr": "EQ",
+          "ativ": "LOCKER6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 65,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 30,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 200,
+          "valr": "EQ",
+          "ativ": "LOCKER6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 65,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3187051",
+      "ato": 31,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 200,
+          "valr": "EQ",
+          "ativ": "LOCKER6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 66,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    }
+  ],
+  "airC": []
+}

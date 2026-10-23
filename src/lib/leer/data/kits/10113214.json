@@ -1,0 +1,3044 @@
+{
+  "id": "10113214",
+  "sku": "501793",
+  "title": "100S 56FF21",
+  "family": "100S",
+  "fitment": "21+ FORD F150 5'6\"",
+  "mcu": "",
+  "dynamic": true,
+  "depth": "plant-deep",
+  "source": "Plant pack db/ (F3290/1/2/21 + F3293 C/P/R + F3281/2/3, blank MCU)",
+  "asOf": "2026-09-28",
+  "levels": [
+    {
+      "kit": "10113214",
+      "seq": 0,
+      "name": "100S 56FF21",
+      "litm": "501793"
+    },
+    {
+      "kit": "11675935",
+      "seq": 1,
+      "name": "100S COMMON-01 V1",
+      "litm": "10055654V1"
+    },
+    {
+      "kit": "11676031",
+      "seq": 2,
+      "name": "CHILD A-09 V1",
+      "litm": "10055777V1"
+    },
+    {
+      "kit": "11921008",
+      "seq": 3,
+      "name": "100S CHILD B-06 V1",
+      "litm": "10056892V1"
+    },
+    {
+      "kit": "11676137",
+      "seq": 4,
+      "name": "100S CHILD C-01 V1",
+      "litm": "10056956V1"
+    },
+    {
+      "kit": "11676170",
+      "seq": 5,
+      "name": "100S CHILD D-04 V1",
+      "litm": "10056999V1"
+    }
+  ],
+  "segments": [
+    {
+      "kit": "11676031",
+      "pel": 1,
+      "label": "Truck Year",
+      "req": "R",
+      "dval": "",
+      "sy": "59A3",
+      "rt": "FH",
+      "options": [
+        [
+          "2021",
+          "2021"
+        ],
+        [
+          "2022",
+          "2022"
+        ],
+        [
+          "2023",
+          "2023"
+        ],
+        [
+          "2024",
+          "2024"
+        ],
+        [
+          "2025",
+          "2025"
+        ],
+        [
+          "2026",
+          "2026"
+        ],
+        [
+          "2027",
+          "2027"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676031",
+      "pel": 10,
+      "label": "Paint Code/Color",
+      "req": "R",
+      "dval": "",
+      "sy": "59A1",
+      "rt": "FH",
+      "options": [
+        [
+          "*MISC",
+          "*Miscellaneous Paint"
+        ],
+        [
+          "*PR",
+          "Primer Gel-No Paint-CAPS ONLY"
+        ],
+        [
+          "*PRT",
+          "Primer Gel-No Paint-TONNE ONLY"
+        ],
+        [
+          "A3",
+          "A3 Space White"
+        ],
+        [
+          "AZ",
+          "AZ Star White Tri-Coat"
+        ],
+        [
+          "B3",
+          "B3 Atlas/Artisan Blue M7440"
+        ],
+        [
+          "BY",
+          "BY School Bus Yellow"
+        ],
+        [
+          "CD",
+          "CD Neptune Blue"
+        ],
+        [
+          "CN",
+          "CN Code Orange"
+        ],
+        [
+          "D1",
+          "D1 Stone Gray"
+        ],
+        [
+          "D4",
+          "D4 Rapid Red Tri-Coat"
+        ],
+        [
+          "DB",
+          "DB Shelter Green"
+        ],
+        [
+          "DR",
+          "DR Avalanche Gray"
+        ],
+        [
+          "E4",
+          "E4 Vermillion Red"
+        ],
+        [
+          "E7",
+          "E7 Velocity Blue"
+        ],
+        [
+          "E9",
+          "E9 Argon Blue"
+        ],
+        [
+          "EA",
+          "EA Hot Pepper Red Tri-Coat"
+        ],
+        [
+          "FA",
+          "FA Eruption Green"
+        ],
+        [
+          "FC",
+          "FC Wild Green"
+        ],
+        [
+          "G1",
+          "G1 Shadow Black"
+        ],
+        [
+          "G4",
+          "G4 Azure Gray Tri-Coat"
+        ],
+        [
+          "GP",
+          "GP Iced Blue Silver Met"
+        ],
+        [
+          "HN",
+          "HN Guard"
+        ],
+        [
+          "HX",
+          "HX Antimatter Blue"
+        ],
+        [
+          "J1",
+          "J1 Kodiak Brown"
+        ],
+        [
+          "J8",
+          "J8 Tangier Orange 2"
+        ],
+        [
+          "JS",
+          "JS Iconic Silver"
+        ],
+        [
+          "JX",
+          "JX Lead Foot"
+        ],
+        [
+          "KU*",
+          "KU Area 51"
+        ],
+        [
+          "LE",
+          "LE Bold Yellow 2"
+        ],
+        [
+          "LJ",
+          "LJ Darkened Bronze"
+        ],
+        [
+          "M7",
+          "M7 Carbonized Gray"
+        ],
+        [
+          "N1",
+          "N1 Blue Jeans"
+        ],
+        [
+          "NE",
+          "NE Cactus Gray"
+        ],
+        [
+          "PQ",
+          "PQ Race Red"
+        ],
+        [
+          "RR",
+          "RR Ruby Red"
+        ],
+        [
+          "RXF",
+          "RXF Jet Black Hard Top"
+        ],
+        [
+          "S8",
+          "S8 Birch Sand"
+        ],
+        [
+          "T9",
+          "T9 Marsh Gray"
+        ],
+        [
+          "TB",
+          "TB Lithium Gray"
+        ],
+        [
+          "TQ",
+          "TQ Smoked Quartz"
+        ],
+        [
+          "UM",
+          "UM Agate Black"
+        ],
+        [
+          "UX",
+          "UX Ingot Silver"
+        ],
+        [
+          "VA",
+          "VA Desert Red"
+        ],
+        [
+          "W6",
+          "W6 Green Gem 2"
+        ],
+        [
+          "YZ",
+          "YZ White"
+        ],
+        [
+          "Z1",
+          "Z1 Oxford White"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676031",
+      "pel": 15,
+      "label": "Paint Variant",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A1",
+      "rt": "V1",
+      "options": [
+        [
+          "*GAS",
+          "Use Gas Cap As Reference"
+        ],
+        [
+          "*NONE",
+          "No Variant - Use OEM"
+        ],
+        [
+          "*SPEC",
+          "Special Variant - See Text Box"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676031",
+      "pel": 20,
+      "label": "Paint - Special Entry",
+      "req": "O",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11921008",
+      "pel": 305,
+      "label": "Toolbox Y/N",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11921008",
+      "pel": 308,
+      "label": "Front Window",
+      "req": "R",
+      "dval": "PIC",
+      "sy": "59A2",
+      "rt": "FW",
+      "options": [
+        [
+          "FSW",
+          "Front Slider"
+        ],
+        [
+          "PIC",
+          "Front Picture Framed"
+        ],
+        [
+          "REFSW",
+          "Removable Front Slider"
+        ],
+        [
+          "REPIC",
+          "Removable Front Picture"
+        ],
+        [
+          "RPIC",
+          "Front Picture Framed"
+        ],
+        [
+          "SOLID",
+          "Solid Front - No Window"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 316,
+      "label": "Side Window - Driver Side",
+      "req": "R",
+      "dval": "SSDS",
+      "sy": "59A2",
+      "rt": "DV",
+      "options": [
+        [
+          "BSDS",
+          "Solid Side - No Window/Door"
+        ],
+        [
+          "FRAMEDS",
+          "Framed Fiberglass Door"
+        ],
+        [
+          "NUDODS",
+          "Aluminum Composite Door"
+        ],
+        [
+          "SSDS",
+          "Slider"
+        ],
+        [
+          "WDDS",
+          "Windoor"
+        ],
+        [
+          "WSDS",
+          "Windoor Slider"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 319,
+      "label": "Toolbox - Driver Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "TF",
+      "options": [
+        [
+          "*NONE",
+          "No Toolbox"
+        ],
+        [
+          "TOOLBOXADS",
+          "NEW - Toolbox 'A'"
+        ],
+        [
+          "TOOLBOXBDS",
+          "NEW - Toolbox 'B'"
+        ],
+        [
+          "TOOLBOXCDS",
+          "NEW - Toolbox 'C'"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 321,
+      "label": "Toolbox Mat - Driver Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "TG",
+      "options": [
+        [
+          "*NONE",
+          "No Rubber Non-Slip Mat"
+        ],
+        [
+          "MATDS",
+          "Rubber Non-Slip Mat"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 322,
+      "label": "Toolbox Headliner -Driver Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "TH",
+      "options": [
+        [
+          "*NONE",
+          "No Exterior Toolbox Headliner"
+        ],
+        [
+          "TBHEADDS",
+          "Exterior Toolbox Headliner"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 324,
+      "label": "Screen Protector - Driver Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "D9",
+      "options": [
+        [
+          "*NONE",
+          "No Screen Protector"
+        ],
+        [
+          "PSDS",
+          "Screen Protector"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 332,
+      "label": "Side Window - Pass. Side",
+      "req": "R",
+      "dval": "SSPS",
+      "sy": "59A2",
+      "rt": "PV",
+      "options": [
+        [
+          "BSPS",
+          "Solid Side - No Window/Door"
+        ],
+        [
+          "FRAMEPS",
+          "Framed Fiberglass Door"
+        ],
+        [
+          "NUDOPS",
+          "Aluminum Composite Door"
+        ],
+        [
+          "SSPS",
+          "Slider"
+        ],
+        [
+          "WDPS",
+          "Windoor"
+        ],
+        [
+          "WSPS",
+          "Windoor Slider"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 335,
+      "label": "Toolbox - Pass. Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "TI",
+      "options": [
+        [
+          "*NONE",
+          "No Toolbox"
+        ],
+        [
+          "TOOLBOXAPS",
+          "NEW - Toolbox 'A'"
+        ],
+        [
+          "TOOLBOXBPS",
+          "NEW - Toolbox 'B'"
+        ],
+        [
+          "TOOLBOXCPS",
+          "NEW - Toolbox 'C'"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 337,
+      "label": "Toolbox Mat - Passenger Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "TJ",
+      "options": [
+        [
+          "*NONE",
+          "No Rubber Non-Slip Mat"
+        ],
+        [
+          "MATPS",
+          "Rubber Non-Slip Mat"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 338,
+      "label": "Toolbox Headliner - Pass. Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "TK",
+      "options": [
+        [
+          "*NONE",
+          "No Exterior Toolbox Headliner"
+        ],
+        [
+          "TBHEADPS",
+          "Exterior Toolbox Headliner"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 340,
+      "label": "Screen Protector - Pass. Side",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "P9",
+      "options": [
+        [
+          "*NONE",
+          "No Screen Protector"
+        ],
+        [
+          "PSPS",
+          "Screen Protector"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 344,
+      "label": "Rear Door",
+      "req": "R",
+      "dval": "RADIUSDOOR",
+      "sy": "59A2",
+      "rt": "R5",
+      "options": [
+        [
+          "NUDODOOR",
+          "Aluminum Composite Framed Door"
+        ],
+        [
+          "RADIUSDOOR",
+          "Radius Glass Framed Door"
+        ],
+        [
+          "SOLIDDOOR",
+          "Fiberglass Panel Framed Door"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 345,
+      "label": "Handle Style",
+      "req": "O",
+      "dval": "",
+      "sy": "59A2",
+      "rt": "H3",
+      "options": [
+        [
+          "DROPTKEY",
+          "Drop T - Keyless Ready"
+        ],
+        [
+          "DROPTNON",
+          "Drop T - Non-Codable"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 348,
+      "label": "Headliner",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "HL",
+      "options": [
+        [
+          "*NONE",
+          "No Headliner"
+        ],
+        [
+          "HEADLINER",
+          "Headliner"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 356,
+      "label": "Overhead Storage Drawer",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "IL",
+      "options": [
+        [
+          "*NONE",
+          "No Locker"
+        ],
+        [
+          "LEERLOCKER",
+          "LEER Locker"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 364,
+      "label": "Clothes Hanger",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "CH",
+      "options": [
+        [
+          "*NONE",
+          "No Clothes Hanger"
+        ],
+        [
+          "DUALDS",
+          "B - Dual DS Front & Rear"
+        ],
+        [
+          "DUALPS",
+          "C - Dual DS & PS Rear"
+        ],
+        [
+          "SINGLEDS",
+          "A - Single Driver Side Rear"
+        ],
+        [
+          "SINGLEPS",
+          "D - Single Pass. Side Rear"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 372,
+      "label": "Fishing Rod Rack",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "FR",
+      "options": [
+        [
+          "*NONE",
+          "No Fishing Rod Rack"
+        ],
+        [
+          "2RODS",
+          "Dual Fishing Rod Rack"
+        ],
+        [
+          "ROD",
+          "Single Fishing Rod Rack"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 380,
+      "label": "Gear Net",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "GN",
+      "options": [
+        [
+          "*NONE",
+          "No Gear Net"
+        ],
+        [
+          "GEARNET",
+          "Gear Net"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 388,
+      "label": "Cargo Hooks",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "CK",
+      "options": [
+        [
+          "*NONE",
+          "No Cargo Hooks"
+        ],
+        [
+          "BSHOOK",
+          "8-Driver & Pass Side Cargo Hks"
+        ],
+        [
+          "DSHOOK",
+          "4 - Driver Side Cargo Hooks"
+        ],
+        [
+          "PSHOOK",
+          "4 - Passenger Side Cargo Hooks"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 396,
+      "label": "Interior Lighting",
+      "req": "O",
+      "dval": "DOME12",
+      "sy": "59A2",
+      "rt": "EY",
+      "options": [
+        [
+          "*NONE",
+          "No Interior Light"
+        ],
+        [
+          "2DOME",
+          "Dual Battery LED"
+        ],
+        [
+          "DOME12",
+          "12V LED Domelight"
+        ],
+        [
+          "DUAL12",
+          "Dual 12V LED Domelight"
+        ],
+        [
+          "LEDBAT",
+          "Battery LED Domelight"
+        ],
+        [
+          "LIGHTA",
+          "Tube Light Option 'A'"
+        ],
+        [
+          "LIGHTB",
+          "Tube Light Option 'B'"
+        ],
+        [
+          "LIGHTC",
+          "Tube Light Option 'C'"
+        ],
+        [
+          "LIGHTD",
+          "Tube Light Option 'D'"
+        ],
+        [
+          "LIGHTE",
+          "Tube Light Option 'E'"
+        ],
+        [
+          "LIGHTF",
+          "Tube Light Option 'F'"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 404,
+      "label": "Door Prop Light Switch",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "ES",
+      "options": [
+        [
+          "*NONE",
+          "No Prop Light Switch"
+        ],
+        [
+          "SWITCH",
+          "Gas Prop Activated Switch"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 412,
+      "label": "Keyless Entry",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "E3",
+      "options": [
+        [
+          "*NONE",
+          "No Keyless Entry"
+        ],
+        [
+          "KEYLESS",
+          "Keyless Entry"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676137",
+      "pel": 420,
+      "label": "Power Block",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "E4",
+      "options": [
+        [
+          "*NONE",
+          "No Powerblock"
+        ],
+        [
+          "POWERBLOCK",
+          "Powerblock"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676031",
+      "pel": 426,
+      "label": "Installation Wiring Harness",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "7H",
+      "options": [
+        [
+          "*NONE",
+          "Default Wire Harness"
+        ],
+        [
+          "HARNESS",
+          "Plug & Play Wire Harness"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 436,
+      "label": "Roof Rack",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "RA",
+      "options": [
+        [
+          "*NONE",
+          "No Roof Rack"
+        ],
+        [
+          "PROBAR",
+          "Thule ProBar System"
+        ],
+        [
+          "SQUARE",
+          "Thule Square Bar System"
+        ],
+        [
+          "TRACK",
+          "Thule Tracks Only"
+        ],
+        [
+          "WINGB",
+          "Thule WingBar System - Black"
+        ],
+        [
+          "WINGS",
+          "Thule WingBar System - Silver"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 444,
+      "label": "Roof Rack Accessory",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "RC",
+      "options": [
+        [
+          "*NONE",
+          "No Roof Rack Accessory"
+        ],
+        [
+          "BASKET",
+          "859 37x20 Cargo Basket"
+        ],
+        [
+          "BIKERACK",
+          "ProRide XT Bike Rack"
+        ],
+        [
+          "CANOE",
+          "819 Portage Canoe Carrier"
+        ],
+        [
+          "CARGOBAG",
+          "868 Outbound Cargo Bag"
+        ],
+        [
+          "CMWIND",
+          "44\" AirScreen"
+        ],
+        [
+          "FSWIND",
+          "52\" AirScreen"
+        ],
+        [
+          "LOADSTRAP",
+          "523 (2) 15ft Load Straps"
+        ],
+        [
+          "PROLOAD",
+          "502 WingBar/ProBar Load Stops"
+        ],
+        [
+          "SNOW",
+          "7326 SnowPack"
+        ],
+        [
+          "SNOWEXT",
+          "7325 SnowPack Extender"
+        ],
+        [
+          "SQLOAD",
+          "503 Square Bar Load Stops"
+        ],
+        [
+          "TIEDOWN",
+          "855XT (2) QuickDraw Tie-Downs"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11921008",
+      "pel": 452,
+      "label": "Cargo Basket Options",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "RD",
+      "options": [
+        [
+          "*NONE",
+          "No Basket Add-on"
+        ],
+        [
+          "BASKETEXT",
+          "8591 Basket Extender"
+        ],
+        [
+          "BASKETNET",
+          "692 Stretch Cargo Net"
+        ],
+        [
+          "EXTNET",
+          "8591 Extender & 652 Cargo Net"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676170",
+      "pel": 460,
+      "label": "Installation Clamps",
+      "req": "R",
+      "dval": "",
+      "sy": "59A2",
+      "rt": "CW",
+      "options": [
+        [
+          "*NONE",
+          "No Clamps"
+        ],
+        [
+          "JBOLT",
+          "Standard J-Bolt Clamp Kit"
+        ],
+        [
+          "SPECIALTY",
+          "Specialty Clamp Kit"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676170",
+      "pel": 465,
+      "label": "Remove Wrap/Skirted Edge",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "WR",
+      "options": [
+        [
+          "*NONE",
+          "Standard Edge"
+        ],
+        [
+          "NORAILS",
+          "Remove Wrap Rail Edge"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676170",
+      "pel": 466,
+      "label": "Add Heavy Duty Base Rails",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "59A2",
+      "rt": "HD",
+      "options": [
+        [
+          "*NONE",
+          "Standard Base Rails"
+        ],
+        [
+          "HDRAILS",
+          "Heavy Duty Base Rails"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676170",
+      "pel": 467,
+      "label": "Bulb Seal",
+      "req": "O",
+      "dval": "BULBSEAL",
+      "sy": "59A2",
+      "rt": "A1",
+      "options": [
+        [
+          "*NONE",
+          "No Double Bulb Seal"
+        ],
+        [
+          "BULBSEAL",
+          "Install Double Bulb Seal"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "10113214",
+      "pel": 900,
+      "label": "Item Number",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11675935",
+      "pel": 900,
+      "label": "TOP ITEM REF #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676031",
+      "pel": 900,
+      "label": "TOP ITEM REF #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676137",
+      "pel": 900,
+      "label": "TOP ITEM REF #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676170",
+      "pel": 900,
+      "label": "TOP ITEM REF #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11921008",
+      "pel": 900,
+      "label": "TOP ITEM REF #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676031",
+      "pel": 901,
+      "label": "GROUP",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676137",
+      "pel": 901,
+      "label": "GROUP",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676170",
+      "pel": 901,
+      "label": "GROUP",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11921008",
+      "pel": 901,
+      "label": "GROUP",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676031",
+      "pel": 920,
+      "label": "Run Time for the Operation 350",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676031",
+      "pel": 921,
+      "label": "Run Time for the Operation 740",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11675935",
+      "pel": 990,
+      "label": "Mold:",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11675935",
+      "pel": 994,
+      "label": "TOP ITEM #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676031",
+      "pel": 994,
+      "label": "TOP ITEM #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676137",
+      "pel": 994,
+      "label": "TOP ITEM #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676170",
+      "pel": 994,
+      "label": "TOP ITEM #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11921008",
+      "pel": 994,
+      "label": "TOP ITEM #",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11921008",
+      "pel": 995,
+      "label": "Label",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11675935",
+      "pel": 996,
+      "label": "Dynamic Pricing",
+      "req": "R",
+      "dval": "NO",
+      "sy": "59A2",
+      "rt": "YN",
+      "options": [
+        [
+          "NO",
+          "No"
+        ],
+        [
+          "YES",
+          "Yes"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11675935",
+      "pel": 997,
+      "label": "Trigger for the P Rules",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11676031",
+      "pel": 997,
+      "label": "Trigger for the P Rules",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11675935",
+      "pel": 998,
+      "label": "VIN #",
+      "req": "O",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    },
+    {
+      "kit": "11675935",
+      "pel": 999,
+      "label": "Do you have VIN to enter?",
+      "req": "R",
+      "dval": "",
+      "sy": "59A2",
+      "rt": "ZZ",
+      "options": [
+        [
+          "SOLD",
+          "Yes"
+        ],
+        [
+          "STOCK",
+          "No"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "11676031",
+      "pel": 999,
+      "label": "Trigger for the R Rules",
+      "req": "C",
+      "dval": "",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    }
+  ],
+  "rules": [
+    {
+      "kit": "11675935",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 999,
+          "valr": "EQ",
+          "ativ": "SOLD"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 998,
+          "valr": "EQ",
+          "ativ": "*REQ"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 998,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 1,
+          "valr": "EQ",
+          "ativ": "2027"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*MISC",
+            "*PR",
+            "A3",
+            "AZ",
+            "CD",
+            "DB",
+            "FC",
+            "JS",
+            "M7",
+            "RR",
+            "RXF",
+            "S8",
+            "T9",
+            "UM",
+            "YZ",
+            "Z1"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 2,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 1,
+          "valr": "EQ",
+          "ativ": "2026"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*MISC",
+            "A3",
+            "AZ",
+            "B3",
+            "D4",
+            "DR",
+            "E4",
+            "E9",
+            "HX",
+            "JS",
+            "M7",
+            "RR",
+            "RXF",
+            "T9",
+            "UM",
+            "YZ",
+            "Z1"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 3,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 1,
+          "valr": "EQ",
+          "ativ": "2025"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*MISC",
+            "A3",
+            "AZ",
+            "B3",
+            "D4",
+            "DR",
+            "HX",
+            "JS",
+            "M7",
+            "RXF",
+            "UM",
+            "YZ"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 4,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 1,
+          "valr": "EQ",
+          "ativ": "2024"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*MISC",
+            "AZ",
+            "D1",
+            "D4",
+            "DB",
+            "DR",
+            "HX",
+            "JS",
+            "M7",
+            "RXF",
+            "UM",
+            "YZ"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 5,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 1,
+          "valr": "EQ",
+          "ativ": "2023"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*MISC",
+            "AZ",
+            "B3",
+            "D1",
+            "D4",
+            "DR",
+            "EA",
+            "G4",
+            "HX",
+            "JS",
+            "KU*",
+            "M7",
+            "RXF",
+            "UM",
+            "YZ"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 6,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 1,
+          "valr": "EQ",
+          "ativ": "2022"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*MISC",
+            "A3",
+            "AZ",
+            "B3",
+            "CN",
+            "D1",
+            "D4",
+            "HX",
+            "JS",
+            "M7",
+            "PQ",
+            "RXF",
+            "TQ",
+            "UM",
+            "YZ"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 7,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 1,
+          "valr": "EQ",
+          "ativ": "2021"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*MISC",
+            "A3",
+            "AZ",
+            "D1",
+            "D4",
+            "E7",
+            "HN",
+            "HX",
+            "J1",
+            "JS",
+            "JX",
+            "M7",
+            "PQ",
+            "RXF",
+            "TQ",
+            "UM",
+            "YZ"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 8,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*MISC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 15,
+          "valr": "EQ",
+          "ativ": "*REQ"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 15,
+          "valr": "EQ",
+          "ativ": "*OPT"
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 9,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 15,
+          "valr": "EQ",
+          "ativ": "*SPEC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 20,
+          "valr": "EQ",
+          "ativ": "*REQ"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 20,
+          "valr": "EQ",
+          "ativ": "*OPT"
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 10,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 10,
+          "valr": "EQ",
+          "ativ": "*MISC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 20,
+          "valr": "EQ",
+          "ativ": "*REQ"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 20,
+          "valr": "EQ",
+          "ativ": "*OPT"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 316,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "BSDS",
+            "SSDS",
+            "WSDS"
+          ]
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 319,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 319,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 2,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 316,
+          "valr": "NE",
+          "ativ": "SSDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 324,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 324,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 3,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 319,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 321,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 321,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 4,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 319,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 322,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 322,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 5,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 319,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 356,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 364,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "SINGLEPS"
+          ]
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 372,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "ROD"
+          ]
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 6,
+          "ao": "*",
+          "pel": 388,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "PSHOOK"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 6,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 319,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 356,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 364,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 372,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 6,
+          "ao": "*",
+          "pel": 388,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 7,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 332,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "BSPS",
+            "SSPS",
+            "WSPS"
+          ]
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 335,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 335,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 8,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 332,
+          "valr": "NE",
+          "ativ": "SSPS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 340,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 340,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 9,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 316,
+          "valr": "EQ",
+          "ativ": "FRAMEDS"
+        },
+        {
+          "atos": 2,
+          "ao": "O",
+          "pel": 332,
+          "valr": "EQ",
+          "ativ": "FRAMEPS"
+        },
+        {
+          "atos": 3,
+          "ao": "O",
+          "pel": 344,
+          "valr": "EQ",
+          "ativ": "SOLIDDOOR"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 345,
+          "valr": "EQ",
+          "ativ": "*REQ"
+        },
+        {
+          "atos": 5,
+          "ao": "E",
+          "pel": 345,
+          "valr": "EQ",
+          "ativ": "*OPT"
+        },
+        {
+          "atos": 6,
+          "ao": "E",
+          "pel": 345,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 10,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 335,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 337,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 337,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 11,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 335,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 338,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 338,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 12,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 335,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 356,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 364,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "DUALDS",
+            "SINGLEDS"
+          ]
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 372,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "ROD"
+          ]
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 6,
+          "ao": "*",
+          "pel": 388,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "DSHOOK"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 13,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 345,
+          "valr": "EQ",
+          "ativ": "DROPTNON"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 412,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 412,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 14,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 345,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 412,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 15,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 348,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 396,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "2DOME",
+            "DOME12",
+            "LEDBAT",
+            "LIGHTA"
+          ]
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 396,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 16,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 356,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 364,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 372,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 388,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 17,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 356,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 364,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 372,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 388,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 18,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 364,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 19,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 372,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 20,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 364,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 372,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 388,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 21,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 380,
+          "valr": "NE",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 436,
+          "valr": "EQ",
+          "ativ": "*REQ"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 436,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "PROBAR",
+            "SQUARE",
+            "TRACK",
+            "WINGB",
+            "WINGS"
+          ]
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 22,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 380,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 436,
+          "valr": "EQ",
+          "ativ": "*OPT"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 436,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 23,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 396,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "*NONE",
+            "2DOME",
+            "LEDBAT"
+          ]
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 404,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 24,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 436,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 444,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 444,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 25,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 444,
+          "valr": "EQ",
+          "ativ": "BASKET"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 452,
+          "valr": "EQ",
+          "ativ": "*ALL"
+        },
+        {
+          "atos": 3,
+          "ao": "E",
+          "pel": 452,
+          "valr": "EQ",
+          "ativ": "*BLANK"
+        }
+      ]
+    }
+  ],
+  "airC": [
+    {
+      "kit": "10113214",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 996,
+          "valr": "EQ",
+          "ativ": "YES",
+          "psin": "11675935"
+        },
+        {
+          "atos": 2,
+          "ao": "O",
+          "pel": 996,
+          "valr": "EQ",
+          "ativ": "NO",
+          "psin": "11675935"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 900,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "&IMLITM"
+        }
+      ]
+    },
+    {
+      "kit": "11675935",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "*",
+          "pel": 994,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "EXTVAR",
+          "epgm": "B5532900"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 900,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "SUBSTR(S994,1,6)"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 990,
+          "valr": "EQ",
+          "ativ": "",
+          "tblc": "MOLD"
+        }
+      ]
+    },
+    {
+      "kit": "11675935",
+      "ato": 2,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 999,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "SOLD",
+            "STOCK"
+          ]
+        },
+        {
+          "atos": 2,
+          "ao": "O",
+          "pel": 996,
+          "valr": "EQ",
+          "ativ": "YES"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 997,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "YES"
+        },
+        {
+          "atos": 4,
+          "ao": "E",
+          "pel": 997,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "NO"
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "*",
+          "pel": 994,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "EXTVAR",
+          "epgm": "B5532900"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 900,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "SUBSTR(S994,1,6)"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "",
+          "tblc": "GROUP"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 920,
+          "valr": "EQ",
+          "ativ": "",
+          "tblc": "R010O350"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 921,
+          "valr": "EQ",
+          "ativ": "",
+          "tblc": "R426O740"
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 2,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "100S"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 997,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S997=10055654V1="
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 999,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S999=10055654V1="
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 3,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "COMM FIBER"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 997,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S997=10328878V1="
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 999,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S999=10328878V1="
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 4,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "CAPS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 997,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S997=10496687V1="
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 999,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S999=10496687V1="
+        }
+      ]
+    },
+    {
+      "kit": "11676031",
+      "ato": 5,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "SNUGTOP"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 997,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S997=10057001V1="
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 999,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "S999=10057001V1="
+        }
+      ]
+    },
+    {
+      "kit": "11676137",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "*",
+          "pel": 994,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "EXTVAR",
+          "epgm": "B5532900"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 900,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "SUBSTR(S994,1,6)"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "",
+          "tblc": "GROUP"
+        }
+      ]
+    },
+    {
+      "kit": "11676170",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "*",
+          "pel": 994,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "EXTVAR",
+          "epgm": "B5532900"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 900,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "SUBSTR(S994,1,6)"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "",
+          "tblc": "GROUP"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "*",
+          "pel": 994,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "EXTVAR",
+          "epgm": "B5532900"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 900,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "SUBSTR(S994,1,6)"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 901,
+          "valr": "EQ",
+          "ativ": "",
+          "tblc": "GROUP"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 995,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "SUBSTR(S994,7,3)"
+        }
+      ]
+    },
+    {
+      "kit": "11921008",
+      "ato": 2,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 319,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "TOOLBOXADS",
+            "TOOLBOXBDS",
+            "TOOLBOXCDS"
+          ]
+        },
+        {
+          "atos": 2,
+          "ao": "O",
+          "pel": 335,
+          "valr": "EQ",
+          "ativ": "*VALUES",
+          "values": [
+            "TOOLBOXAPS",
+            "TOOLBOXBPS",
+            "TOOLBOXCPS"
+          ]
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 305,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "Y"
+        },
+        {
+          "atos": 4,
+          "ao": "E",
+          "pel": 305,
+          "valr": "EQ",
+          "ativ": "",
+          "derc": "N"
+        }
+      ]
+    }
+  ],
+  "evidence": {
+    "note": "Portal observations for parity only. Never used as option filters.",
+    "paintOptionCountByYear": {
+      "segment": "11676031|10",
+      "driver": "11676031|1",
+      "observed": {
+        "2021": {
+          "count": 17,
+          "source": "live portal screenshot"
+        },
+        "2024": {
+          "count": 12,
+          "source": "ChangeConfiguration fixture"
+        }
+      }
+    }
+  }
+}

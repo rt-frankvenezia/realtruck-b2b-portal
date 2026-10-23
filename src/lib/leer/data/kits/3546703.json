@@ -1,0 +1,3289 @@
+{
+  "id": "3546703",
+  "sku": "203510",
+  "title": "ACC-MT3 66FF15 23\"",
+  "family": "ACC-MT3",
+  "fitment": "",
+  "mcu": "2511",
+  "dynamic": null,
+  "depth": "rules-only",
+  "historical": false,
+  "source": "BQ export data/ (F3290/1/2/21 + F3282/3, MCU 2511). No F3293 in this export.",
+  "asOf": "2026-09-28",
+  "levels": [
+    {
+      "kit": "3546703",
+      "seq": 0,
+      "name": "ACC-MT3 66FF15 23\"",
+      "litm": "203510"
+    }
+  ],
+  "segments": [
+    {
+      "kit": "3546703",
+      "pel": 1,
+      "label": "BRAND OPTION",
+      "req": "R",
+      "dval": "",
+      "sy": "59N",
+      "rt": "01",
+      "options": [
+        [
+          "CENTURY",
+          "CENTURY DCU COMMERCIAL CAP"
+        ],
+        [
+          "LEER",
+          "LEER DCC COMMERCIAL CAP"
+        ],
+        [
+          "SNUGTOP",
+          "SNUGTOP UT PRO COMMERCIAL CAP"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 2,
+      "label": "COLOR OPTION",
+      "req": "R",
+      "dval": "",
+      "sy": "59N",
+      "rt": "02",
+      "options": [
+        [
+          "AUTO",
+          "CUSTOM AUTOMOTIVE PAINT"
+        ],
+        [
+          "BLACK",
+          "BLACK .035"
+        ],
+        [
+          "PW",
+          "POLAR WHITE .035"
+        ],
+        [
+          "YZ",
+          "YZ WHITE .035"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 10,
+      "label": "PAINT - FORD",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59C",
+      "rt": "AA",
+      "options": [
+        [
+          "*CARBON",
+          "Carbon Fiber w/ Stripes"
+        ],
+        [
+          "*FLEETB",
+          "Fleet Black Paint"
+        ],
+        [
+          "*FLEETS",
+          "Fleet Standard"
+        ],
+        [
+          "*FLEETW",
+          "Fleet White Paint"
+        ],
+        [
+          "*GC",
+          "GC White Paint-Black Trim"
+        ],
+        [
+          "*NONE",
+          "No Paint"
+        ],
+        [
+          "*NP",
+          "NP Misc. Paint Color-Text Box"
+        ],
+        [
+          "*PF",
+          "*Paint Formula Attached"
+        ],
+        [
+          "*PR",
+          "Primer Gel-No Paint-CAPS ONLY"
+        ],
+        [
+          "*PRT",
+          "Primer Gel-No Paint-TONNE ONLY"
+        ],
+        [
+          "7H",
+          "7H Brt RegattaBlue -MD-  B8584"
+        ],
+        [
+          "A3",
+          "A3 SPACE WHITE M7459"
+        ],
+        [
+          "ABT",
+          "ABT Ebony Black"
+        ],
+        [
+          "AQ",
+          "AQ ArizonaBeige-MD-M6985 F9366"
+        ],
+        [
+          "AZ",
+          "AZ Star White Met Tri-Coat"
+        ],
+        [
+          "B1",
+          "B1 BLACK 867832K (AUSTRALIAN)"
+        ],
+        [
+          "B2",
+          "B2 Harvest Gold-MD-M6926 F8248"
+        ],
+        [
+          "B3",
+          "B3 ARTISAN BLUE FORD M7440"
+        ],
+        [
+          "B4",
+          "B4 Chestnut PM -DK-M6938 F7940"
+        ],
+        [
+          "B5",
+          "B5 Harvest Gold-MD-M6927 M2469"
+        ],
+        [
+          "B6",
+          "B6 MandarinCopp-MD-M6987 F9368"
+        ],
+        [
+          "B7",
+          "B7 Zinc Yellow -LT-M7000 F9372"
+        ],
+        [
+          "BA",
+          "BA Lt Prairie  -MD-M6818 B9745"
+        ],
+        [
+          "BG",
+          "BG Bright Amber-MD-M6811 B9749"
+        ],
+        [
+          "BM",
+          "BM LtPrairieTan-MD-M6882 B9863"
+        ],
+        [
+          "BN#",
+          "BN Bright Amber-MD-M6897 B9868"
+        ],
+        [
+          "BN*",
+          "BN Silver Spruce M7422"
+        ],
+        [
+          "BQ",
+          "BQ LtPrchmntGld-MD-M6904 F8510"
+        ],
+        [
+          "BU",
+          "BU Medium Copper Brown"
+        ],
+        [
+          "BY",
+          "BY SchoolBusYel-LT-M6284 B8779"
+        ],
+        [
+          "BZ",
+          "BZ ChromeYellow-LT-M6675 B9355"
+        ],
+        [
+          "C2",
+          "C2 Gold Ash PM -MD-M7065 P4974"
+        ],
+        [
+          "CN",
+          "CN CODE ORANGE"
+        ],
+        [
+          "CX",
+          "CX DkShdowGry-V7DK-M7039 M5114"
+        ],
+        [
+          "D1",
+          "D1 Stone Gray"
+        ],
+        [
+          "D2",
+          "D2 Moss Green  -DK-M7079 P4972"
+        ],
+        [
+          "D3",
+          "D3 Colrdo Red-V7MD-M7042 M5580"
+        ],
+        [
+          "D4",
+          "D4 Lucid Red Tri Coat"
+        ],
+        [
+          "D4*",
+          "D4* Rapid Red Metallic"
+        ],
+        [
+          "D6",
+          "D6 ScreamYellow-LT-V1  764242K"
+        ],
+        [
+          "D7",
+          "D7 Sunset Metallic"
+        ],
+        [
+          "DA",
+          "DA Cayman PM   -DK-M6487 B9169"
+        ],
+        [
+          "DB",
+          "DB Shelter Green"
+        ],
+        [
+          "DD",
+          "DD Mocha Frost -MD-M6425 B9101"
+        ],
+        [
+          "DGY",
+          "DGY Dove Gray C8228FL"
+        ],
+        [
+          "DK",
+          "DK Pumice PM   -MD-M6612 B9433"
+        ],
+        [
+          "DR",
+          "DR Avalanche Grey"
+        ],
+        [
+          "DT",
+          "DT MatadorRedBC-MD-M7057 P2293"
+        ],
+        [
+          "DV",
+          "DV Light Tundra-MD-M7081 P4975"
+        ],
+        [
+          "DX",
+          "DX DK Blue-V7PM-DK-M7083 P4969"
+        ],
+        [
+          "DY",
+          "DY Lt Saddle PM-MD-M6803 B9683"
+        ],
+        [
+          "DZ",
+          "DZ Lt SaddleMet-MD-M6754 B9661"
+        ],
+        [
+          "E2#",
+          "E2# DEEP EMERALD GREEN"
+        ],
+        [
+          "E2*",
+          "E2* Magma Red"
+        ],
+        [
+          "E2+",
+          "E2+DEEP EMERALD GREEN (AUS)"
+        ],
+        [
+          "E4",
+          "E4 Vermil Red-V1MD-M6470 B8954"
+        ],
+        [
+          "E7",
+          "E7 VELOCITY BLUE TRICOAT M7423"
+        ],
+        [
+          "E9",
+          "E9 Argon Blue Metallic"
+        ],
+        [
+          "EA",
+          "EA Hot Pepper Red TRICOAT"
+        ],
+        [
+          "EG",
+          "EG ElecCurntRed-MD-M6425 B9031"
+        ],
+        [
+          "EP",
+          "EP Vermillion  -LT-M6210 B8902"
+        ],
+        [
+          "F1",
+          "F1 Vermillion-V1MD-M6886 B9790"
+        ],
+        [
+          "F5",
+          "F5 GrabberGreen-DK-M7053 M9372"
+        ],
+        [
+          "F6",
+          "F6 Ceramic White Effect-V2"
+        ],
+        [
+          "FA",
+          "FA ERUPTION GREEN"
+        ],
+        [
+          "FL",
+          "FL Toreador Red-MD-M6758 B9660"
+        ],
+        [
+          "FM",
+          "FM Performance Blue"
+        ],
+        [
+          "FN",
+          "FN Toreador Red-DK-M6800 B9681"
+        ],
+        [
+          "FS",
+          "FS Spruce Green-DK-M6860 B9813"
+        ],
+        [
+          "FT",
+          "FT Blue Diamond M7411"
+        ],
+        [
+          "FU",
+          "FU DkGreenSatin-DK-M6862 B9826"
+        ],
+        [
+          "FV",
+          "FV WoodlndGreen-DK-M6873 B9865"
+        ],
+        [
+          "FW",
+          "FW Green-V7    -DK-      B9827"
+        ],
+        [
+          "FX",
+          "FX Merlot Red  -DK-M7087 P4976"
+        ],
+        [
+          "FY",
+          "FY WoodlndGreen-DK-M6890 B9880"
+        ],
+        [
+          "G1",
+          "G1 Shadow Black"
+        ],
+        [
+          "G2",
+          "G2 Red Fire PM -V4-M7089 P4364"
+        ],
+        [
+          "G3",
+          "G3 Pueblo Gold Effect-V4"
+        ],
+        [
+          "G4",
+          "G4 AZURE GRAY PEARL TRICOAT"
+        ],
+        [
+          "G5",
+          "G5 Alloy Effect-V7"
+        ],
+        [
+          "G6",
+          "G6 CHARCOAL GRAY (AUS)"
+        ],
+        [
+          "G7",
+          "G7 GRAPHITE EFFECT DT196 (AUS)"
+        ],
+        [
+          "G9",
+          "G9 Vista Blue Effect-V7"
+        ],
+        [
+          "GG",
+          "GG Forest Green Effect-V7"
+        ],
+        [
+          "GN",
+          "GN White Gold"
+        ],
+        [
+          "GP",
+          "GP Iced Blue Silver Met"
+        ],
+        [
+          "GQ",
+          "GQ Amber Gold-V4"
+        ],
+        [
+          "GT",
+          "GT Autumn Red  -DK-M6934 M2468"
+        ],
+        [
+          "GU",
+          "GU Saber Effect"
+        ],
+        [
+          "GV",
+          "GV Holly Green"
+        ],
+        [
+          "GW",
+          "GW ORANGE CRUSH"
+        ],
+        [
+          "H5",
+          "H5 Caribou Metallic"
+        ],
+        [
+          "H6",
+          "H6 KINGFISHER BLUE (AUS)"
+        ],
+        [
+          "H7",
+          "H7 Bronze Metallic"
+        ],
+        [
+          "H8",
+          "H8 AQUARIUS BLUE (AUS)"
+        ],
+        [
+          "H9",
+          "H9 Bronze"
+        ],
+        [
+          "HG",
+          "HG Smokestone Beige Effect-V4"
+        ],
+        [
+          "HH",
+          "HH Dark Cherry Effect-V7"
+        ],
+        [
+          "HN",
+          "HN Guard Effect"
+        ],
+        [
+          "HS",
+          "HS Earth Metallic-V7"
+        ],
+        [
+          "HT",
+          "HT Cinnamon Metallic-V7"
+        ],
+        [
+          "HX",
+          "HX ANTIMATTER BLUE"
+        ],
+        [
+          "J1",
+          "J1 Kodiak Brown"
+        ],
+        [
+          "J7",
+          "J7 Magnetic Grey"
+        ],
+        [
+          "J8",
+          "J8 Tangier Orange 2"
+        ],
+        [
+          "JA",
+          "JA BrtSapphire -DK-M6704 B9507"
+        ],
+        [
+          "JK",
+          "JK Boysenberry -MD-M6760 B9665"
+        ],
+        [
+          "JL",
+          "JL Dk Trdor-V7 DK-M6771 B9668"
+        ],
+        [
+          "JM",
+          "JM Dk Tordr-V7 -DK-M6982 F8549"
+        ],
+        [
+          "JP",
+          "JP Silver Birch-MD-V4    M9374"
+        ],
+        [
+          "JQ",
+          "JQ Golden Bronze 835386K"
+        ],
+        [
+          "JS",
+          "JS Iconic Silver"
+        ],
+        [
+          "JV",
+          "JV Sangria Red"
+        ],
+        [
+          "JW",
+          "JW Green Jem"
+        ],
+        [
+          "JX",
+          "JX Lead Foot Gray"
+        ],
+        [
+          "K1",
+          "K1 Lt DenimBlue-MD-M6815 B9743"
+        ],
+        [
+          "K7+",
+          "K7+BtAtlnticBlu-MD-M6863 B9814"
+        ],
+        [
+          "K7-",
+          "K7-BtAtlnticBlu-MD-M6877 B9789"
+        ],
+        [
+          "KM",
+          "KM Royal Blue  -DK-M6479 B9431"
+        ],
+        [
+          "KN",
+          "KN Dk Lapis Met-DK-M6681 B9348"
+        ],
+        [
+          "KQ",
+          "KQ DpWdgwoodBlu-DK-M6911 F8550"
+        ],
+        [
+          "KU",
+          "KU Indigo Blue -MD-M6802 B9670"
+        ],
+        [
+          "KU*",
+          "KU Area 51"
+        ],
+        [
+          "KW",
+          "KW CharcoalBlue-DK-M6855 B9838"
+        ],
+        [
+          "L2",
+          "L2 True Bl V7PM-DK-M7029 M6620"
+        ],
+        [
+          "L6",
+          "L6 Kona Blue Effect"
+        ],
+        [
+          "LA",
+          "LA Md RoyalBlue-DK-M6504 B9207"
+        ],
+        [
+          "LB",
+          "LB Alto Blue TX"
+        ],
+        [
+          "LD",
+          "LD MdWdgwd Bl-V7DK-M6763 B9667"
+        ],
+        [
+          "LE",
+          "LE Royal Blue  -DK-M6799 B9669"
+        ],
+        [
+          "LJ",
+          "LJ Darkened Bronze"
+        ],
+        [
+          "LL",
+          "LL DpWdgwoodBlu-DK-M6910 F8249"
+        ],
+        [
+          "LM",
+          "LM Royal Blue"
+        ],
+        [
+          "LQ",
+          "LQ Pale Adobe"
+        ],
+        [
+          "LS",
+          "LS Lt Ice Blue -MD-M7054 M9370"
+        ],
+        [
+          "LV",
+          "LV LtSaphireBlu-MD-      M2471"
+        ],
+        [
+          "LZ",
+          "LZ BtIslandBlue-MD-      M6618"
+        ],
+        [
+          "M7",
+          "M7 Carbonized Gray M7458"
+        ],
+        [
+          "M9",
+          "M9 French Blue -DK-M7043 M8723"
+        ],
+        [
+          "ME",
+          "ME Abyss Gray M7418"
+        ],
+        [
+          "MK",
+          "MK Twilight Blu-DK-M6290 B8835"
+        ],
+        [
+          "N1",
+          "N1 Blue Jeans"
+        ],
+        [
+          "N6",
+          "N6 Lightning Blue"
+        ],
+        [
+          "NA",
+          "NA DkTourmaline-DK-M6572 B9239"
+        ],
+        [
+          "NB",
+          "NB DkTourmaline-DK-M6797 B9672"
+        ],
+        [
+          "NE",
+          "NE Cactus Gray"
+        ],
+        [
+          "NJ",
+          "NJ Omaha Orange"
+        ],
+        [
+          "P5",
+          "P5 Aspen Grn V7-DK-M7056 M9371"
+        ],
+        [
+          "PA",
+          "PA DpJewelGreen-DK-M6414 B9025"
+        ],
+        [
+          "PB",
+          "PB Jewel Green -DK-M6456 B9116"
+        ],
+        [
+          "PG",
+          "PG Dark Amethyst Effect-V7"
+        ],
+        [
+          "PL",
+          "PL MdCalypsoGrn-MD-M6600 B9432"
+        ],
+        [
+          "PQ",
+          "PQ Race Red"
+        ],
+        [
+          "PS",
+          "PS PacificGreen-DK-M6764 B9607"
+        ],
+        [
+          "PT",
+          "PT MdCalysoGren-MD-M6801 B9682"
+        ],
+        [
+          "PV*",
+          "PV*White Chocoloate-V1-775290"
+        ],
+        [
+          "PV=",
+          "PV=White Chocoloate-V1-051309"
+        ],
+        [
+          "PX",
+          "PX DkHighlndGrn-DK-M6920 F7944"
+        ],
+        [
+          "PY",
+          "PY DKHighlndGrn-DK-M6921 F7945"
+        ],
+        [
+          "PZ",
+          "PZ Brillant Blk-DK-  A3F F0225"
+        ],
+        [
+          "R1",
+          "R1 Dark Teal PM-DK-M7001 F9374"
+        ],
+        [
+          "R2",
+          "R2 Dark Teal PM-DK-M7002 F9375"
+        ],
+        [
+          "R4",
+          "R4 PEPPER RED (AUS)"
+        ],
+        [
+          "R6",
+          "R6 BORDEAUX RED (AUS)"
+        ],
+        [
+          "R7",
+          "R7 Glacier Gray Tri-Coat"
+        ],
+        [
+          "RC",
+          "RC Med Platinum-DK-M6454 B9109"
+        ],
+        [
+          "RD",
+          "RD Teal Met    -MD-M6630 B9401"
+        ],
+        [
+          "RJ",
+          "RJ Md True Blue-DK-M7055 M9373"
+        ],
+        [
+          "RR",
+          "RR Ruby Red"
+        ],
+        [
+          "RXF",
+          "RXF Jet Black Hard Top"
+        ],
+        [
+          "RZ",
+          "RZ Red Candy 857504"
+        ],
+        [
+          "S2",
+          "S2 COLUMBIA SILVER (AUS)"
+        ],
+        [
+          "S4",
+          "S4 GHOST GUM SILVER (AUS)"
+        ],
+        [
+          "SB",
+          "SB CYBER ORANGE"
+        ],
+        [
+          "SH",
+          "SH Md Willow PM-DK-M6715 B9512"
+        ],
+        [
+          "SN",
+          "SN Sonic BlueV7-DK-M7095 P4665"
+        ],
+        [
+          "SP",
+          "SP Md BlueSteel-MD-M6966 F8517"
+        ],
+        [
+          "ST",
+          "ST Estate Green-DK-M6918 F8512"
+        ],
+        [
+          "SU",
+          "SU Amazon Green-DK-M6922 F8513"
+        ],
+        [
+          "SY",
+          "SY Bold Yellow"
+        ],
+        [
+          "SZ",
+          "SZ Blue Flame-V4"
+        ],
+        [
+          "T5",
+          "T5 Copper-V7   -DK-     757999"
+        ],
+        [
+          "T7",
+          "T7 CharcoalBeig-V7  749910"
+        ],
+        [
+          "T9",
+          "T9 Marsh Gray"
+        ],
+        [
+          "TB",
+          "TB Real Steel/Lithium Grey"
+        ],
+        [
+          "TK",
+          "TK Mineral GryV7DK-M7026 M5113"
+        ],
+        [
+          "TL",
+          "TL Satin Silver-MD-M7049 P2294"
+        ],
+        [
+          "TQ",
+          "TQ SMOKED QUARTZ TRICOAT M7285"
+        ],
+        [
+          "TR",
+          "TR Med Graphite-MD-M6712 B9511"
+        ],
+        [
+          "TS",
+          "TS Silver Frost-MD-M6720 B9473"
+        ],
+        [
+          "TX",
+          "TX BrightSilver-DK-M6975 F9361"
+        ],
+        [
+          "U1",
+          "U1 Sport Blue-V4"
+        ],
+        [
+          "U3",
+          "U3 Grabber Orange-V4"
+        ],
+        [
+          "U3+",
+          "U3+ Valencia"
+        ],
+        [
+          "U6",
+          "U6 Candy Red-V4"
+        ],
+        [
+          "UA",
+          "UA Ebony-V7    -DK-M6373 F0207"
+        ],
+        [
+          "UD",
+          "UD Black-V7    -DK-M6877 B9789"
+        ],
+        [
+          "UG10",
+          "UG White Platinum 2010"
+        ],
+        [
+          "UG11",
+          "UG White Platinum 2011"
+        ],
+        [
+          "UG12",
+          "UG White Platinum 2012"
+        ],
+        [
+          "UG13",
+          "UG White Platinum 2013"
+        ],
+        [
+          "UG14",
+          "UG White Platinum 2014"
+        ],
+        [
+          "UG15",
+          "UG White Platinum 2015"
+        ],
+        [
+          "UG16",
+          "UG White Platinum 2016"
+        ],
+        [
+          "UG17",
+          "UG White Platinum 2017"
+        ],
+        [
+          "UG18",
+          "UG White Platinum 2018"
+        ],
+        [
+          "UH",
+          "UH Tuxedo Black Effect-V7"
+        ],
+        [
+          "UI",
+          "UI Brilliant Silver-V4"
+        ],
+        [
+          "UJ",
+          "UJ Sterling Gray-V7 821174"
+        ],
+        [
+          "UK",
+          "UK Royal Red-V7"
+        ],
+        [
+          "UM",
+          "UM Agate Black Effect 933047K"
+        ],
+        [
+          "UX*",
+          "UX* Ingot Silver 92910 2011-12"
+        ],
+        [
+          "UX+",
+          "UX Ingot Silver M7226 2009"
+        ],
+        [
+          "UX-",
+          "UX- Ingot Silver 836224 2010"
+        ],
+        [
+          "UY",
+          "UY Molten Orange Tricoat"
+        ],
+        [
+          "UZ",
+          "UZ Lava Met Red"
+        ],
+        [
+          "V4",
+          "V4 DIAMOND WHITE (AUS)"
+        ],
+        [
+          "V7",
+          "V7 Gold Bronze Met 835386K"
+        ],
+        [
+          "VA",
+          "VA Terrain"
+        ],
+        [
+          "W1",
+          "W1 Winter White"
+        ],
+        [
+          "W6",
+          "W6 Green Gem"
+        ],
+        [
+          "WB",
+          "PERFORMANCE WHITE M6547"
+        ],
+        [
+          "WC",
+          "WC Med Opal Met-DK-M6501 B9202"
+        ],
+        [
+          "WM",
+          "WM Lt Opal Met -MD-M6631 B9450"
+        ],
+        [
+          "WO",
+          "WO Lt Opal Met -MD-M6796 B9671"
+        ],
+        [
+          "WS",
+          "WS White Suede-V1"
+        ],
+        [
+          "WT",
+          "WT PerformWhite-LT-M6640 B9444"
+        ],
+        [
+          "WY",
+          "WY Noble White -LT-      N8796"
+        ],
+        [
+          "XC",
+          "XC ProtofinoBlu-MD-M6623 B9438"
+        ],
+        [
+          "YG",
+          "YG Med Titanium-DK-M6442 B9115"
+        ],
+        [
+          "YN",
+          "YN Silver PM-V4-MD-M6505 D8806"
+        ],
+        [
+          "YO",
+          "YO Oxford White-LT-M5920 B8424"
+        ],
+        [
+          "YY",
+          "YY White       -LT-M6210 B8687"
+        ],
+        [
+          "YZ",
+          "YZ White-V1    -LT-M6466 B9145"
+        ],
+        [
+          "Z1",
+          "Z1 Oxfrd Wht-V1 LT-M6887 B9791"
+        ],
+        [
+          "Z3",
+          "Z3 Silver PM-T4 MD-M6895 B9866"
+        ],
+        [
+          "Z9",
+          "Z9 Candy Blue Effect M7252"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 12,
+      "label": "TRIM COLOR OPTION",
+      "req": "R",
+      "dval": "BLACK",
+      "sy": "59N",
+      "rt": "03",
+      "options": [
+        [
+          "BLACK",
+          "BLACK TRIM"
+        ],
+        [
+          "WHITE",
+          "WHITE TRIM"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 40,
+      "label": "FRONT OPTION",
+      "req": "R",
+      "dval": "SOLID",
+      "sy": "59N",
+      "rt": "10",
+      "options": [
+        [
+          "26SOLID",
+          "SOLID FRONT - STANDARD"
+        ],
+        [
+          "MITPIC",
+          "MITERED FRONT PIC WINDOW"
+        ],
+        [
+          "MITSLD",
+          "MITERED FRONT SLIDING WNDW"
+        ],
+        [
+          "RPIC",
+          "RADIUS FRONT PICTURE WINDOW"
+        ],
+        [
+          "RSLD",
+          "RADIUS FRONT SLIDING WINDOW"
+        ],
+        [
+          "SOLID",
+          "SOLID FRONT - STANDARD"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 45,
+      "label": "FRONT SECURITY SCREEN OPTION",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "12",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "FSS",
+          "FRONT SECURITY SCREEN"
+        ],
+        [
+          "FSSS",
+          "FRONT SECURITY SCREEN ACC"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 50,
+      "label": "MT3 DS DOOR OPTION 69\"",
+      "req": "R",
+      "dval": "69SSDS",
+      "sy": "59N",
+      "rt": "MC",
+      "options": [
+        [
+          "69SSDRMDS",
+          "DS SIDE DOOR W/ DRM"
+        ],
+        [
+          "69SSDS",
+          "DS STANDARD SIDE DOOR"
+        ],
+        [
+          "69SSWDRMDS",
+          "DS SIDE DOOR W/2 WINDOWS & DRM"
+        ],
+        [
+          "69SSWDS",
+          "DS SIDE DOOR W/2 WINDOWS"
+        ],
+        [
+          "DELETEDS",
+          "DS DELETE STANDARD SIDE DOOR"
+        ],
+        [
+          "FSWDS",
+          "DS SOLID SIDE WALL W/ DRM"
+        ],
+        [
+          "RSSDS",
+          "DS RADIUS SIDE SLIDING WINDOW"
+        ],
+        [
+          "RSWDS",
+          "DS RADIUS SIDE WINDOOR"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 52,
+      "label": "DS HANDLE OPTION",
+      "req": "R",
+      "dval": "BOLTDS",
+      "sy": "59N",
+      "rt": "16",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "2BOLTDS",
+          "2 CODEABLE BOLT LOCK-DS"
+        ],
+        [
+          "2DROPDS",
+          "2 DROP T HANDLE-DS"
+        ],
+        [
+          "BOLTDS",
+          "CODEABLE BOLT LOCK-DS"
+        ],
+        [
+          "DROPDS",
+          "DROP T HANDLE-DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 54,
+      "label": "DS SECURITY SCREEN",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "18",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "SCREENDS",
+          "SIDE SECURITY SCREEN-DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 60,
+      "label": "MT3 PS DOOR OPTION 69\"",
+      "req": "R",
+      "dval": "69SSPS",
+      "sy": "59N",
+      "rt": "MD",
+      "options": [
+        [
+          "69SSDRMPS",
+          "PS SIDE DOOR W/ DRM"
+        ],
+        [
+          "69SSPS",
+          "PS STANDARD SIDE DOOR"
+        ],
+        [
+          "69SSWDRMPS",
+          "PS SIDE DOOR W/2 WINDOWS & DRM"
+        ],
+        [
+          "69SSWPS",
+          "PS SIDE DOOR W/2 WINDOWS"
+        ],
+        [
+          "DELETEPS",
+          "PS DELETE STANDARD SIDE DOOR"
+        ],
+        [
+          "FSWPS",
+          "PS SOLID SIDE WALL W/ DRM"
+        ],
+        [
+          "RSSPS",
+          "PS RADIUS SIDE SLIDING WINDOW"
+        ],
+        [
+          "RSWPS",
+          "PS RADIUS SIDE WINDOOR"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 62,
+      "label": "PS HANDLE OPTION",
+      "req": "R",
+      "dval": "BOLTPS",
+      "sy": "59N",
+      "rt": "24",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "2BOLTPS",
+          "2 CODEABLE BOLT LOCK-PS"
+        ],
+        [
+          "2DROPPS",
+          "2 DROP T HANDLE-PS"
+        ],
+        [
+          "BOLTPS",
+          "CODEABLE BOLT LOCK-PS"
+        ],
+        [
+          "DROPPS",
+          "DROP T HANDLE-PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 64,
+      "label": "PS SECURITY SCREEN",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "26",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "SCREENPS",
+          "SIDE SECURITY SCREEN-PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 65,
+      "label": "MT3 DS FULL SHELF 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NT",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "FS69",
+          "69\" FULL SHELF KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 66,
+      "label": "MT3 DS HALF SHELF 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "OD",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "HS69",
+          "69\" HALF SHELF KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 67,
+      "label": "MT3 DS 2ND HALF SHELF 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "ON",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "SS69",
+          "69\" 2ND HALF SHELF KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 68,
+      "label": "MT3 DS UPPER DIVIDER",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "MX",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1UDK",
+          "1 PACK UPPER DIVIDER KIT DS"
+        ],
+        [
+          "3UDK",
+          "3 PACK UPPER DIVIDER KIT DS"
+        ],
+        [
+          "6UDK",
+          "6 PACK UPPER DIVIDER KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 69,
+      "label": "MT3 DS BOTTOM DIVIDER",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "MZ",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1BDK",
+          "1 PACK BOTTOM DIVIDER KIT DS"
+        ],
+        [
+          "3BDK",
+          "3 PACK BOTTOM DIVIDER KIT DS"
+        ],
+        [
+          "6BDK",
+          "6 PACK BOTTOM DIVIDER KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 70,
+      "label": "MT3 DS WIDE HOOK",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NB",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1WHK",
+          "1 PACK WIDE HOOK KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 71,
+      "label": "MT3 DS TRIPLE HOOK",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "ND",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1THK",
+          "1 PACK TRIPLE HOOK KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 72,
+      "label": "MT3 DS SPECIAL J HOOK",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NF",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1SJH",
+          "1 PACK SPECIAL J HOOK KIT DS"
+        ],
+        [
+          "3SJH",
+          "3 PACK SPECIAL J HOOK KIT DS"
+        ],
+        [
+          "6SJH",
+          "6 PACK SPECIAL J HOOK KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 73,
+      "label": "MT3 DS BASKET",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NH",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1BSK",
+          "BASKET KIT DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 74,
+      "label": "MT3 PS FULL SHELF 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NU",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "FS69",
+          "69\" FULL SHELF KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 75,
+      "label": "MT3 PS HALF SHELF 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "OE",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "HS69",
+          "69\" HALF SHELF KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 76,
+      "label": "MT3 PS 2ND HALF SHELF 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "OO",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "SS69",
+          "69\" 2ND HALF SHELF KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 77,
+      "label": "MT3 PS UPPER DIVIDER",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "MY",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1UDK",
+          "1 PACK UPPER DIVIDER KIT PS"
+        ],
+        [
+          "3UDK",
+          "3 PACK UPPER DIVIDER KIT PS"
+        ],
+        [
+          "6UDK",
+          "6 PACK UPPER DIVIDER KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 78,
+      "label": "MT3 PS BOTTOM DIVIDER",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NA",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1BDK",
+          "1 PACK BOTTOM DIVIDER KIT PS"
+        ],
+        [
+          "3BDK",
+          "3 PACK BOTTOM DIVIDER KIT PS"
+        ],
+        [
+          "6BDK",
+          "6 PACK BOTTOM DIVIDER KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 79,
+      "label": "MT3 PS WIDE HOOK",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NC",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1WHK",
+          "1 PACK WIDE HOOK KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 80,
+      "label": "MT3 PS TRIPLE HOOK",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NE",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1THK",
+          "1 PACK TRIPLE HOOK KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 81,
+      "label": "MT3 PS SPECIAL J HOOK",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NG",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1SJH",
+          "1 PACK SPECIAL J HOOK KIT PS"
+        ],
+        [
+          "3SJH",
+          "3 PACK SPECIAL J HOOK KIT PS"
+        ],
+        [
+          "6SJH",
+          "6 PACK SPECIAL J HOOK KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 82,
+      "label": "MT3 PS BASKET",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "NI",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "1BSK",
+          "BASKET KIT PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 90,
+      "label": "MT3 TOOLBOX OPTION DS 50\"- 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "MG",
+      "options": [
+        [
+          "*NONE",
+          "NO TOOLBOX OPTION - DS"
+        ],
+        [
+          "MT3ADS",
+          "MT3 TOOLBOX OPTION A - DS"
+        ],
+        [
+          "MT3BDS",
+          "MT3 TOOLBOX OPTION B - DS"
+        ],
+        [
+          "MT3CDS",
+          "MT3 TOOLBOX OPTION C - DS"
+        ],
+        [
+          "MT3DDS",
+          "MT3 TOOLBOX OPTION D - DS"
+        ],
+        [
+          "MT3JDS",
+          "MT3 TOOLBOX OPTION J - DS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 95,
+      "label": "MT3 TOOLBOX OPTION PS 50\"- 69\"",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "MH",
+      "options": [
+        [
+          "*NONE",
+          "NO TOOLBOX OPTION - PS"
+        ],
+        [
+          "MT3APS",
+          "MT3 TOOLBOX OPTION A - PS"
+        ],
+        [
+          "MT3BPS",
+          "MT3 TOOLBOX OPTION B - PS"
+        ],
+        [
+          "MT3CPS",
+          "MT3 TOOLBOX OPTION C - PS"
+        ],
+        [
+          "MT3DPS",
+          "MT3 TOOLBOX OPTION D - PS"
+        ],
+        [
+          "MT3JPS",
+          "MT3 TOOLBOX OPTION J - PS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 110,
+      "label": "MT3 23\" 1/2 26\" FULL DOOR OPT",
+      "req": "R",
+      "dval": "23HD",
+      "sy": "59N",
+      "rt": "OR",
+      "options": [
+        [
+          "*",
+          "17+ TRUCKS W/ REARVIEW CAMERA"
+        ],
+        [
+          "**",
+          "SYSTEM & FULL DOOR OPTION"
+        ],
+        [
+          "***",
+          "REQUIRE A REPLACEMENT CHMSL"
+        ],
+        [
+          "****",
+          "CAMERA OPTION"
+        ],
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "23HD",
+          "23\" 1/2 DOOR - STANDARD"
+        ],
+        [
+          "23HDRM",
+          "23\" 1/2 DOOR w/DRM"
+        ],
+        [
+          "23HDW",
+          "23\" 1/2 DOOR w/WINDOW"
+        ],
+        [
+          "23HDWDRM",
+          "23\" 1/2 DOOR w/WINDOW & DRM"
+        ],
+        [
+          "26DFD",
+          "26\" DOUBLE FULL DOOR"
+        ],
+        [
+          "26DFDRM",
+          "26\" DOUBLE FULL DOOR w/DRM"
+        ],
+        [
+          "26DFDW",
+          "26\" DOUBLE FULL DOOR w/WINDOWS"
+        ],
+        [
+          "26DFWDRM",
+          "26\" DOUBLE FULL DOOR w/WND-DRM"
+        ],
+        [
+          "26HBD",
+          "26\" HATCHBACK DOOR"
+        ],
+        [
+          "26HBDRM",
+          "26\" HATCHBACK DOOR w/DRM"
+        ],
+        [
+          "26HBDW",
+          "26\" HATCHBACK DOOR w/WINDOW"
+        ],
+        [
+          "26HBWDRM",
+          "26\" HATCHBACK DOOR w/WND-DRM"
+        ],
+        [
+          "26SFD",
+          "26\" SINGLE FULL DOOR"
+        ],
+        [
+          "26SFDDRM",
+          "26\" SINGLE FULL DOOR w/DRM"
+        ],
+        [
+          "26SFDW",
+          "26\" SINGLE FULL DOOR w/WINDOW"
+        ],
+        [
+          "26SFDWDRM",
+          "26\" SINGLE FULL DOOR w/WND-DRM"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 115,
+      "label": "REAR DOOR HANDLE OPTION",
+      "req": "R",
+      "dval": "BOLT",
+      "sy": "59N",
+      "rt": "48",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "DROP",
+          "DROP T HANDLE-REAR"
+        ],
+        [
+          "BOLT",
+          "BOLT"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 120,
+      "label": "REAR DOOR SECURITY SCREEN",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "50",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "RSCREEN",
+          "REAR WINDOW SECURITY SCREEN"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 125,
+      "label": "INTERIOR RACK OPTION-LOOSE",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "70",
+      "options": [
+        [
+          "551",
+          "5.5\"x 16\" SINGLE INTERIOR RACK"
+        ],
+        [
+          "552",
+          "5.5\"x 16\" DOUBLE INTERIOR RACK"
+        ],
+        [
+          "553",
+          "5.5\"x 16\" TRIPLE INTERIOR RACK"
+        ],
+        [
+          "851",
+          "8.5\"x 16\" SINGLE INTERIOR RACK"
+        ],
+        [
+          "852",
+          "8.5\"x 16\" DOUBLE INTERIOR RACK"
+        ],
+        [
+          "853",
+          "8.5\"x 16\" TRIPLE INTERIOR RACK"
+        ],
+        [
+          "*NONE",
+          "*"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 130,
+      "label": "HEADLINER OPTION",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "62",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BLACK",
+          "BLACK HEADLINER-COMPLETE UNIT"
+        ],
+        [
+          "BLACKR",
+          "BLACK HEADLINER-ROOF ONLY"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 135,
+      "label": "INTERIOR METAL SKIN",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "66",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "MSBOTH",
+          "METAL INT. SKIN-FRONT & ROOF"
+        ],
+        [
+          "MSFRONT",
+          "METAL INT. SKIN-FRONT ONLY"
+        ],
+        [
+          "MSROOF",
+          "METAL INT. SKIN-ROOF ONLY"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 139,
+      "label": "CHMSL W/BACK UP CAMERA 15+F150",
+      "req": "R",
+      "dval": "",
+      "sy": "59N",
+      "rt": "56",
+      "options": [
+        [
+          "*NONE",
+          "*NONE"
+        ],
+        [
+          "CAMERAB",
+          "BACKUP CAMERA W/AUTO TAILGATE"
+        ],
+        [
+          "CAMERAG",
+          "BACKUP CAMERA W/O AUTO TAILGAT"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 140,
+      "label": "MT3 TUBE LIGHT OPTIONS",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "MI",
+      "options": [
+        [
+          "*NONE",
+          "NO TUBE LIGHT OPTION"
+        ],
+        [
+          "TLA",
+          "MT3 TUBE LIGHT OPTION A W/ GP"
+        ],
+        [
+          "TLB",
+          "MT3 TUBE LIGHT OPTION B W/ GP"
+        ],
+        [
+          "TLC",
+          "MT3 TUBE LIGHT OPTION C W/ GP"
+        ],
+        [
+          "TLD",
+          "MT3 TUBE LIGHT OPTION D W/ GP"
+        ],
+        [
+          "TLE",
+          "MT3 TUBE LIGHT OPTION E W/ GP"
+        ],
+        [
+          "TLF",
+          "MT3 TUBE LIGHT OPTION F W/ GP"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 145,
+      "label": "12V THREE OUTLET POWER BLOCK",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "60",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "POWER",
+          "12V THREE OUTLET POWER BLOCK"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 150,
+      "label": "TOP RACK OPTION",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "72",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "KARGO",
+          "KARGO MASTER-PRO III CAP MOUNT"
+        ],
+        [
+          "WELD",
+          "6 POSITION WELDED LADDER RACK"
+        ],
+        [
+          "WELD823LB",
+          "8 POSITION WELDED LADDER RACK"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 151,
+      "label": "THULE LOAD BAR OPTION",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "74",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 152,
+      "label": "Kargo Master PRO3 Base Mounts",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59E",
+      "rt": "NH",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BASE",
+          "KARGO MASTER PRO3 BASE MOUNT"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 155,
+      "label": "PRIME DESIGN RACK SYSTEM",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "85",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "ALU6",
+          "ALURACK 6' / 88\"        AR1906"
+        ],
+        [
+          "ALU8",
+          "ALURACK 8' / 116\"       AR1907"
+        ],
+        [
+          "PBC",
+          "ERGO SGL CLAMP RACK        PBC"
+        ],
+        [
+          "PCC",
+          "ERGO DBL CLAMP RACK        PCC"
+        ],
+        [
+          "PCR",
+          "ERGO SGL CLMP/SGL ROT RACK PCR"
+        ],
+        [
+          "PRR",
+          "ERGO DBL ROTATION RACK     PRR"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 156,
+      "label": "PRIME DESIGN MOUNTING BASE",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "86",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "180CC",
+          "ERGO RACK SLOPE BASE  MPK-0008"
+        ],
+        [
+          "ACC100RCC",
+          "ERGO RACK FLAT BASE   MPK-0007"
+        ],
+        [
+          "ALUFLAT",
+          "ALURACK FLAT BASE     MAK-0035"
+        ],
+        [
+          "ALUSLOPE",
+          "ALURACK SLOPE BASE    MAK-0034"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 157,
+      "label": "PRIME DESIGN HOOK & BAR",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "87",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "ALUDS",
+          "ALURACK DS QUICK CLAMP     ACX"
+        ],
+        [
+          "ALUDUAL",
+          "ALURACK DS/PS QUICK CLAMPS"
+        ],
+        [
+          "ALUPS",
+          "ALURACK PS QUICK CLAMP     AXC"
+        ],
+        [
+          "HOOK",
+          "ERGORACK HOOK/BAR ASSEMBLY ALB"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 158,
+      "label": "PRIME DESIGN LIGHT BRACKET",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "88",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "BOTH",
+          "ERGORACK GO & STROBE BRACKET"
+        ],
+        [
+          "CONDUIT",
+          "ERGORACK CONDUIT TUBE CON-8010"
+        ],
+        [
+          "CONSTROBE",
+          "ERGORACK CONDUIT W/STROBE BRKT"
+        ],
+        [
+          "GO",
+          "ERGORACK GO BRACKET   ASH-8601"
+        ],
+        [
+          "STROBE",
+          "ERGORACK STROBE BRKT  ASH-8611"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 159,
+      "label": "MT3 BOLT PLATE REINFORCEMENT",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "96",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "GEN",
+          "RACK PLATE-GENERIC"
+        ],
+        [
+          "KRGOCPLB",
+          "BOLTPLATE-KM,PROIII, COMP LB"
+        ],
+        [
+          "KRGOCPSB",
+          "BOLTPLATE-KM,PROIII, COMP SB"
+        ],
+        [
+          "KRGOLB",
+          "BOLTPLATE-KM,PROIII, FS LB"
+        ],
+        [
+          "KRGOXSBSB",
+          "BOLTPLATE-KM,PROIII, FS XSB,SB"
+        ],
+        [
+          "PDMT3",
+          "RACK PLATE-PRIME DESIGN - MT3"
+        ],
+        [
+          "TT",
+          "RACK PLATE-THULE TRACKER II"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 163,
+      "label": "ACC END CAP",
+      "req": "R",
+      "dval": "CAP",
+      "sy": "59N",
+      "rt": "93",
+      "options": [
+        [
+          "CAP",
+          "END CAPS"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 210,
+      "label": "PROP 65 WARNING (CALIFORNIA)AL",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59G",
+      "rt": "XI",
+      "options": [
+        [
+          "*NONE",
+          "*"
+        ],
+        [
+          "PROP65AL",
+          "PROP 65 ALUMINUM"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 300,
+      "label": "INSTALL KIT-ACC-4",
+      "req": "R",
+      "dval": "*NONE",
+      "sy": "59N",
+      "rt": "K1",
+      "options": [
+        [
+          "*NONE",
+          "*NONE"
+        ],
+        [
+          "CLAMPONLY4",
+          "KIT-ACC CLAMP ONLY_G-959/4"
+        ],
+        [
+          "CLAMPSEAL4",
+          "KIT-ACC CLAMP + SEAL_G-959/4"
+        ],
+        [
+          "SEAL-ONLY",
+          "KIT-ACC SEAL ONLY_DBL BULB+D"
+        ]
+      ],
+      "optionsSource": "udc"
+    },
+    {
+      "kit": "3546703",
+      "pel": 998,
+      "label": "VIN#",
+      "req": "O",
+      "dval": "*NONE",
+      "sy": "",
+      "rt": "",
+      "optionsSource": "free"
+    }
+  ],
+  "rules": [
+    {
+      "kit": "3546703",
+      "ato": 1,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 2,
+          "valr": "EQ",
+          "ativ": "AUTO"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 10,
+          "valr": "NE",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 2,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "THULE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 151,
+          "valr": "NE",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 3,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "THULE"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 159,
+          "valr": "EQ",
+          "ativ": "TT"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 4,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "KARGO"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 159,
+          "valr": "EQ",
+          "ativ": "KRGOXSBSB"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 5,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "WELD"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 159,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 6,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PBC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "EQ",
+          "ativ": "ACC100RCC"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 7,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "EQ",
+          "ativ": "ACC100RCC"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 8,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "EQ",
+          "ativ": "ACC100RCC"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 9,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PRR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "EQ",
+          "ativ": "ACC100RCC"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 10,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PBC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 159,
+          "valr": "EQ",
+          "ativ": "PDMT3"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 11,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCC"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 159,
+          "valr": "EQ",
+          "ativ": "PDMT3"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 12,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PCR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 159,
+          "valr": "EQ",
+          "ativ": "PDMT3"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 13,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "PRR"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 159,
+          "valr": "EQ",
+          "ativ": "PDMT3"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 16,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 50,
+          "valr": "EQ",
+          "ativ": "DELETEDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "BOLTDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "DROPDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 17,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 50,
+          "valr": "EQ",
+          "ativ": "FSWDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "BOLTDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "DROPDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 18,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 50,
+          "valr": "EQ",
+          "ativ": "RSSDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "BOLTDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "DROPDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 19,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 50,
+          "valr": "EQ",
+          "ativ": "RSWDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "BOLTDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 52,
+          "valr": "NE",
+          "ativ": "DROPDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 20,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 60,
+          "valr": "EQ",
+          "ativ": "DELETEPS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "BOLTPS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "DROPPS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 21,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 60,
+          "valr": "EQ",
+          "ativ": "FSWPS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "BOLTPS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "DROPPS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 22,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 60,
+          "valr": "EQ",
+          "ativ": "RSSPS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "BOLTPS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "DROPPS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 23,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 60,
+          "valr": "EQ",
+          "ativ": "RSWPS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "BOLTPS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 62,
+          "valr": "NE",
+          "ativ": "DROPPS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 24,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 150,
+          "valr": "EQ",
+          "ativ": "KARGO"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 152,
+          "valr": "EQ",
+          "ativ": "BASE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 25,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU6"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 156,
+          "valr": "NE",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 26,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 155,
+          "valr": "EQ",
+          "ativ": "ALU8"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 155,
+          "valr": "NE",
+          "ativ": "ALU8"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 27,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 110,
+          "valr": "EQ",
+          "ativ": "23HD"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 139,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 28,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 110,
+          "valr": "EQ",
+          "ativ": "23HDRM"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 139,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 29,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 110,
+          "valr": "EQ",
+          "ativ": "23HDW"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 139,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 30,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 110,
+          "valr": "EQ",
+          "ativ": "23HDWDRM"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 139,
+          "valr": "EQ",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 35,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 67,
+          "valr": "EQ",
+          "ativ": "SS69"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 66,
+          "valr": "NE",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 36,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 76,
+          "valr": "EQ",
+          "ativ": "SS69"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 75,
+          "valr": "NE",
+          "ativ": "*NONE"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 37,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 90,
+          "valr": "EQ",
+          "ativ": "MT3ADS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "DELETEDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "FSWDS"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSSDS"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSWDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 38,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 90,
+          "valr": "EQ",
+          "ativ": "MT3BDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "DELETEDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "FSWDS"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSSDS"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSWDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 39,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 90,
+          "valr": "EQ",
+          "ativ": "MT3CDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "DELETEDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "FSWDS"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSSDS"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSWDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 40,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 90,
+          "valr": "EQ",
+          "ativ": "MT3DDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "DELETEDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "FSWDS"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSSDS"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSWDS"
+        }
+      ]
+    },
+    {
+      "kit": "3546703",
+      "ato": 41,
+      "lines": [
+        {
+          "atos": 1,
+          "ao": "I",
+          "pel": 90,
+          "valr": "EQ",
+          "ativ": "MT3JDS"
+        },
+        {
+          "atos": 2,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "DELETEDS"
+        },
+        {
+          "atos": 3,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "FSWDS"
+        },
+        {
+          "atos": 4,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSSDS"
+        },
+        {
+          "atos": 5,
+          "ao": "*",
+          "pel": 50,
+          "valr": "NE",
+          "ativ": "RSWDS"
+        }
+      ]
+    }
+  ],
+  "airC": []
+}
