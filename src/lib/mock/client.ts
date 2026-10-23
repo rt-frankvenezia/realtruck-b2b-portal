@@ -438,6 +438,95 @@ export function createMockClient(userId?: string) {
           return { data: { success: true }, error: null }
         }
 
+        case 'place_leer_fiberglass_order': {
+          const { p_quote_id } = params ?? {}
+          const now = new Date().toISOString()
+          const orderNumber = `RT-${new Date().getFullYear()}-${8000 + Math.floor(Math.random() * 999)}`
+
+          const quotesArr = FIXTURE_MAP['quotes']
+          const quote = quotesArr?.find((q: any) => q.id === p_quote_id)
+
+          if (quote && p_quote_id) {
+            const lineItemsArr = FIXTURE_MAP['quote_line_items']
+            const ordersArr = FIXTURE_MAP['product_orders']
+            const orderItemsArr = FIXTURE_MAP['product_order_items']
+            const orderId = randomUUID()
+
+            const quoteLineItems = (lineItemsArr ?? []).filter((li: any) => li.quote_id === p_quote_id)
+            const subtotal = quoteLineItems.reduce((sum: number, li: any) => sum + li.price * (li.quantity ?? 1), 0)
+            const tax = Math.round(subtotal * (quote.tax_rate ?? 0.029) * 100) / 100
+            const vehicle = [quote.vehicle_year, quote.vehicle_make, quote.vehicle_model].filter(Boolean).join(' ')
+
+            if (ordersArr) {
+              ordersArr.unshift({
+                id: orderId,
+                order_number: orderNumber,
+                company_id: quote.company_id,
+                location_id: quote.location_id,
+                status: 'processing',
+                po_number: null,
+                payment_method: 'Net 30 Terms',
+                tracking_number: null,
+                order_date: now.split('T')[0],
+                estimated_delivery_date: null,
+                ordered_by_name: demoUser.name,
+                ordered_by_email: demoUser.email ?? '',
+                customer_name: quote.customer_name,
+                customer_email: quote.customer_email,
+                customer_phone: quote.customer_phone,
+                customer_vehicle: vehicle,
+                shipping_address: null,
+                shipping_city: null,
+                shipping_state: null,
+                shipping_postal_code: null,
+                shipping_country: 'US',
+                subtotal,
+                tax,
+                total: subtotal + tax,
+                terms_credit_account_id: null,
+                created_at: now,
+              })
+            }
+
+            if (orderItemsArr) {
+              for (const li of quoteLineItems) {
+                orderItemsArr.push({
+                  id: randomUUID(),
+                  product_order_id: orderId,
+                  product_name: li.description,
+                  sku: li.sku ?? '',
+                  quantity: li.quantity ?? 1,
+                  price: li.price,
+                  total: li.price * (li.quantity ?? 1),
+                })
+              }
+            }
+
+            // Transition quote to converted
+            const quoteIdx = quotesArr.findIndex((q: any) => q.id === p_quote_id)
+            if (quoteIdx !== -1) {
+              quotesArr[quoteIdx] = { ...quotesArr[quoteIdx], status: 'converted', updated_at: now }
+            }
+
+            // Activity entry
+            const actArr = FIXTURE_MAP['quote_activity']
+            if (actArr) {
+              actArr.unshift({
+                id: randomUUID(),
+                quote_id: p_quote_id,
+                type: 'status_change',
+                message: `Wholesale order placed: ${orderNumber}`,
+                is_internal: false,
+                actor_id: resolvedUserId,
+                created_at: now,
+                users: { name: demoUser.name },
+              })
+            }
+          }
+
+          return { data: { order_number: orderNumber }, error: null }
+        }
+
         case 'add_quote_note': {
           const { p_quote_id, p_message, p_is_internal } = params ?? {}
           const arr = FIXTURE_MAP['quote_activity']

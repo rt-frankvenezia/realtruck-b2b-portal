@@ -10,6 +10,7 @@ import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignD
 import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
 import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
 import { SendQuotePanel } from '@/components/dealer/SendQuotePanel'
+import { PlaceOrderPanel } from '@/components/dealer/PlaceOrderPanel'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL } from '@/lib/quote-config'
 
@@ -178,6 +179,20 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
 
       {/* Message To Customer / Send Quote */}
       <SendQuotePanel quoteId={quote.id} status={quote.status} />
+
+      {/* Fiberglass LEER wholesale ordering */}
+      {(quote as any).brand === 'LEER' && (quote as any).configuration_method === 'leer-fiberglass' && (lineItems ?? []).length > 0 && (
+        <PlaceOrderPanel
+          quoteId={quote.id}
+          status={quote.status}
+          lineItems={(lineItems ?? []) as any}
+          configurationSnapshot={(quote as any).configuration_snapshot}
+          customerName={quote.customer_name}
+          vehicleYear={quote.vehicle_year}
+          vehicleMake={quote.vehicle_make}
+          vehicleModel={quote.vehicle_model}
+        />
+      )}
 
       {/* Activity */}
       <div className={PANEL}>
