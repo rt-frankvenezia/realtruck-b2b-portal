@@ -169,13 +169,6 @@ export default async function ProductDetailPage({
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left: product info */}
           <div className="flex min-w-0 flex-1 flex-col gap-6">
-            {/* Product identity */}
-            <div>
-              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">LEER</p>
-              <h1 className="font-brand text-3xl uppercase leading-tight">{product.name}</h1>
-              <p className="mt-1.5 text-sm text-muted-foreground">SKU: {product.sku}</p>
-            </div>
-
             {/* Trust badges */}
             <div className="flex flex-wrap gap-4 border-y py-3">
               <div className="flex items-center gap-1.5">
@@ -244,18 +237,22 @@ export default async function ProductDetailPage({
             )}
           </div>
 
-          {/* Right: configurator */}
+          {/* Right: identity + configurator */}
           <div className="w-full shrink-0 lg:w-[500px]">
-            {quoteId ? (
+            {/* Product identity */}
+            <div className="mb-5">
+              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">LEER</p>
+              <h1 className="font-brand text-3xl uppercase leading-tight">{product.name}</h1>
+              <p className="mt-1.5 text-sm text-muted-foreground">SKU: {product.sku}</p>
+            </div>
+
+            {quoteId && (
               <div className="mb-4 rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 px-4 py-3 text-sm">
                 Configuring for quote — selections save directly to your quote.
               </div>
-            ) : (
-              <div className="mb-4 rounded border border-muted px-4 py-3 text-sm text-muted-foreground">
-                Open this page from a quote to save your configuration.
-              </div>
             )}
-            <div className="overflow-hidden rounded border border-[#d5d5d5] bg-white">
+
+            <div className="rounded border border-[#d5d5d5] bg-white">
               <LeerConfigurator
                 kits={familyKits.map((k) => ({ id: k.id, title: k.title, fitment: k.fitment, family: k.family }))}
                 kitModels={kitModels}

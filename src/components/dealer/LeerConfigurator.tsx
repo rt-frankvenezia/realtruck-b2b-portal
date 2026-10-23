@@ -218,6 +218,9 @@ export function LeerConfigurator({
 
   return (
     <div className="flex flex-col gap-0">
+      {/* Scrollable content — overflow:clip so segment headers don't bleed past border-radius */}
+      <div className="[overflow:clip]">
+
       {/* Kit picker */}
       {kits.length > 1 && (
         <div className="border-b px-6 py-4">
@@ -243,140 +246,123 @@ export function LeerConfigurator({
         </div>
       )}
 
-      {/* Main configurator + price panel */}
-      <div className="flex flex-col gap-0 lg:flex-row">
-        {/* Segment rows */}
-        <div className="flex-1 divide-y divide-[#e8e8e8]">
-          {visibleSegments.map((seg, idx) => {
-            const allowed: string[] = optionsFor(kit, seg, (result as any).constraints.get(seg.key)) ?? []
-            const currentCode = (result as any).selections[seg.key] ?? ''
-            const currentLabel = seg.labels?.get(currentCode) ?? (currentCode || null)
+      {/* Segment rows — full width */}
+      <div className="divide-y divide-[#e8e8e8]">
+        {visibleSegments.map((seg, idx) => {
+          const allowed: string[] = optionsFor(kit, seg, (result as any).constraints.get(seg.key)) ?? []
+          const currentCode = (result as any).selections[seg.key] ?? ''
+          const currentLabel = seg.labels?.get(currentCode) ?? (currentCode || null)
 
-            return (
-              <div key={seg.key}>
-                {/* Row header */}
-                <div className="flex items-center gap-2.5 bg-[#f5f5f5] px-4 py-2">
-                  <span className="w-5 shrink-0 text-center text-xs font-bold text-muted-foreground">
-                    {idx + 1}
-                  </span>
-                  <span className="text-xs font-bold uppercase tracking-wide text-foreground">
-                    {seg.label}
-                  </span>
-                  {seg.req === 'R' && (
-                    <span className="text-xs font-bold text-[#FFC60B]">*</span>
+          return (
+            <div key={seg.key}>
+              {/* Row header */}
+              <div className="flex items-center gap-2.5 bg-[#f5f5f5] px-4 py-2">
+                <span className="w-5 shrink-0 text-center text-xs font-bold text-muted-foreground">
+                  {idx + 1}
+                </span>
+                <span className="text-xs font-bold uppercase tracking-wide text-foreground">
+                  {seg.label}
+                </span>
+                {seg.req === 'R' && (
+                  <span className="text-xs font-bold text-[#FFC60B]">*</span>
+                )}
+                <div className="ml-auto flex items-center gap-3">
+                  {currentLabel && (
+                    <span className="text-xs text-muted-foreground">{currentLabel}</span>
                   )}
-                  <div className="ml-auto flex items-center gap-3">
-                    {currentLabel && (
-                      <span className="text-xs text-muted-foreground">{currentLabel}</span>
-                    )}
-                    {currentCode && (
-                      <button
-                        onClick={() => handleOptionSelect(seg.key, '')}
-                        className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
-                      >
-                        Clear
-                      </button>
-                    )}
-                  </div>
-                </div>
-                {/* Options */}
-                <div className="flex flex-wrap gap-2 py-3 pl-11 pr-4">
-                  {allowed.map((code) => {
-                    const label = seg.labels?.get(code) ?? code
-                    const price = optionBase(kit, bom, (result as any).selections, seg.key, code)
-                    const isSelected = currentCode === code
-
-                    return (
-                      <button
-                        key={code}
-                        onClick={() => handleOptionSelect(seg.key, code)}
-                        className={[
-                          'flex flex-col items-start rounded border px-3 py-2 text-left text-sm transition-colors',
-                          isSelected
-                            ? 'border-[#FFC60B] bg-[#FFC60B]/10 ring-1 ring-[#FFC60B]'
-                            : 'border-[#d5d5d5] bg-white hover:border-[#1E1E1E] hover:bg-muted/10',
-                        ].join(' ')}
-                      >
-                        <span className={isSelected ? 'font-semibold text-[#1E1E1E]' : 'text-foreground'}>
-                          {label}
-                        </span>
-                        {typeof price === 'number' && price > 0 && (
-                          <span className="mt-0.5 text-xs font-medium text-muted-foreground">
-                            +{formatCurrency(price)}
-                          </span>
-                        )}
-                      </button>
-                    )
-                  })}
+                  {currentCode && (
+                    <button
+                      onClick={() => handleOptionSelect(seg.key, '')}
+                      className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                    >
+                      Clear
+                    </button>
+                  )}
                 </div>
               </div>
-            )
-          })}
+              {/* Options */}
+              <div className="flex flex-wrap gap-2 py-3 pl-11 pr-4">
+                {allowed.map((code) => {
+                  const label = seg.labels?.get(code) ?? code
+                  const price = optionBase(kit, bom, (result as any).selections, seg.key, code)
+                  const isSelected = currentCode === code
 
-          {visibleSegments.length === 0 && (
-            <div className="px-6 py-4 text-sm text-muted-foreground">
-              No configurable options available for this fitment.
+                  return (
+                    <button
+                      key={code}
+                      onClick={() => handleOptionSelect(seg.key, code)}
+                      className={[
+                        'flex flex-col items-start rounded border px-3 py-2 text-left text-sm transition-colors',
+                        isSelected
+                          ? 'border-[#FFC60B] bg-[#FFC60B]/10 ring-1 ring-[#FFC60B]'
+                          : 'border-[#d5d5d5] bg-white hover:border-[#1E1E1E] hover:bg-muted/10',
+                      ].join(' ')}
+                    >
+                      <span className={isSelected ? 'font-semibold text-[#1E1E1E]' : 'text-foreground'}>
+                        {label}
+                      </span>
+                      {typeof price === 'number' && price > 0 && (
+                        <span className="mt-0.5 text-xs font-medium text-muted-foreground">
+                          +{formatCurrency(price)}
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
             </div>
+          )
+        })}
+
+        {visibleSegments.length === 0 && (
+          <div className="px-6 py-4 text-sm text-muted-foreground">
+            No configurable options available for this fitment.
+          </div>
+        )}
+      </div>
+
+      {/* Close overflow:clip wrapper — sticky footer must be outside it */}
+      </div>
+
+      {/* Sticky bottom bar — price, progress, save */}
+      <div className="sticky bottom-0 border-t border-[#d5d5d5] bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.07)]">
+        <div className="flex items-center gap-4 px-4 py-4">
+          {/* Price + progress */}
+          <div className="flex-1 min-w-0">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              List Estimate — Not Dealer Net
+            </p>
+            <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(est.total)}</p>
+            <p className="mt-0.5 text-xs text-muted-foreground">
+              {visibleSegments.filter((s) => (result as any).selections[s.key]).length} of {visibleSegments.length} answered
+              {est.unpriced > 0 && ` · ${est.unpriced} unpriced`}
+            </p>
+          </div>
+          {/* Save / no-quote message */}
+          {quoteId ? (
+            <button
+              onClick={handleSave}
+              disabled={!allRequiredFilled || saving || isPending}
+              className={[
+                'shrink-0 rounded px-5 py-2.5 text-sm font-bold uppercase tracking-wide transition-colors',
+                allRequiredFilled && !saving && !isPending
+                  ? 'bg-[#FFC60B] text-[#1E1E1E] hover:bg-[#e6b200]'
+                  : 'cursor-not-allowed bg-[#D9D9D9] text-[#555555]',
+              ].join(' ')}
+            >
+              {saving || isPending ? 'Saving…' : 'Save to Quote'}
+            </button>
+          ) : (
+            <p className="shrink-0 text-xs text-muted-foreground">
+              Open from a quote to save
+            </p>
           )}
         </div>
-
-        {/* Price + save panel */}
-        <div className="w-full shrink-0 border-t lg:w-[260px] lg:border-l lg:border-t-0">
-          <div className="sticky top-4 flex flex-col gap-4 p-5">
-            {/* Price */}
-            <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                List Estimate — Not Dealer Net
-              </p>
-              <p className="mt-1 text-3xl font-bold text-[#1E1E1E]">
-                {formatCurrency(est.total)}
-              </p>
-              {est.unpriced > 0 && (
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {est.unpriced} part{est.unpriced !== 1 ? 's' : ''} have no list price yet
-                </p>
-              )}
-            </div>
-
-            {/* Save button */}
-            {quoteId ? (
-              <button
-                onClick={handleSave}
-                disabled={!allRequiredFilled || saving || isPending}
-                className={[
-                  'w-full rounded px-4 py-2.5 text-sm font-bold uppercase tracking-wide transition-colors',
-                  allRequiredFilled && !saving && !isPending
-                    ? 'bg-[#FFC60B] text-[#1E1E1E] hover:bg-[#e6b200]'
-                    : 'cursor-not-allowed bg-[#D9D9D9] text-[#555555]',
-                ].join(' ')}
-              >
-                {saving || isPending ? 'Saving…' : 'Save to Quote'}
-              </button>
-            ) : (
-              <div className="rounded border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-700">
-                Open this configurator from a quote to save selections.
-              </div>
-            )}
-
-            {/* Progress */}
-            <div className="border-t pt-3">
-              <p className="text-xs font-bold text-muted-foreground">Your Configuration</p>
-              <p className="mt-0.5 text-sm font-semibold text-foreground">
-                {visibleSegments.filter((s) => (result as any).selections[s.key]).length} of {visibleSegments.length} answered
-              </p>
-              {!allRequiredFilled && (
-                <p className="mt-1 text-xs text-muted-foreground">Answer each required (*) question.</p>
-              )}
-            </div>
-
-            {/* Kit */}
-            <div className="border-t pt-3">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kit</p>
-              <p className="mt-0.5 text-sm font-medium text-foreground">{kitModels[kitId]?.title ?? kitId}</p>
-              <p className="text-xs text-muted-foreground">{kits.find((k) => k.id === kitId)?.fitment}</p>
-            </div>
-          </div>
-        </div>
+        {quoteId && !allRequiredFilled && (
+          <p className="px-4 pb-3 text-xs text-muted-foreground">
+            Answer each required (*) question to save.
+          </p>
+        )}
       </div>
     </div>
   )
