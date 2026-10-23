@@ -27,7 +27,10 @@ type Props = {
   kitBoms: Record<string, any>
   quoteId?: string
   returnUrl?: string
+  vehicleYear?: string
 }
+
+const TRUCK_YEAR_KEY = '11676031|1'
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -101,12 +104,22 @@ function buildLineItems(
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
+function applyVehicleYear(sel: Record<string, string>, compiled: any, vehicleYear?: string): Record<string, string> {
+  if (!vehicleYear) return sel
+  const seg = compiled.segments?.find((s: any) => s.key === TRUCK_YEAR_KEY)
+  if (seg && seg.base?.includes(vehicleYear)) {
+    return { ...sel, [TRUCK_YEAR_KEY]: vehicleYear }
+  }
+  return sel
+}
+
 export function LeerConfigurator({
   kits,
   kitModels,
   kitBoms,
   quoteId,
   returnUrl,
+  vehicleYear,
 }: Props) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -116,7 +129,7 @@ export function LeerConfigurator({
     const rawKit = kitModels[kits[0]?.id ?? '']
     if (!rawKit) return {}
     const compiled = compileKit(rawKit)
-    return defaultSelections(compiled)
+    return applyVehicleYear(defaultSelections(compiled), compiled, vehicleYear)
   })
   const [saving, setSaving] = useState(false)
 
@@ -155,6 +168,7 @@ export function LeerConfigurator({
         return (a.pel ?? 0) - (b.pel ?? 0)
       })
       .filter((s: any) => {
+        if (s.key === TRUCK_YEAR_KEY) return false
         const allowed = optionsFor(kit, s, constraints.get(s.key))
         return allowed && allowed.length > 0
       })
@@ -177,7 +191,7 @@ export function LeerConfigurator({
     if (!rawKit) return
     const compiled = compileKit(rawKit)
     setKitId(newKitId)
-    setSelections(defaultSelections(compiled))
+    setSelections(applyVehicleYear(defaultSelections(compiled), compiled, vehicleYear))
   }
 
   function handleOptionSelect(segKey: string, code: string) {
@@ -281,35 +295,50 @@ export function LeerConfigurator({
                 </div>
               </div>
               {/* Options */}
-              <div className="flex flex-wrap gap-2 py-3 pl-11 pr-4">
-                {allowed.map((code) => {
-                  const label = seg.labels?.get(code) ?? code
-                  const price = optionBase(kit, bom, (result as any).selections, seg.key, code)
-                  const isSelected = currentCode === code
+              {allowed.length > 12 ? (
+                <div className="py-2 pl-11 pr-4">
+                  <select
+                    value={currentCode}
+                    onChange={(e) => handleOptionSelect(seg.key, e.target.value)}
+                    className="w-full rounded border border-[#d5d5d5] px-3 py-2 text-sm focus:border-[#1E1E1E] focus:outline-none"
+                  >
+                    <option value="">Select an option…</option>
+                    {allowed.map((code) => (
+                      <option key={code} value={code}>{seg.labels?.get(code) ?? code}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2 py-3 pl-11 pr-4">
+                  {allowed.map((code) => {
+                    const label = seg.labels?.get(code) ?? code
+                    const price = optionBase(kit, bom, (result as any).selections, seg.key, code)
+                    const isSelected = currentCode === code
 
-                  return (
-                    <button
-                      key={code}
-                      onClick={() => handleOptionSelect(seg.key, code)}
-                      className={[
-                        'flex flex-col items-start rounded border px-3 py-2 text-left text-sm transition-colors',
-                        isSelected
-                          ? 'border-[#FFC60B] bg-[#FFC60B]/10 ring-1 ring-[#FFC60B]'
-                          : 'border-[#d5d5d5] bg-white hover:border-[#1E1E1E] hover:bg-muted/10',
-                      ].join(' ')}
-                    >
-                      <span className={isSelected ? 'font-semibold text-[#1E1E1E]' : 'text-foreground'}>
-                        {label}
-                      </span>
-                      {typeof price === 'number' && price > 0 && (
-                        <span className="mt-0.5 text-xs font-medium text-muted-foreground">
-                          +{formatCurrency(price)}
+                    return (
+                      <button
+                        key={code}
+                        onClick={() => handleOptionSelect(seg.key, code)}
+                        className={[
+                          'flex flex-col items-start rounded border px-3 py-2 text-left text-sm transition-colors',
+                          isSelected
+                            ? 'border-[#FFC60B] bg-[#FFC60B]/10 ring-1 ring-[#FFC60B]'
+                            : 'border-[#d5d5d5] bg-white hover:border-[#1E1E1E] hover:bg-muted/10',
+                        ].join(' ')}
+                      >
+                        <span className={isSelected ? 'font-semibold text-[#1E1E1E]' : 'text-foreground'}>
+                          {label}
                         </span>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
+                        {typeof price === 'number' && price > 0 && (
+                          <span className="mt-0.5 text-xs font-medium text-muted-foreground">
+                            +{formatCurrency(price)}
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
             </div>
           )
         })}

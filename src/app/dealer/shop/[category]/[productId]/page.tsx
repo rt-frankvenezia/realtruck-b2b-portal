@@ -155,6 +155,17 @@ export default async function ProductDetailPage({
     const leerSpecs = (product.specifications ?? {}) as Record<string, string>
     const leerWarranty = leerSpecs.warranty
 
+    // Fetch quote vehicle so we can display it and auto-fill Truck Year
+    let quoteVehicle: { vehicle_year: number | null; vehicle_make: string | null; vehicle_model: string | null } | null = null
+    if (quoteId) {
+      const { data } = await supabase.from('quotes').select('vehicle_year, vehicle_make, vehicle_model').eq('id', quoteId).maybeSingle()
+      quoteVehicle = data
+    }
+    const vehicleDisplay = quoteVehicle?.vehicle_year && quoteVehicle?.vehicle_make && quoteVehicle?.vehicle_model
+      ? `${quoteVehicle.vehicle_year} ${quoteVehicle.vehicle_make} ${quoteVehicle.vehicle_model}`
+      : null
+    const vehicleYear = quoteVehicle?.vehicle_year ? String(quoteVehicle.vehicle_year) : undefined
+
     return (
       <div className="flex flex-col gap-6">
         <RecordRecentlyViewed userId={user?.profile.id ?? undefined} productId={product.id} />
@@ -237,13 +248,29 @@ export default async function ProductDetailPage({
             )}
           </div>
 
-          {/* Right: identity + configurator */}
+          {/* Right: identity + fitment + configurator */}
           <div className="w-full shrink-0 lg:w-[500px]">
             {/* Product identity */}
-            <div className="mb-5">
+            <div className="mb-4">
               <p className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">LEER</p>
               <h1 className="font-brand text-3xl uppercase leading-tight">{product.name}</h1>
               <p className="mt-1.5 text-sm text-muted-foreground">SKU: {product.sku}</p>
+            </div>
+
+            {/* Guaranteed fitment block */}
+            <div className="mb-4 flex items-center justify-between rounded border border-muted bg-muted/40 px-4 py-3">
+              <div className="flex items-center gap-2">
+                <Check size={15} className="shrink-0 text-green-600" />
+                <div>
+                  <p className="text-xs font-semibold text-muted-foreground">Guaranteed Fitment</p>
+                  <p className="text-sm font-medium text-foreground">
+                    {vehicleDisplay ?? familyKits[0]?.fitment ?? 'Select vehicle below'}
+                  </p>
+                </div>
+              </div>
+              <button className="shrink-0 text-xs font-medium text-primary hover:underline">
+                Change vehicle
+              </button>
             </div>
 
             {quoteId && (
@@ -259,6 +286,7 @@ export default async function ProductDetailPage({
                 kitBoms={kitBoms}
                 quoteId={quoteId}
                 returnUrl={returnUrl}
+                vehicleYear={vehicleYear}
               />
             </div>
           </div>
