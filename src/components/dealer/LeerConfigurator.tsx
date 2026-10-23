@@ -28,6 +28,7 @@ type Props = {
   quoteId?: string
   returnUrl?: string
   vehicleYear?: string
+  baseMapPrice?: number
   discountRate?: number
 }
 
@@ -121,6 +122,7 @@ export function LeerConfigurator({
   quoteId,
   returnUrl,
   vehicleYear,
+  baseMapPrice,
   discountRate,
 }: Props) {
   const router = useRouter()
@@ -188,6 +190,16 @@ export function LeerConfigurator({
       })
   }, [kit, result, visibleSegments])
 
+  const optionsTotal = useMemo(() => {
+    if (!kit || !bom || !result) return 0
+    return visibleSegments.reduce((sum, seg) => {
+      const code = (result as any).selections[seg.key]
+      if (!code) return sum
+      const price = optionBase(kit, bom, (result as any).selections, seg.key, code)
+      return sum + (typeof price === 'number' && price > 0 ? price : 0)
+    }, 0)
+  }, [kit, bom, result, visibleSegments])
+
   function handleKitChange(newKitId: string) {
     const rawKit = kitModels[newKitId]
     if (!rawKit) return
@@ -231,6 +243,8 @@ export function LeerConfigurator({
       </div>
     )
   }
+
+  const runningMap = baseMapPrice !== undefined ? baseMapPrice + optionsTotal : null
 
   return (
     <div className="flex flex-col gap-0">
@@ -357,46 +371,41 @@ export function LeerConfigurator({
 
       {/* Sticky bottom bar — price, progress, save */}
       <div className="sticky bottom-0 border-t border-[#d5d5d5] bg-white shadow-[0_-2px_8px_rgba(0,0,0,0.07)]">
-        <div className="flex items-center gap-4 px-4 py-4">
-          {/* Price + progress */}
-          <div className="flex-1 min-w-0">
-            {est.total !== null ? (
-              <div className="flex items-end gap-4">
-                {discountRate !== undefined && discountRate > 0 ? (
-                  <>
-                    <div>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Your Price</p>
-                      <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(est.total * (1 - discountRate))}</p>
-                    </div>
-                    <div className="pb-0.5">
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MAP</p>
-                      <p className="text-lg font-medium text-muted-foreground">{formatCurrency(est.total)}</p>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">List Estimate</p>
-                    <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(est.total)}</p>
-                  </>
-                )}
-              </div>
-            ) : (
-              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                Price builds as you configure
-              </p>
-            )}
-            <p className="mt-0.5 text-xs text-muted-foreground">
-              {visibleSegments.filter((s) => (result as any).selections[s.key]).length} of {visibleSegments.length} answered
-              {est.unpriced > 0 && ` · ${est.unpriced} unpriced`}
-            </p>
-          </div>
-          {/* Save / no-quote message */}
+        <div className="px-4 pt-4 pb-3">
+          {/* Price */}
+          {runningMap !== null && (
+            <div className="mb-1 flex items-end gap-4">
+              {discountRate !== undefined && discountRate > 0 ? (
+                <>
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Your Price</p>
+                    <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(runningMap * (1 - discountRate))}</p>
+                  </div>
+                  <div className="pb-0.5">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">MAP</p>
+                    <p className="text-lg font-medium text-muted-foreground">{formatCurrency(runningMap)}</p>
+                  </div>
+                </>
+              ) : (
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">List Price</p>
+                  <p className="text-2xl font-bold text-[#1E1E1E]">{formatCurrency(runningMap)}</p>
+                </div>
+              )}
+            </div>
+          )}
+          {/* Progress */}
+          <p className="mb-3 text-xs text-muted-foreground">
+            {visibleSegments.filter((s) => (result as any).selections[s.key]).length} of {visibleSegments.length} answered
+            {est.unpriced > 0 && ` · ${est.unpriced} unpriced`}
+          </p>
+          {/* Full-width save button */}
           {quoteId ? (
             <button
               onClick={handleSave}
               disabled={!allRequiredFilled || saving || isPending}
               className={[
-                'shrink-0 rounded px-5 py-2.5 text-sm font-bold uppercase tracking-wide transition-colors',
+                'w-full rounded px-5 py-2.5 text-sm font-bold uppercase tracking-wide transition-colors',
                 allRequiredFilled && !saving && !isPending
                   ? 'bg-[#FFC60B] text-[#1E1E1E] hover:bg-[#e6b200]'
                   : 'cursor-not-allowed bg-[#D9D9D9] text-[#555555]',
@@ -405,7 +414,7 @@ export function LeerConfigurator({
               {saving || isPending ? 'Saving…' : 'Save to Quote'}
             </button>
           ) : (
-            <p className="shrink-0 text-xs text-muted-foreground">
+            <p className="text-center text-xs text-muted-foreground">
               Open from a quote to save
             </p>
           )}

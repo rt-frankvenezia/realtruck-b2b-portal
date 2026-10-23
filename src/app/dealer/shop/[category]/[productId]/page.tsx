@@ -187,6 +187,19 @@ export default async function ProductDetailPage({
           <span className="font-medium text-foreground">{product.name}</span>
         </div>
 
+        {quoteId && (
+          <div className="rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 px-4 py-3">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#A04B23]">Configuring for Quote</span>
+              <span className="text-sm font-medium text-foreground">
+                {quoteDisplayNumber}
+                {quoteCustomerName && <span className="text-muted-foreground"> — {quoteCustomerName}</span>}
+              </span>
+              <span className="text-xs text-muted-foreground">· Selections save directly to this quote.</span>
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left: product info */}
           <div className="flex min-w-0 flex-1 flex-col gap-6">
@@ -285,19 +298,6 @@ export default async function ProductDetailPage({
               </button>
             </div>
 
-            {quoteId && (
-              <div className="mb-4 rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 px-4 py-3">
-                <p className="text-xs font-bold uppercase tracking-widest text-[#A04B23]">
-                  Configuring for Quote
-                </p>
-                <p className="mt-0.5 text-sm font-medium text-foreground">
-                  {quoteDisplayNumber}
-                  {quoteCustomerName && <span className="text-muted-foreground"> — {quoteCustomerName}</span>}
-                </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">Selections save directly to this quote.</p>
-              </div>
-            )}
-
             <div className="rounded border border-[#d5d5d5] bg-white">
               <LeerConfigurator
                 kits={familyKits.map((k) => ({ id: k.id, title: k.title, fitment: k.fitment, family: k.family }))}
@@ -306,6 +306,7 @@ export default async function ProductDetailPage({
                 quoteId={quoteId}
                 returnUrl={returnUrl}
                 vehicleYear={vehicleYear}
+                baseMapPrice={leerMapPrice ?? undefined}
                 discountRate={leerDiscountRate}
               />
             </div>
