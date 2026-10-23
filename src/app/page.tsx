@@ -123,7 +123,7 @@ type QuickLink = {
 
 const DEALER_QUICK_LINKS: QuickLink[] = [
   { href: '/dealer/orders',    label: 'Order History',    description: 'View and track your recent orders',    icon: Receipt },
-  { href: '/dealer/quotes',    label: 'Quotes',           description: 'Manage A.R.E. cap leads',              icon: MessageSquareQuote },
+  { href: '/dealer/quotes',    label: 'Quotes',           description: 'Manage A.R.E. and LEER cap leads',     icon: MessageSquareQuote },
   {                            label: 'SKU Lookup',       description: 'Find applications for any part',       icon: Search },
   {                            label: 'Dealer Resources', description: 'Marketing assets and sell sheets',     icon: FolderOpen },
   {                            label: 'Promotions',       description: 'Current deals and marketing materials', icon: Tag },
@@ -132,7 +132,7 @@ const DEALER_QUICK_LINKS: QuickLink[] = [
 const ADMIN_QUICK_LINKS: QuickLink[] = [
   { href: '/admin',                  label: 'Admin Dashboard', description: 'Overview and activity',          icon: Wallet },
   { href: '/admin/companies',        label: 'Companies',       description: 'Manage dealer accounts',         icon: Building2 },
-  { href: '/admin/quotes',           label: 'Quotes',          description: 'Review A.R.E. quotes',           icon: MessageSquareQuote },
+  { href: '/admin/quotes',           label: 'Quotes',          description: 'Review A.R.E. and LEER quotes',  icon: MessageSquareQuote },
   { href: '/admin/pricing-groups',   label: 'Pricing Groups',  description: 'Configure dealer price tiers',   icon: DollarSign },
 ]
 

@@ -5,6 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 import { QUOTE_STATUS_LABEL, QUOTE_STATUS_VARIANT } from '@/lib/status-labels'
+import { QUOTE_BRAND_LABEL } from '@/lib/quote-config'
 
 function formatAge(createdAt: string): { text: string; dot: 'none' | 'warning' | 'critical' } {
   const hours = (Date.now() - new Date(createdAt).getTime()) / 3_600_000
@@ -26,7 +27,7 @@ export default async function AdminQuotesPage() {
   const [{ data: quotes }, { data: locations }, { data: companies }] = await Promise.all([
     supabase
       .from('quotes')
-      .select('id, customer_name, vehicle_year, vehicle_make, vehicle_model, status, created_at, location_id, company_id')
+      .select('id, customer_name, vehicle_year, vehicle_make, vehicle_model, status, created_at, location_id, company_id, brand')
       .order('created_at', { ascending: false }),
     supabase.from('locations').select('id, code, name, city, state'),
     supabase.from('companies').select('id, name'),
@@ -81,6 +82,12 @@ export default async function AdminQuotesPage() {
               <option>Last 30 Days</option>
             </select>
           </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-muted-foreground">Brand</label>
+            <select disabled className="h-9 rounded border border-input bg-background px-3 text-sm text-muted-foreground">
+              <option>All Brands</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -90,6 +97,7 @@ export default async function AdminQuotesPage() {
               <TableRow>
                 <TableHead>Quote ID</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Brand</TableHead>
                 <TableHead>Age</TableHead>
                 <TableHead>Dealer</TableHead>
                 <TableHead>Code</TableHead>
@@ -113,6 +121,11 @@ export default async function AdminQuotesPage() {
                       <Badge variant={QUOTE_STATUS_VARIANT[quote.status]}>{QUOTE_STATUS_LABEL[quote.status]}</Badge>
                     </TableCell>
                     <TableCell>
+                      {(quote as any).brand
+                        ? <Badge variant={(quote as any).brand === 'LEER' ? 'default' : 'secondary'}>{QUOTE_BRAND_LABEL[(quote as any).brand] ?? (quote as any).brand}</Badge>
+                        : <span className="text-sm text-muted-foreground">—</span>}
+                    </TableCell>
+                    <TableCell>
                       <span className="flex items-center gap-1.5 text-sm">
                         {age.dot !== 'none' && (
                           <span
@@ -133,7 +146,7 @@ export default async function AdminQuotesPage() {
               })}
               {rows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} className="py-8 text-center text-muted-foreground">
+                  <TableCell colSpan={8} className="py-8 text-center text-muted-foreground">
                     No quotes found.
                   </TableCell>
                 </TableRow>
