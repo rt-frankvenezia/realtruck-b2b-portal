@@ -152,6 +152,9 @@ export default async function ProductDetailPage({
       kitBoms[kit.id] = LEER_BOM_DATA[kit.id]
     }
 
+    const leerSpecs = (product.specifications ?? {}) as Record<string, string>
+    const leerWarranty = leerSpecs.warranty
+
     return (
       <div className="flex flex-col gap-6">
         <RecordRecentlyViewed userId={user?.profile.id ?? undefined} productId={product.id} />
@@ -165,35 +168,75 @@ export default async function ProductDetailPage({
 
         <div className="flex flex-col gap-8 lg:flex-row">
           {/* Left: product info */}
-          <div className="flex-1 flex flex-col gap-10">
-            <div className="flex aspect-4/3 items-center justify-center rounded-lg border bg-muted">
-              <Package size={96} className="text-muted-foreground/40" />
+          <div className="flex min-w-0 flex-1 flex-col gap-6">
+            {/* Product identity */}
+            <div>
+              <p className="mb-1 text-xs font-bold uppercase tracking-widest text-muted-foreground">LEER</p>
+              <h1 className="font-brand text-3xl uppercase leading-tight">{product.name}</h1>
+              <p className="mt-1.5 text-sm text-muted-foreground">SKU: {product.sku}</p>
             </div>
+
+            {/* Trust badges */}
+            <div className="flex flex-wrap gap-4 border-y py-3">
+              <div className="flex items-center gap-1.5">
+                <Truck size={15} className="text-green-600" />
+                <span className="text-sm font-medium">Free Shipping</span>
+              </div>
+              {leerWarranty && (
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck size={15} className="text-green-600" />
+                  <span className="text-sm font-medium">{leerWarranty}</span>
+                </div>
+              )}
+              {leerSpecs['paint match'] && (
+                <div className="flex items-center gap-1.5">
+                  <Check size={15} className="text-green-600" />
+                  <span className="text-sm font-medium">{leerSpecs['paint match']}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Image gallery */}
+            <div className="flex gap-3">
+              <div className="flex shrink-0 flex-col gap-2">
+                <div className="h-[72px] w-[72px] rounded border bg-muted" />
+                <div className="h-[72px] w-[72px] rounded border border-dashed bg-muted/50" />
+              </div>
+              <div className="flex flex-1 items-center justify-center rounded-lg border bg-muted" style={{ aspectRatio: '4/3' }}>
+                <Package size={64} className="text-muted-foreground/30" />
+              </div>
+            </div>
+
+            {/* Highlights */}
             {product.highlights.length > 0 && (
               <div className="flex flex-col gap-3">
-                <h2 className="text-xl font-semibold">Product Highlights</h2>
+                <h2 className="font-semibold">Product Highlights</h2>
                 <ul className="flex flex-col gap-2">
                   {product.highlights.map((highlight: string) => (
                     <li key={highlight} className="flex items-start gap-2 text-sm leading-relaxed text-muted-foreground">
-                      <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-primary" />
+                      <CheckCircle2 size={15} className="mt-0.5 shrink-0 text-primary" />
                       {highlight}
                     </li>
                   ))}
                 </ul>
               </div>
             )}
-            <div className="flex flex-col gap-3">
-              <h2 className="text-xl font-semibold">Description</h2>
+
+            {/* Description */}
+            <div className="flex flex-col gap-2">
+              <h2 className="font-semibold">Description</h2>
               <p className="text-sm leading-relaxed text-muted-foreground">{product.description}</p>
             </div>
-            {Object.keys((product.specifications ?? {}) as Record<string, string>).length > 0 && (
+
+            {/* Specifications */}
+            {Object.keys(leerSpecs).length > 0 && (
               <div className="flex flex-col gap-3">
-                <h2 className="text-xl font-semibold">Specifications</h2>
-                <div className="grid grid-cols-1 gap-x-8 gap-y-2 sm:grid-cols-2">
-                  {Object.entries((product.specifications ?? {}) as Record<string, string>).map(([key, value]) => (
-                    <div key={key} className="flex items-start justify-between gap-4 border-b pb-2">
-                      <span className="text-sm font-medium text-muted-foreground">{key}</span>
-                      <span className="text-right text-sm">{value}</span>
+                <h2 className="font-semibold">Specifications</h2>
+                <div className="divide-y rounded border">
+                  {Object.entries(leerSpecs).map(([key, value]) => (
+                    <div key={key} className="flex items-center justify-between px-3 py-2.5">
+                      <span className="text-sm capitalize text-muted-foreground">{key}</span>
+                      <span className="text-sm font-medium">{value}</span>
                     </div>
                   ))}
                 </div>
@@ -202,12 +245,7 @@ export default async function ProductDetailPage({
           </div>
 
           {/* Right: configurator */}
-          <div className="w-full shrink-0 lg:w-[480px]">
-            <div className="pb-5">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">LEER</p>
-              <h1 className="font-brand text-4xl uppercase leading-tight">{product.name}</h1>
-              <p className="mt-1 text-sm text-muted-foreground">SKU: {product.sku}</p>
-            </div>
+          <div className="w-full shrink-0 lg:w-[500px]">
             {quoteId ? (
               <div className="mb-4 rounded border border-[#FFC60B]/40 bg-[#FFC60B]/5 px-4 py-3 text-sm">
                 Configuring for quote — selections save directly to your quote.

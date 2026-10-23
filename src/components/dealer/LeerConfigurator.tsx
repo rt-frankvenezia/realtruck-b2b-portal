@@ -245,23 +245,42 @@ export function LeerConfigurator({
 
       {/* Main configurator + price panel */}
       <div className="flex flex-col gap-0 lg:flex-row">
-        {/* Segment cards */}
-        <div className="flex-1 divide-y divide-[#d5d5d5]">
-          {visibleSegments.map((seg) => {
+        {/* Segment rows */}
+        <div className="flex-1 divide-y divide-[#e8e8e8]">
+          {visibleSegments.map((seg, idx) => {
             const allowed: string[] = optionsFor(kit, seg, (result as any).constraints.get(seg.key)) ?? []
             const currentCode = (result as any).selections[seg.key] ?? ''
+            const currentLabel = seg.labels?.get(currentCode) ?? (currentCode || null)
 
             return (
-              <div key={seg.key} className="px-6 py-4">
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="text-sm font-semibold text-foreground">{seg.label}</span>
+              <div key={seg.key}>
+                {/* Row header */}
+                <div className="flex items-center gap-2.5 bg-[#f5f5f5] px-4 py-2">
+                  <span className="w-5 shrink-0 text-center text-xs font-bold text-muted-foreground">
+                    {idx + 1}
+                  </span>
+                  <span className="text-xs font-bold uppercase tracking-wide text-foreground">
+                    {seg.label}
+                  </span>
                   {seg.req === 'R' && (
-                    <span className="rounded bg-[#1E1E1E] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                      Required
-                    </span>
+                    <span className="text-xs font-bold text-[#FFC60B]">*</span>
                   )}
+                  <div className="ml-auto flex items-center gap-3">
+                    {currentLabel && (
+                      <span className="text-xs text-muted-foreground">{currentLabel}</span>
+                    )}
+                    {currentCode && (
+                      <button
+                        onClick={() => handleOptionSelect(seg.key, '')}
+                        className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground hover:text-foreground"
+                      >
+                        Clear
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                {/* Options */}
+                <div className="flex flex-wrap gap-2 py-3 pl-11 pr-4">
                   {allowed.map((code) => {
                     const label = seg.labels?.get(code) ?? code
                     const price = optionBase(kit, bom, (result as any).selections, seg.key, code)
@@ -302,36 +321,30 @@ export function LeerConfigurator({
         </div>
 
         {/* Price + save panel */}
-        <div className="w-full shrink-0 border-t lg:w-[280px] lg:border-l lg:border-t-0">
-          <div className="sticky top-4 flex flex-col gap-4 p-6">
+        <div className="w-full shrink-0 border-t lg:w-[260px] lg:border-l lg:border-t-0">
+          <div className="sticky top-4 flex flex-col gap-4 p-5">
+            {/* Price */}
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Estimated Price
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+                List Estimate — Not Dealer Net
               </p>
               <p className="mt-1 text-3xl font-bold text-[#1E1E1E]">
                 {formatCurrency(est.total)}
               </p>
               {est.unpriced > 0 && (
                 <p className="mt-1 text-xs text-muted-foreground">
-                  (includes {est.unpriced} unpriced item{est.unpriced !== 1 ? 's' : ''})
+                  {est.unpriced} part{est.unpriced !== 1 ? 's' : ''} have no list price yet
                 </p>
               )}
             </div>
 
-            <div className="border-t pt-4">
-              <p className="mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                Kit
-              </p>
-              <p className="text-sm font-medium text-foreground">{kitModels[kitId]?.title ?? kitId}</p>
-              <p className="text-xs text-muted-foreground">{kits.find((k) => k.id === kitId)?.fitment}</p>
-            </div>
-
+            {/* Save button */}
             {quoteId ? (
               <button
                 onClick={handleSave}
                 disabled={!allRequiredFilled || saving || isPending}
                 className={[
-                  'w-full rounded px-4 py-2.5 text-sm font-semibold transition-colors',
+                  'w-full rounded px-4 py-2.5 text-sm font-bold uppercase tracking-wide transition-colors',
                   allRequiredFilled && !saving && !isPending
                     ? 'bg-[#FFC60B] text-[#1E1E1E] hover:bg-[#e6b200]'
                     : 'cursor-not-allowed bg-[#D9D9D9] text-[#555555]',
@@ -345,11 +358,23 @@ export function LeerConfigurator({
               </div>
             )}
 
-            {quoteId && !allRequiredFilled && (
-              <p className="text-xs text-muted-foreground">
-                Complete all required fields to save.
+            {/* Progress */}
+            <div className="border-t pt-3">
+              <p className="text-xs font-bold text-muted-foreground">Your Configuration</p>
+              <p className="mt-0.5 text-sm font-semibold text-foreground">
+                {visibleSegments.filter((s) => (result as any).selections[s.key]).length} of {visibleSegments.length} answered
               </p>
-            )}
+              {!allRequiredFilled && (
+                <p className="mt-1 text-xs text-muted-foreground">Answer each required (*) question.</p>
+              )}
+            </div>
+
+            {/* Kit */}
+            <div className="border-t pt-3">
+              <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Kit</p>
+              <p className="mt-0.5 text-sm font-medium text-foreground">{kitModels[kitId]?.title ?? kitId}</p>
+              <p className="text-xs text-muted-foreground">{kits.find((k) => k.id === kitId)?.fitment}</p>
+            </div>
           </div>
         </div>
       </div>
