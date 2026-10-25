@@ -187,6 +187,9 @@ export function SiteHeader({
             )}
             <span className="text-[#1c1c1e]/60">Brands</span>
             <span className="text-[#1c1c1e]/60">SKU Lookup</span>
+            <Link href="/dealer/serial-lookup" className="flex h-full items-center border-b-2 border-transparent transition-all hover:border-[#FFC60B] text-[#1c1c1e]">
+              Serial Lookup
+            </Link>
             <span className="text-[#1c1c1e]/60">New Products</span>
             <span className="text-[#1c1c1e]/60">Promos</span>
             <span className="text-[#1c1c1e]/60">RealTruck Builder</span>
