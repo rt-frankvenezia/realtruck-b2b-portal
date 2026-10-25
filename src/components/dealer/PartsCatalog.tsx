@@ -80,13 +80,6 @@ export function PartsCatalog({ parts }: { parts: CapPart[] }) {
                   {formatCurrency(part.price)}
                 </span>
               </div>
-              {/* Coming-soon order button */}
-              <button
-                disabled
-                className="mt-3 w-full cursor-not-allowed rounded border border-[#d5d5d5] bg-[#f5f5f5] py-2 text-xs font-bold uppercase tracking-wide text-[#AAAAAA]"
-              >
-                Request to Order — Coming Soon
-              </button>
             </div>
           </div>
         ))}

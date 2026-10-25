@@ -126,6 +126,25 @@ export default async function SerialResultPage({
         </div>
       </div>
 
+      {/* Configuration options */}
+      {cap.options.length > 0 && (
+        <div className="overflow-hidden rounded-lg border border-[#e8e8e8]">
+          <div className="border-b border-[#e8e8e8] bg-[#f8f8f8] px-6 py-3">
+            <h2 className="text-sm font-bold uppercase tracking-widest text-muted-foreground">
+              As-Built Configuration
+            </h2>
+          </div>
+          <div className="divide-y divide-[#f0f0f0] bg-white">
+            {cap.options.map((opt) => (
+              <div key={opt.label} className="flex items-center justify-between px-6 py-2.5">
+                <span className="text-sm text-muted-foreground">{opt.label}</span>
+                <span className="text-sm font-medium text-foreground">{opt.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Replacement parts */}
       <div>
         <div className="mb-5">

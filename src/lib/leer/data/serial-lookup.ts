@@ -7,6 +7,11 @@ export type CapPart = {
   notes?: string
 }
 
+export type CapOption = {
+  label: string
+  value: string
+}
+
 export type CapRecord = {
   serial: string
   brand: 'LEER' | 'Century' | 'Snugtop'
@@ -20,6 +25,7 @@ export type CapRecord = {
   manufactured_date: string
   warranty_expiration: string
   dealer: string
+  options: CapOption[]
   parts: CapPart[]
 }
 
@@ -40,6 +46,18 @@ export const SERIAL_LOOKUP: Record<string, CapRecord> = {
     manufactured_date: '2024-03-12',
     warranty_expiration: '2027-03-12',
     dealer: 'Big Sky Truck Outfitters',
+    options: [
+      { label: 'Front Window', value: 'Full Privacy Glass' },
+      { label: 'Side Windows', value: 'Sliding · Privacy Tinted' },
+      { label: 'Rear Door', value: 'Barn Door' },
+      { label: 'Interior Lighting', value: 'Dome Light (12V)' },
+      { label: 'Keyless Entry', value: 'No' },
+      { label: 'Headliner', value: 'None' },
+      { label: 'Roof Rack', value: 'None' },
+      { label: 'Bulb Seal', value: 'Yes' },
+      { label: 'Dynamic Pricing', value: 'Standard' },
+      { label: 'Paint Match', value: 'Oxford White (YZ) — Factory OEM' },
+    ],
     parts: [
       { part_no: 'LR-HW-412', description: 'Hood Latch Assembly', category: 'Latches & Hardware', price: 52.99, image_url: img('LR-HW-412'), notes: 'Includes mounting hardware' },
       { part_no: 'LR-HW-315', description: 'Rear Latch Set — Barn Door', category: 'Latches & Hardware', price: 67.50, image_url: img('LR-HW-315'), notes: 'Left and right included' },
@@ -69,6 +87,18 @@ export const SERIAL_LOOKUP: Record<string, CapRecord> = {
     manufactured_date: '2023-09-08',
     warranty_expiration: '2026-09-08',
     dealer: 'Lone Star Cap & Bed',
+    options: [
+      { label: 'Front Window', value: 'Full Privacy Glass' },
+      { label: 'Side Windows', value: 'Sliding · Bronze Tinted' },
+      { label: 'Rear Door', value: 'Radius Door' },
+      { label: 'Interior Lighting', value: 'Dome Light (12V)' },
+      { label: 'Keyless Entry', value: 'Yes' },
+      { label: 'Headliner', value: 'None' },
+      { label: 'Roof Rack', value: 'None' },
+      { label: 'Bulb Seal', value: 'Yes' },
+      { label: 'Dynamic Pricing', value: 'Standard' },
+      { label: 'Paint Match', value: 'Stone Gray (D3) — Factory OEM' },
+    ],
     parts: [
       { part_no: 'CT-HW-401', description: 'Hood Latch Assembly', category: 'Latches & Hardware', price: 48.99, image_url: img('CT-HW-401') },
       { part_no: 'CT-HW-318', description: 'Rear Latch — Center Mount', category: 'Latches & Hardware', price: 55.00, image_url: img('CT-HW-318') },
@@ -98,6 +128,18 @@ export const SERIAL_LOOKUP: Record<string, CapRecord> = {
     manufactured_date: '2024-01-22',
     warranty_expiration: '2027-01-22',
     dealer: 'Big Sky Truck Outfitters',
+    options: [
+      { label: 'Front Window', value: 'Privacy Glass' },
+      { label: 'Side Windows', value: 'Slider · Privacy Tinted' },
+      { label: 'Rear Door', value: 'Swing Door' },
+      { label: 'Interior Lighting', value: 'LED Dome' },
+      { label: 'Keyless Entry', value: 'No' },
+      { label: 'Headliner', value: 'None' },
+      { label: 'Roof Rack', value: 'None' },
+      { label: 'Bulb Seal', value: 'Yes' },
+      { label: 'Dynamic Pricing', value: 'Standard' },
+      { label: 'Paint Match', value: 'Black (BK) — Factory OEM' },
+    ],
     parts: [
       { part_no: 'ST-HW-408', description: 'Hood Latch — Chrome', category: 'Latches & Hardware', price: 58.99, image_url: img('ST-HW-408') },
       { part_no: 'ST-HW-322', description: 'Rear Door Latch Assembly', category: 'Latches & Hardware', price: 72.00, image_url: img('ST-HW-322'), notes: 'Includes T-handle' },
