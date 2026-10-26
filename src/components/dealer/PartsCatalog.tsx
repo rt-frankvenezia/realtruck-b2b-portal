@@ -17,13 +17,13 @@ export function PartsCatalog({ parts }: { parts: CapPart[] }) {
   return (
     <div>
       {/* Category filter */}
-      <div className="mb-6 flex flex-wrap gap-2">
+      <div className="mb-4 flex flex-wrap gap-2">
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setActive(cat)}
             className={[
-              'rounded-full border px-4 py-1.5 text-sm font-medium transition-colors',
+              'rounded-full border px-3.5 py-1 text-xs font-medium transition-colors',
               active === cat
                 ? 'border-[#1E1E1E] bg-[#1E1E1E] text-white'
                 : 'border-[#d5d5d5] text-muted-foreground hover:border-[#1E1E1E] hover:text-foreground',
@@ -31,58 +31,59 @@ export function PartsCatalog({ parts }: { parts: CapPart[] }) {
           >
             {cat}
             {cat === 'All' && (
-              <span className="ml-1.5 text-xs opacity-60">{parts.length}</span>
+              <span className="ml-1 opacity-60">{parts.length}</span>
             )}
           </button>
         ))}
       </div>
 
-      {/* Parts grid */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((part) => (
-          <div
-            key={part.part_no}
-            className="overflow-hidden rounded border border-[#e8e8e8] bg-white transition-shadow hover:shadow-md"
-          >
-            {/* Image */}
-            <div className="relative aspect-[4/3] w-full bg-[#f8f8f8]">
-              {part.image_url ? (
-                <Image
-                  src={part.image_url}
-                  alt={part.description}
-                  fill
-                  className="object-contain p-4"
-                  unoptimized
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                  No image
-                </div>
-              )}
-            </div>
-
-            {/* Info */}
-            <div className="p-4">
-              <p className="mb-1 font-mono text-[11px] font-semibold tracking-widest text-muted-foreground">
-                {part.part_no}
-              </p>
-              <p className="text-sm font-semibold leading-snug text-foreground">
-                {part.description}
-              </p>
-              {part.notes && (
-                <p className="mt-0.5 text-xs text-muted-foreground">{part.notes}</p>
-              )}
-              <div className="mt-3 flex items-center justify-between gap-2">
-                <span className="rounded bg-[#f5f5f5] px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-                  {part.category}
-                </span>
-                <span className="text-base font-bold text-foreground">
-                  {formatCurrency(part.price)}
-                </span>
+      {/* Parts list */}
+      <div className="overflow-hidden rounded border border-[#d5d5d5] bg-white">
+        <div className="divide-y divide-[#f0f0f0]">
+          {filtered.map((part) => (
+            <div key={part.part_no} className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-[#fafafa]">
+              {/* Thumbnail */}
+              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded border border-[#e8e8e8] bg-[#f8f8f8]">
+                {part.image_url ? (
+                  <Image
+                    src={part.image_url}
+                    alt={part.description}
+                    fill
+                    className="object-contain p-1.5"
+                    unoptimized
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center text-[10px] text-muted-foreground">
+                    —
+                  </div>
+                )}
               </div>
+
+              {/* Info */}
+              <div className="min-w-0 flex-1">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-mono text-[11px] font-semibold tracking-widest text-muted-foreground">
+                    {part.part_no}
+                  </span>
+                  <span className="rounded bg-[#f5f5f5] px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                    {part.category}
+                  </span>
+                </div>
+                <p className="mt-0.5 truncate text-sm font-semibold text-foreground">
+                  {part.description}
+                </p>
+                {part.notes && (
+                  <p className="text-xs text-muted-foreground">{part.notes}</p>
+                )}
+              </div>
+
+              {/* Price */}
+              <span className="shrink-0 text-sm font-bold text-foreground">
+                {formatCurrency(part.price)}
+              </span>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   )
