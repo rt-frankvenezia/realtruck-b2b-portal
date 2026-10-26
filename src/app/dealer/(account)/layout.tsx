@@ -72,13 +72,12 @@ export default async function DealerAccountLayout({ children }: { children: Reac
 
   const items: PortalNavItem[] = [
     { href: '/dealer', label: 'Dashboard', description: 'Overview & insights', icon: <Home {...iconProps} />, exact: true },
-    // A.R.E. dealers manage inbound leads via Quotes; they have a separate
-    // order-portal site for custom cap orders (external, not this app).
+    // All dealers receive customer quotes (ARE, LEER, Century, Snugtop).
+    // ARE dealers additionally get the external Order Portal link for
+    // placing custom cap orders through their separate portal.
+    { href: '/dealer/quotes', label: 'Quotes', description: 'Customer cap quotes', icon: <MessageSquareQuote {...iconProps} /> },
     ...(isAreDealer
-      ? [
-          { href: '/dealer/quotes', label: 'Quotes', description: 'Customer cap leads', icon: <MessageSquareQuote {...iconProps} /> },
-          { href: '/dealer/order-portal', label: 'Order Portal', description: 'Order a custom cap', icon: <ShoppingBag {...iconProps} />, external: true },
-        ]
+      ? [{ href: '/dealer/order-portal', label: 'Order Portal', description: 'Order a custom cap', icon: <ShoppingBag {...iconProps} />, external: true }]
       : []),
     // Transactional dealers order product through the portal and have
     // order history, invoicing, and credit available.
