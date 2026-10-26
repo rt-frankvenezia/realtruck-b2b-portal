@@ -43,7 +43,7 @@ export function PartsCatalog({ parts }: { parts: CapPart[] }) {
           {filtered.map((part) => (
             <div key={part.part_no} className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-[#fafafa]">
               {/* Thumbnail */}
-              <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded border border-[#e8e8e8] bg-[#f8f8f8]">
+              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded border border-[#e8e8e8] bg-[#f8f8f8]">
                 {part.image_url ? (
                   <Image
                     src={part.image_url}
