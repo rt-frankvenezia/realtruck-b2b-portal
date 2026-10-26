@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { CheckCircle2, ShoppingCart } from 'lucide-react'
+import { CheckCircle2, ShoppingCart, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -30,6 +30,7 @@ function formatCurrency(n: number) {
 
 export function PlaceOrderPanel({
   quoteId,
+  brand,
   status,
   lineItems,
   configurationSnapshot,
@@ -39,6 +40,7 @@ export function PlaceOrderPanel({
   vehicleModel,
 }: {
   quoteId: string
+  brand: string
   status: QuoteStatus
   lineItems: LineItem[]
   configurationSnapshot: { kit?: string; selections?: Record<string, string> } | null
@@ -56,9 +58,13 @@ export function PlaceOrderPanel({
 
   if (!canOrder && !isConverted) return null
 
-  const baseItem = lineItems.find((li) => li.type === 'base') ?? lineItems[0]
-  const optionItems = lineItems.filter((li) => li !== baseItem)
-  const subtotal = lineItems.reduce((sum, li) => sum + li.price * li.quantity, 0)
+  // Custom items (surcharges, installation, etc.) are excluded from the wholesale
+  // order — those are dealer-to-customer pricing only.
+  const capItems = lineItems.filter((li) => li.type === 'base' || li.type === 'option')
+  const customItems = lineItems.filter((li) => li.type === 'custom')
+  const baseItem = capItems.find((li) => li.type === 'base') ?? capItems[0]
+  const optionItems = capItems.filter((li) => li !== baseItem)
+  const subtotal = capItems.reduce((sum, li) => sum + li.price * li.quantity, 0)
   const vehicle = [vehicleYear, vehicleMake, vehicleModel].filter(Boolean).join(' ')
 
   function handlePlaceOrder() {
@@ -82,6 +88,7 @@ export function PlaceOrderPanel({
       <div className={PANEL}>
         <div className={PANEL_HEADER}>
           <div className="flex items-center gap-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#FFC60B]">{brand}</span>
             <h2 className="font-semibold text-white">Wholesale Order</h2>
             <span className="flex items-center gap-1 rounded bg-green-500/20 px-2 py-0.5 text-xs font-medium text-green-400">
               <CheckCircle2 size={11} />
@@ -115,30 +122,28 @@ export function PlaceOrderPanel({
     <div className={PANEL}>
       <div className={PANEL_HEADER}>
         <div className="flex items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#FFC60B]">LEER</span>
+          <span className="text-xs font-bold uppercase tracking-wider text-[#FFC60B]">{brand}</span>
           <h2 className="font-semibold text-white">Place Wholesale Order</h2>
         </div>
       </div>
       <div className={PANEL_BODY}>
         <div className="flex flex-col gap-4">
-          {/* Order summary */}
-          <div className="rounded border border-[#d5d5d5] divide-y divide-[#d5d5d5]">
-            {/* Header row */}
+          {/* Order summary — cap items only */}
+          <div className="divide-y divide-[#d5d5d5] rounded border border-[#d5d5d5]">
             <div className="flex items-center justify-between bg-muted/40 px-4 py-2">
               <div className="flex-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Item</div>
-              <div className="w-24 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">Price</div>
+              <div className="w-24 text-right text-xs font-semibold uppercase tracking-wide text-muted-foreground">Dealer Price</div>
             </div>
 
-            {/* Base item */}
             {baseItem && (
               <div className="flex items-start justify-between gap-4 px-4 py-3">
                 <div>
                   <p className="text-sm font-semibold">{baseItem.description}</p>
                   {baseItem.sku && (
-                    <p className="text-xs text-muted-foreground font-mono mt-0.5">{baseItem.sku}</p>
+                    <p className="mt-0.5 font-mono text-xs text-muted-foreground">{baseItem.sku}</p>
                   )}
                   {configurationSnapshot?.kit && (
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       Kit: <span className="font-mono">{configurationSnapshot.kit}</span>
                     </p>
                   )}
@@ -147,7 +152,6 @@ export function PlaceOrderPanel({
               </div>
             )}
 
-            {/* Option items */}
             {optionItems.map((item) => (
               <div key={item.id} className="flex items-center justify-between gap-4 bg-muted/20 px-4 py-2">
                 <p className="text-sm text-muted-foreground">{item.description}</p>
@@ -155,12 +159,21 @@ export function PlaceOrderPanel({
               </div>
             ))}
 
-            {/* Total */}
-            <div className="flex items-center justify-between px-4 py-3 bg-muted/10">
+            <div className="flex items-center justify-between bg-muted/10 px-4 py-3">
               <p className="text-sm font-semibold">Subtotal</p>
               <p className="text-sm font-bold">{formatCurrency(subtotal)}</p>
             </div>
           </div>
+
+          {/* Custom items excluded notice */}
+          {customItems.length > 0 && (
+            <div className="flex items-start gap-2 rounded border border-[#e8e8e8] bg-[#f8f8f8] px-3 py-2.5">
+              <Info size={13} className="mt-0.5 shrink-0 text-muted-foreground" />
+              <p className="text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{customItems.length} custom line item{customItems.length > 1 ? 's' : ''}</span> from this quote (surcharges, installation, etc.) are not included in the wholesale order. Those are part of the dealer-to-customer price only.
+              </p>
+            </div>
+          )}
 
           {/* Customer + vehicle context */}
           {(customerName || vehicle) && (
@@ -182,7 +195,7 @@ export function PlaceOrderPanel({
 
           <div className="flex items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">
-              Placing this order will submit the wholesale request to RealTruck and convert the quote.
+              Placing this order submits the wholesale cap request to RealTruck and converts the quote.
             </p>
             <Button
               onClick={handlePlaceOrder}

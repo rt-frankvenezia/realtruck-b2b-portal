@@ -12,7 +12,7 @@ import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
 import { SendQuotePanel } from '@/components/dealer/SendQuotePanel'
 import { PlaceOrderPanel } from '@/components/dealer/PlaceOrderPanel'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
-import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL } from '@/lib/quote-config'
+import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL, ACC_CONFIG_METHODS, FIBERGLASS_CONFIG_METHODS } from '@/lib/quote-config'
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
@@ -168,10 +168,11 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
         taxRate={quote.tax_rate}
       />
 
-      {/* LEER external order panel */}
-      {(quote as any).brand === 'LEER' && (quote as any).configuration_method === 'leer-aluminum' && (
+      {/* Aluminum → ACC external order portal (LEER, Century, Snugtop) */}
+      {ACC_CONFIG_METHODS.has((quote as any).configuration_method) && (
         <ExternalOrderPanel
           quoteId={quote.id}
+          brand={(quote as any).brand ?? 'LEER'}
           initialOrderNumber={(quote as any).external_order_number ?? null}
           orderedAt={(quote as any).ordered_externally_at ?? null}
         />
@@ -180,10 +181,11 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
       {/* Message To Customer / Send Quote */}
       <SendQuotePanel quoteId={quote.id} status={quote.status} />
 
-      {/* Fiberglass LEER wholesale ordering */}
-      {(quote as any).brand === 'LEER' && (quote as any).configuration_method === 'leer-fiberglass' && (lineItems ?? []).length > 0 && (
+      {/* Fiberglass → wholesale order (LEER, Century, Snugtop) */}
+      {FIBERGLASS_CONFIG_METHODS.has((quote as any).configuration_method) && (lineItems ?? []).length > 0 && (
         <PlaceOrderPanel
           quoteId={quote.id}
+          brand={(quote as any).brand ?? 'LEER'}
           status={quote.status}
           lineItems={(lineItems ?? []) as any}
           configurationSnapshot={(quote as any).configuration_snapshot}
