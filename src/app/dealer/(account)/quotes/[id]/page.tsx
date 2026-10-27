@@ -42,7 +42,7 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
 
   const [{ data: quote }, { data: lineItems }, { data: activity }] = await Promise.all([
     supabase.from('quotes').select('*').eq('id', id).maybeSingle(),
-    supabase.from('quote_line_items').select('*').eq('quote_id', id).order('type'),
+    supabase.from('quote_line_items').select('*').eq('quote_id', id).order('created_at', { ascending: true }),
     supabase.from('quote_activity').select('*').eq('quote_id', id).order('created_at', { ascending: false }),
   ])
 

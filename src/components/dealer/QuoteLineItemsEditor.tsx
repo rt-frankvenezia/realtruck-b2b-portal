@@ -92,7 +92,7 @@ export function QuoteLineItemsEditor({
     if (!newOptionDesc.trim() || !addingOptionFor) return
     startTransition(async () => {
       try {
-        await actionAddQuoteOption(quoteId, newOptionDesc.trim(), Number(newOptionPrice) || 0)
+        await actionAddQuoteOption(quoteId, addingOptionFor, newOptionDesc.trim(), Number(newOptionPrice) || 0)
         setNewOptionDesc('')
         setNewOptionPrice('')
         setAddingOptionFor(null)

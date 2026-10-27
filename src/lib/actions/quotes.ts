@@ -151,11 +151,11 @@ export async function actionAddQuoteLineItem(quoteId: string, description: strin
   revalidatePath(`/dealer/quotes/${quoteId}`)
 }
 
-export async function actionAddQuoteOption(quoteId: string, description: string, price: number) {
+export async function actionAddQuoteOption(quoteId: string, afterBaseId: string, description: string, price: number) {
   const now = new Date().toISOString()
   const liArr = FIXTURE_MAP['quote_line_items']
   if (liArr) {
-    liArr.push({
+    const newOption = {
       id: randomId(),
       quote_id: quoteId,
       description,
@@ -165,7 +165,18 @@ export async function actionAddQuoteOption(quoteId: string, description: string,
       is_required: false,
       type: 'option',
       created_at: now,
-    })
+    }
+    // Insert after the base item and all its existing options so created_at ordering keeps grouping correct.
+    const baseIdx = liArr.findIndex((li: any) => li.id === afterBaseId && li.quote_id === quoteId)
+    if (baseIdx === -1) {
+      liArr.push(newOption)
+    } else {
+      let insertAt = baseIdx + 1
+      while (insertAt < liArr.length && liArr[insertAt].quote_id === quoteId && liArr[insertAt].type === 'option') {
+        insertAt++
+      }
+      liArr.splice(insertAt, 0, newOption)
+    }
   }
   revalidatePath(`/dealer/quotes/${quoteId}`)
 }
