@@ -11,6 +11,7 @@ import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
 import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
 import { QuoteSendButton } from '@/components/dealer/QuoteSendButton'
 import { QuoteCartButton } from '@/components/dealer/QuoteCartButton'
+import { SendQuotePanel } from '@/components/dealer/SendQuotePanel'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL, ACC_CONFIG_METHODS, FIBERGLASS_CONFIG_METHODS } from '@/lib/quote-config'
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
@@ -206,6 +207,9 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
           orderedAt={(quote as any).ordered_externally_at ?? null}
         />
       )}
+
+      {/* Message to customer */}
+      <SendQuotePanel quoteId={quote.id} status={quote.status} />
 
       {/* Activity */}
       <div className={PANEL}>

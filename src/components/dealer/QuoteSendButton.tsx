@@ -14,16 +14,18 @@ export function QuoteSendButton({ quoteId, status }: { quoteId: string; status: 
   const [message, setMessage] = useState('')
   const [isPending, startTransition] = useTransition()
 
-  const canSend = status === 'new' || status === 'working' || status === 'quote_sent'
-  if (!canSend) return null
+  const canSend = status === 'new' || status === 'working'
+  const alreadySent = status === 'quote_sent'
+  if (!canSend && !alreadySent) return null
 
-  const label = status === 'quote_sent' ? 'RESEND QUOTE' : 'SEND QUOTE'
+  const label = alreadySent ? 'Resend' : 'SEND QUOTE'
+  const isPrimary = !alreadySent
 
   function handleSend() {
     startTransition(async () => {
       try {
         await actionSendQuote(quoteId, message.trim() || undefined)
-        toast.success(status === 'quote_sent' ? 'Quote resent to customer' : 'Quote sent to customer')
+        toast.success(alreadySent ? 'Quote resent to customer' : 'Quote sent to customer')
         setMessage('')
         setExpanded(false)
       } catch {
@@ -47,7 +49,8 @@ export function QuoteSendButton({ quoteId, status }: { quoteId: string; status: 
           size="sm"
           onClick={handleSend}
           disabled={isPending}
-          className="bg-[#FFC60B] font-semibold uppercase tracking-wide text-[#1E1E1E] hover:bg-[#FFC60B]/90"
+          variant={isPrimary ? 'default' : 'outline'}
+          className={isPrimary ? 'bg-[#FFC60B] font-semibold uppercase tracking-wide text-[#1E1E1E] hover:bg-[#FFC60B]/90' : ''}
         >
           <Send size={13} className="mr-1" />
           {label}
@@ -66,7 +69,8 @@ export function QuoteSendButton({ quoteId, status }: { quoteId: string; status: 
     <Button
       size="sm"
       onClick={() => setExpanded(true)}
-      className="bg-[#FFC60B] font-semibold uppercase tracking-wide text-[#1E1E1E] hover:bg-[#FFC60B]/90"
+      variant={isPrimary ? 'default' : 'outline'}
+      className={isPrimary ? 'bg-[#FFC60B] font-semibold uppercase tracking-wide text-[#1E1E1E] hover:bg-[#FFC60B]/90' : ''}
     >
       <Send size={13} className="mr-1" />
       {label}
