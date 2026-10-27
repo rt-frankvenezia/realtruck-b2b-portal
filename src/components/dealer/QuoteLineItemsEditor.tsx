@@ -37,7 +37,7 @@ function isManuallyAdded(item: LineItem): boolean {
   return item.id.startsWith('tmp-')
 }
 
-// Editable price cell — used only for aluminum / manually-added items
+// Inline editable price input — used for aluminum, ARE options, and manually-added items
 function EditablePrice({
   value,
   onChange,
@@ -45,7 +45,7 @@ function EditablePrice({
   value: number
   onChange: (n: number) => void
 }) {
-  const [raw, setRaw] = useState<string>(() => String(value))
+  const [raw, setRaw] = useState(String(value))
   return (
     <input
       type="number"
@@ -65,6 +65,25 @@ function EditablePrice({
         }
       }}
       className="w-full rounded border border-transparent bg-transparent text-right text-sm tabular-nums focus:border-input focus:bg-background focus:outline-none focus:ring-1 focus:ring-ring [appearance:textfield]"
+    />
+  )
+}
+
+function EditableText({
+  value,
+  onChange,
+  className,
+}: {
+  value: string
+  onChange: (s: string) => void
+  className?: string
+}) {
+  return (
+    <input
+      type="text"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className={`w-full rounded border border-transparent bg-transparent focus:border-input focus:bg-background focus:outline-none focus:ring-1 focus:ring-ring ${className ?? ''}`}
     />
   )
 }
@@ -98,63 +117,72 @@ export function QuoteLineItemsEditor({
     taxRate ? (Number(taxRate) * 100).toFixed(2) : '0.00',
   )
 
-  // Derived config flags
-  const isAluminum = ACC_CONFIG_METHODS.has(configMethod ?? '')
   const isARE = configMethod === 'are-consumer'
-  // MAP column shown for ARE and fiberglass methods (not aluminum)
+  const isAluminum = ACC_CONFIG_METHODS.has(configMethod ?? '')
+  // MAP column shown for ARE + fiberglass; not for aluminum
   const showMapColumn = !isAluminum
 
   const { groups, extras } = groupItems(items)
-
-  // First base item id (locked on ARE quotes)
   const firstBaseId = groups[0]?.base.id ?? null
 
-  function isLockedBase(item: LineItem): boolean {
-    return isARE && item.id === firstBaseId
-  }
-
-  // Can edit description: aluminum items OR manually-added items (not ARE locked base)
-  function descEditable(item: LineItem): boolean {
-    if (isLockedBase(item)) return false
+  // Editability rules
+  // Base: editable for aluminum/manually-added only (ARE base is locked)
+  function baseDescEditable(item: LineItem): boolean {
     return isAluminum || isManuallyAdded(item)
   }
-
-  // Can edit Your Price: aluminum items OR manually-added items
-  function priceEditable(item: LineItem): boolean {
-    if (isLockedBase(item)) return false
+  function basePriceEditable(item: LineItem): boolean {
     return isAluminum || isManuallyAdded(item)
   }
+  function baseRemovable(item: LineItem): boolean {
+    // ARE first base is locked; aluminum/manually-added always removable
+    if (isARE && item.id === firstBaseId) return false
+    return true
+  }
 
-  // MAP shown for this item: only when showMapColumn AND not manually added
+  // Options: editable for ARE, aluminum, and manually-added
+  function optionDescEditable(item: LineItem): boolean {
+    return isARE || isAluminum || isManuallyAdded(item)
+  }
+  function optionPriceEditable(item: LineItem): boolean {
+    return isARE || isAluminum || isManuallyAdded(item)
+  }
+
+  // MAP is shown for non-aluminum, non-manually-added items
   function itemHasMap(item: LineItem): boolean {
     return showMapColumn && !isManuallyAdded(item)
   }
 
-  // Effective price for totals/subtotals: MAP if available, else dealer price
+  // Effective price for totals: MAP (msrp) when available, else dealer price
   function effectivePrice(item: LineItem): number {
     if (itemHasMap(item)) return Number(item.msrp)
     return Number(item.price)
   }
 
-  function handleUpdateItem(id: string, changes: Partial<LineItem>) {
+  function handleUpdate(id: string, changes: Partial<LineItem>) {
     setItems((prev) => prev.map((i) => (i.id === id ? { ...i, ...changes } : i)))
+  }
+
+  function handleRemove(id: string) {
+    setItems((prev) => prev.filter((i) => i.id !== id))
   }
 
   function handleAddItem() {
     if (!newItemDesc.trim()) return
     const price = Number(newItemPrice) || 0
-    const newItem: LineItem = {
-      id: tempId(),
-      quote_id: quoteId,
-      description: newItemDesc.trim(),
-      sku: null,
-      price,
-      msrp: isAluminum ? 0 : price,
-      quantity: 1,
-      is_required: false,
-      type: 'base',
-    }
-    setItems((prev) => [...prev, newItem])
+    setItems((prev) => [
+      ...prev,
+      {
+        id: tempId(),
+        quote_id: quoteId,
+        description: newItemDesc.trim(),
+        sku: null,
+        price,
+        msrp: isAluminum ? 0 : price,
+        quantity: 1,
+        is_required: false,
+        type: 'base',
+      },
+    ])
     setNewItemDesc('')
     setNewItemPrice('')
     setAddingItem(false)
@@ -163,7 +191,7 @@ export function QuoteLineItemsEditor({
   function handleAddOption() {
     if (!newOptionDesc.trim() || !addingOptionFor) return
     const price = Number(newOptionPrice) || 0
-    const newOption: LineItem = {
+    const newOpt: LineItem = {
       id: tempId(),
       quote_id: quoteId,
       description: newOptionDesc.trim(),
@@ -176,11 +204,11 @@ export function QuoteLineItemsEditor({
     }
     setItems((prev) => {
       const baseIdx = prev.findIndex((i) => i.id === addingOptionFor)
-      if (baseIdx === -1) return [...prev, newOption]
+      if (baseIdx === -1) return [...prev, newOpt]
       let insertAt = baseIdx + 1
       while (insertAt < prev.length && prev[insertAt].type === 'option') insertAt++
       const next = [...prev]
-      next.splice(insertAt, 0, newOption)
+      next.splice(insertAt, 0, newOpt)
       return next
     })
     setNewOptionDesc('')
@@ -188,31 +216,29 @@ export function QuoteLineItemsEditor({
     setAddingOptionFor(null)
   }
 
-  function handleRemove(id: string) {
-    setItems((prev) => prev.filter((i) => i.id !== id))
-  }
-
   function handleAddDiscount() {
     const value = parseFloat(discountValue) || 0
     if (!value) return
-    const subtotal = items
+    const sub = items
       .filter((i) => i.type !== 'discount')
       .reduce((s, i) => s + effectivePrice(i) * i.quantity, 0)
-    const amount = discountType === '%' ? subtotal * (value / 100) : value
+    const amount = discountType === '%' ? sub * (value / 100) : value
     const description =
       discountType === '%' ? `${value}% Discount` : `$${value.toFixed(2)} Discount`
-    const newDiscount: LineItem = {
-      id: tempId(),
-      quote_id: quoteId,
-      description,
-      sku: null,
-      price: -Math.abs(amount),
-      msrp: 0,
-      quantity: 1,
-      is_required: false,
-      type: 'discount',
-    }
-    setItems((prev) => [...prev, newDiscount])
+    setItems((prev) => [
+      ...prev,
+      {
+        id: tempId(),
+        quote_id: quoteId,
+        description,
+        sku: null,
+        price: -Math.abs(amount),
+        msrp: 0,
+        quantity: 1,
+        is_required: false,
+        type: 'discount',
+      },
+    ])
     setDiscountValue('')
     setDiscountType('%')
     setAddingDiscount(false)
@@ -228,97 +254,31 @@ export function QuoteLineItemsEditor({
   const taxAmount = subtotal * (parseFloat(localTax) / 100 || 0)
   const total = subtotal + taxAmount
 
-  const previewDiscountAmount =
+  const previewDiscountAmt =
     discountValue && parseFloat(discountValue)
       ? discountType === '%'
         ? itemsSubtotal * (parseFloat(discountValue) / 100)
         : parseFloat(discountValue)
       : null
 
-  // Column grid — 6 cols with MAP, 5 without
-  const headerCols = showMapColumn
+  // Column grid template
+  const cols = showMapColumn
     ? 'grid-cols-[minmax(0,1fr)_88px_88px_44px_88px_36px]'
     : 'grid-cols-[minmax(0,1fr)_88px_44px_88px_36px]'
 
-  function RowCells({
-    item,
-    isOption = false,
-    locked = false,
-  }: {
-    item: LineItem
-    isOption?: boolean
-    locked?: boolean
-  }) {
-    const canRemove = !locked
-    const groupTotal = effectivePrice(item) * item.quantity
-
+  // Shared header + map cell helper
+  function MapCell({ item, py }: { item: LineItem; py: string }) {
+    if (!showMapColumn) return null
     return (
-      <>
-        {/* Description */}
-        <div className={`flex items-center px-4 ${isOption ? 'py-2' : 'py-3'}`}>
-          {descEditable(item) ? (
-            <input
-              type="text"
-              value={item.description}
-              onChange={(e) => handleUpdateItem(item.id, { description: e.target.value })}
-              className={`w-full rounded border border-transparent bg-transparent focus:border-input focus:bg-background focus:outline-none focus:ring-1 focus:ring-ring ${isOption ? 'text-sm text-muted-foreground' : 'text-sm font-medium'}`}
-            />
-          ) : (
-            <span className={isOption ? 'text-sm text-muted-foreground' : 'text-sm font-medium'}>
-              {item.description}
-            </span>
-          )}
-        </div>
-
-        {/* Your Price */}
-        <div className={`flex items-center px-3 ${isOption ? 'py-2' : 'py-3'}`}>
-          {priceEditable(item) ? (
-            <EditablePrice
-              value={Number(item.price)}
-              onChange={(n) => handleUpdateItem(item.id, { price: n, msrp: n })}
-            />
-          ) : (
-            <span className={`block w-full text-right text-sm tabular-nums ${isOption ? 'text-muted-foreground' : ''}`}>
-              {formatCurrency(item.price)}
-            </span>
-          )}
-        </div>
-
-        {/* MAP — read-only published price; only shown for fiberglass/ARE configurator items */}
-        {showMapColumn && (
-          <div className={`flex items-center justify-end px-3 ${isOption ? 'py-2' : 'py-3'}`}>
-            {itemHasMap(item) ? (
-              <span className={`text-sm tabular-nums ${isOption ? 'text-muted-foreground' : ''}`}>
-                {formatCurrency(item.msrp)}
-              </span>
-            ) : (
-              <span className="text-sm text-muted-foreground">—</span>
-            )}
-          </div>
+      <div className={`flex items-center justify-end px-3 ${py}`}>
+        {itemHasMap(item) ? (
+          <span className="text-sm tabular-nums text-muted-foreground">
+            {formatCurrency(item.msrp)}
+          </span>
+        ) : (
+          <span className="text-sm text-muted-foreground">—</span>
         )}
-
-        {/* Qty */}
-        <div className={`px-2 text-center ${isOption ? 'py-2' : 'py-3'} text-sm ${isOption ? 'text-muted-foreground' : ''}`}>
-          {item.quantity}
-        </div>
-
-        {/* Total */}
-        <div className={`px-3 text-right ${isOption ? 'py-2 text-sm text-muted-foreground' : 'py-3 text-sm font-semibold'}`}>
-          {formatCurrency(groupTotal)}
-        </div>
-
-        {/* Remove */}
-        <div className="flex items-center justify-center">
-          {canRemove ? (
-            <button
-              onClick={() => handleRemove(item.id)}
-              className="text-muted-foreground hover:text-destructive"
-            >
-              <X size={14} />
-            </button>
-          ) : null}
-        </div>
-      </>
+      </div>
     )
   }
 
@@ -326,7 +286,7 @@ export function QuoteLineItemsEditor({
     <div className="flex flex-col">
       <div className="overflow-hidden rounded border border-[#d5d5d5]">
         {/* Header */}
-        <div className={`grid ${headerCols} bg-[#1E1E1E] text-white`}>
+        <div className={`grid ${cols} bg-[#1E1E1E] text-white`}>
           <div className="px-4 py-3 text-sm font-semibold">Item</div>
           <div className="px-3 py-3 text-right text-sm font-semibold">Your Price</div>
           {showMapColumn && (
@@ -337,18 +297,54 @@ export function QuoteLineItemsEditor({
           <div />
         </div>
 
-        {/* Groups */}
+        {/* Line item groups */}
         {groups.map((group) => {
-          const locked = isLockedBase(group.base)
-          const groupTotal =
+          const baseTotal =
             effectivePrice(group.base) * group.base.quantity +
             group.options.reduce((s, o) => s + effectivePrice(o) * o.quantity, 0)
 
           return (
             <div key={group.base.id} className="border-b last:border-b-0">
               {/* Base row */}
-              <div className={`grid ${headerCols} items-center border-b border-muted`}>
-                <RowCells item={group.base} locked={locked} />
+              <div className={`grid ${cols} items-center border-b border-muted`}>
+                <div className="flex items-center px-4 py-3">
+                  {baseDescEditable(group.base) ? (
+                    <EditableText
+                      value={group.base.description}
+                      onChange={(s) => handleUpdate(group.base.id, { description: s })}
+                      className="text-sm font-medium"
+                    />
+                  ) : (
+                    <span className="text-sm font-medium">{group.base.description}</span>
+                  )}
+                </div>
+                <div className="flex items-center px-3 py-3">
+                  {basePriceEditable(group.base) ? (
+                    <EditablePrice
+                      value={Number(group.base.price)}
+                      onChange={(n) => handleUpdate(group.base.id, { price: n, msrp: n })}
+                    />
+                  ) : (
+                    <span className="block w-full text-right text-sm tabular-nums">
+                      {formatCurrency(group.base.price)}
+                    </span>
+                  )}
+                </div>
+                <MapCell item={group.base} py="py-3" />
+                <div className="px-2 py-3 text-center text-sm">{group.base.quantity}</div>
+                <div className="px-3 py-3 text-right text-sm font-semibold">
+                  {formatCurrency(baseTotal)}
+                </div>
+                <div className="flex items-center justify-center">
+                  {baseRemovable(group.base) && (
+                    <button
+                      onClick={() => handleRemove(group.base.id)}
+                      className="text-muted-foreground hover:text-destructive"
+                    >
+                      <X size={14} />
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Options */}
@@ -358,8 +354,48 @@ export function QuoteLineItemsEditor({
                     Options
                   </p>
                   {group.options.map((opt) => (
-                    <div key={opt.id} className={`grid ${headerCols} items-center border-t border-muted/50`}>
-                      <RowCells item={opt} isOption />
+                    <div
+                      key={opt.id}
+                      className={`grid ${cols} items-center border-t border-muted/50`}
+                    >
+                      <div className="flex items-center px-6 py-2">
+                        {optionDescEditable(opt) ? (
+                          <EditableText
+                            value={opt.description}
+                            onChange={(s) => handleUpdate(opt.id, { description: s })}
+                            className="text-sm text-muted-foreground"
+                          />
+                        ) : (
+                          <span className="text-sm text-muted-foreground">{opt.description}</span>
+                        )}
+                      </div>
+                      <div className="flex items-center px-3 py-2">
+                        {optionPriceEditable(opt) ? (
+                          <EditablePrice
+                            value={Number(opt.price)}
+                            onChange={(n) => handleUpdate(opt.id, { price: n, msrp: n })}
+                          />
+                        ) : (
+                          <span className="block w-full text-right text-sm tabular-nums text-muted-foreground">
+                            {formatCurrency(opt.price)}
+                          </span>
+                        )}
+                      </div>
+                      <MapCell item={opt} py="py-2" />
+                      <div className="px-2 py-2 text-center text-sm text-muted-foreground">
+                        {opt.quantity}
+                      </div>
+                      <div className="px-3 py-2 text-right text-sm text-muted-foreground">
+                        {formatCurrency(effectivePrice(opt) * opt.quantity)}
+                      </div>
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() => handleRemove(opt.id)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -415,21 +451,29 @@ export function QuoteLineItemsEditor({
           )
         })}
 
-        {/* Extras (discounts / standalone custom) */}
+        {/* Extras: discounts / standalone custom items */}
         {extras.map((item) => (
           <div
             key={item.id}
-            className={`grid ${headerCols} items-center border-b last:border-b-0 bg-muted/10`}
+            className={`grid ${cols} items-center border-b last:border-b-0 bg-muted/10`}
           >
             <div className="px-4 py-3 text-sm italic text-muted-foreground">
               {item.description}
             </div>
-            <div className={`px-3 py-3 text-right text-sm ${item.type === 'discount' ? 'text-red-500' : ''}`}>
+            <div
+              className={`px-3 py-3 text-right text-sm ${item.type === 'discount' ? 'text-red-500' : ''}`}
+            >
               {formatCurrency(item.price)}
             </div>
-            {showMapColumn && <div className="px-3 py-3 text-right text-sm text-muted-foreground">—</div>}
-            <div className="px-2 py-3 text-center text-sm text-muted-foreground">{item.quantity}</div>
-            <div className={`px-3 py-3 text-right text-sm font-semibold ${item.type === 'discount' ? 'text-red-500' : ''}`}>
+            {showMapColumn && (
+              <div className="px-3 py-3 text-right text-sm text-muted-foreground">—</div>
+            )}
+            <div className="px-2 py-3 text-center text-sm text-muted-foreground">
+              {item.quantity}
+            </div>
+            <div
+              className={`px-3 py-3 text-right text-sm font-semibold ${item.type === 'discount' ? 'text-red-500' : ''}`}
+            >
               {formatCurrency(Number(item.price) * item.quantity)}
             </div>
             <div className="flex items-center justify-center">
@@ -507,9 +551,9 @@ export function QuoteLineItemsEditor({
                 <option value="%">%</option>
                 <option value="$">$</option>
               </select>
-              {previewDiscountAmount !== null && (
+              {previewDiscountAmt !== null && (
                 <span className="min-w-[72px] text-right text-sm font-medium text-red-500">
-                  −{formatCurrency(previewDiscountAmount)}
+                  −{formatCurrency(previewDiscountAmt)}
                 </span>
               )}
               <Button size="sm" onClick={handleAddDiscount} disabled={!discountValue}>
