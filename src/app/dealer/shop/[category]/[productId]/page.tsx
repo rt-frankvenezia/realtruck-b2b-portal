@@ -169,12 +169,16 @@ export default async function ProductDetailPage({
     const quoteDisplayNumber = quoteId ? `Q-${parseInt(quoteId.split('-').pop() ?? '0', 10).toString().padStart(4, '0')}` : null
 
     const leerMapPrice = (product as any).map_price as number | null
-    const leerDealerPrice = (product as any).dealer_price as number | null
+    const leerStaticDealerPrice = (product as any).dealer_price as number | null
     const leerDiscountRate = pricingTiers?.[0]?.discountPercent
       ? pricingTiers[0].discountPercent / 100
-      : leerDealerPrice && leerMapPrice
-        ? 1 - leerDealerPrice / leerMapPrice
+      : leerStaticDealerPrice && leerMapPrice
+        ? 1 - leerStaticDealerPrice / leerMapPrice
         : 0.20
+    // Compute Your Price from pricing group discount so it matches the configurator running total
+    const leerDealerPrice = leerMapPrice
+      ? Math.round(leerMapPrice * (1 - leerDiscountRate) * 100) / 100
+      : leerStaticDealerPrice
 
     return (
       <div className="flex flex-col gap-6">

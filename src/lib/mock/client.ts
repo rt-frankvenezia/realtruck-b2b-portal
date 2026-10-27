@@ -357,15 +357,30 @@ export function createMockClient(userId?: string) {
 
     async rpc(name: string, params?: Record<string, any>) {
       switch (name) {
-        case 'get_pricing_schedule':
-          return {
-            data: [
-              { min_quantity: 1, discount_percent: 5 },
-              { min_quantity: 5, discount_percent: 8 },
-              { min_quantity: 10, discount_percent: 12 },
-            ],
-            error: null,
-          }
+        case 'get_pricing_schedule': {
+          const { p_pricing_group_id, p_brand, p_product_line } = params ?? {}
+          if (!p_pricing_group_id) return { data: [], error: null }
+
+          const baseTiers = PRICING_GROUP_BASE_TIERS
+            .filter((t: any) => t.pricing_group_id === p_pricing_group_id)
+            .sort((a: any, b: any) => a.min_quantity - b.min_quantity)
+
+          // Check for a brand or product-line flat-discount override rule
+          const groupRules = PRICING_RULES.filter(
+            (r: any) => r.pricing_group_id === p_pricing_group_id && r.rule_type === 'flat_discount'
+          )
+          const override =
+            (p_product_line && groupRules.find((r: any) => r.target_type === 'product-line' && r.target_label === p_product_line)) ||
+            (p_brand && groupRules.find((r: any) => r.target_type === 'brand' && r.target_label === p_brand)) ||
+            null
+
+          const tiers = baseTiers.map((t: any) => ({
+            min_quantity: t.min_quantity,
+            discount_percent: override ? override.discount_percent : t.discount_percent,
+          }))
+
+          return { data: tiers, error: null }
+        }
 
         case 'check_product_purchase_access': {
           const { p_restriction_group_id, p_brand, p_category, p_product_line } = params ?? {}

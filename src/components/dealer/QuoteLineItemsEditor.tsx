@@ -37,7 +37,6 @@ function isManuallyAdded(item: LineItem): boolean {
   return item.id.startsWith('tmp-')
 }
 
-// Inline editable price input — used for aluminum, ARE options, and manually-added items
 function EditablePrice({
   value,
   onChange,
@@ -139,15 +138,15 @@ export function QuoteLineItemsEditor({
     return true
   }
 
-  // Options: editable for ARE, aluminum, and manually-added
+  // Options: desc editable for ARE, aluminum, and manually-added; price only for aluminum/manual
   function optionDescEditable(item: LineItem): boolean {
     return isARE || isAluminum || isManuallyAdded(item)
   }
   function optionPriceEditable(item: LineItem): boolean {
-    return isARE || isAluminum || isManuallyAdded(item)
+    return isAluminum || isManuallyAdded(item)
   }
 
-  // MAP is shown for non-aluminum, non-manually-added items
+  // Price (customer-facing) column is shown for non-aluminum items; editable for non-manually-added
   function itemHasMap(item: LineItem): boolean {
     return showMapColumn && !isManuallyAdded(item)
   }
@@ -266,18 +265,22 @@ export function QuoteLineItemsEditor({
     ? 'grid-cols-[minmax(0,1fr)_88px_88px_44px_88px_36px]'
     : 'grid-cols-[minmax(0,1fr)_88px_44px_88px_36px]'
 
-  // Shared header + map cell helper
-  function MapCell({ item, py }: { item: LineItem; py: string }) {
+  // Customer-facing Price cell — editable for MAP items, dash for manually-added/aluminum
+  function PriceCell({ item, py }: { item: LineItem; py: string }) {
     if (!showMapColumn) return null
-    return (
-      <div className={`flex items-center justify-end px-3 ${py}`}>
-        {itemHasMap(item) ? (
-          <span className="text-sm tabular-nums text-muted-foreground">
-            {formatCurrency(item.msrp)}
-          </span>
-        ) : (
+    if (!itemHasMap(item)) {
+      return (
+        <div className={`flex items-center justify-end px-3 ${py}`}>
           <span className="text-sm text-muted-foreground">—</span>
-        )}
+        </div>
+      )
+    }
+    return (
+      <div className={`flex items-center px-3 ${py}`}>
+        <EditablePrice
+          value={Number(item.msrp)}
+          onChange={(n) => handleUpdate(item.id, { msrp: n })}
+        />
       </div>
     )
   }
@@ -290,7 +293,7 @@ export function QuoteLineItemsEditor({
           <div className="px-4 py-3 text-sm font-semibold">Item</div>
           <div className="px-3 py-3 text-right text-sm font-semibold">Your Price</div>
           {showMapColumn && (
-            <div className="px-3 py-3 text-right text-sm font-semibold">MAP</div>
+            <div className="px-3 py-3 text-right text-sm font-semibold">Price</div>
           )}
           <div className="px-2 py-3 text-center text-sm font-semibold">Qty</div>
           <div className="px-3 py-3 text-right text-sm font-semibold">Total</div>
@@ -330,7 +333,7 @@ export function QuoteLineItemsEditor({
                     </span>
                   )}
                 </div>
-                <MapCell item={group.base} py="py-3" />
+                <PriceCell item={group.base} py="py-3" />
                 <div className="px-2 py-3 text-center text-sm">{group.base.quantity}</div>
                 <div className="px-3 py-3 text-right text-sm font-semibold">
                   {formatCurrency(baseTotal)}
@@ -381,7 +384,7 @@ export function QuoteLineItemsEditor({
                           </span>
                         )}
                       </div>
-                      <MapCell item={opt} py="py-2" />
+                      <PriceCell item={opt} py="py-2" />
                       <div className="px-2 py-2 text-center text-sm text-muted-foreground">
                         {opt.quantity}
                       </div>

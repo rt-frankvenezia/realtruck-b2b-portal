@@ -51,16 +51,19 @@ function buildLineItems(
   est: any,
   kitModel: any,
   quoteId: string,
+  discountRate: number,
 ): any[] {
   const items: any[] = []
+  const applyDiscount = (map: number) => Math.round(map * (1 - discountRate) * 100) / 100
 
   // Base item
+  const baseMap = est.total ?? 0
   items.push({
     quote_id: quoteId,
     description: kitModel.title ?? kit.model?.title ?? '',
     sku: kitModel.sku ?? '',
-    price: est.total ?? 0,
-    msrp: est.total ?? 0,
+    price: applyDiscount(baseMap),
+    msrp: baseMap,
     quantity: 1,
     is_required: true,
     type: 'base',
@@ -86,15 +89,16 @@ function buildLineItems(
     if (!allowed || allowed.length === 0) continue
     const code = sel[seg.key] ?? ''
     if (!code) continue
-    const price = optionBase(kit, bom, sel, seg.key, code)
+    const optionMap = optionBase(kit, bom, sel, seg.key, code)
     if (code) {
       const label = seg.labels?.get(code) ?? code
+      const mapPrice = typeof optionMap === 'number' ? optionMap : 0
       items.push({
         quote_id: quoteId,
         description: `${seg.label}: ${label}`,
         sku: null,
-        price: typeof price === 'number' ? price : 0,
-        msrp: typeof price === 'number' ? price : 0,
+        price: applyDiscount(mapPrice),
+        msrp: mapPrice,
         quantity: 1,
         is_required: false,
         type: 'option',
@@ -219,7 +223,7 @@ export function LeerConfigurator({
     setSaving(true)
     try {
       const snapshot = { kit: kitId, selections: (result as any).selections }
-      const lineItems = buildLineItems(kit, bom, result, est, kitModels[kitId], quoteId)
+      const lineItems = buildLineItems(kit, bom, result, est, kitModels[kitId], quoteId, discountRate ?? 0)
       await actionUpdateQuoteConfiguration(quoteId, snapshot, lineItems)
       startTransition(() => {
         router.push(returnUrl ?? `/dealer/quotes/${quoteId}`)
