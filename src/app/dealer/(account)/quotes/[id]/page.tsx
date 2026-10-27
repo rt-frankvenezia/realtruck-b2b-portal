@@ -189,10 +189,6 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
           status={quote.status}
           lineItems={(lineItems ?? []) as any}
           configurationSnapshot={(quote as any).configuration_snapshot}
-          customerName={quote.customer_name}
-          vehicleYear={quote.vehicle_year}
-          vehicleMake={quote.vehicle_make}
-          vehicleModel={quote.vehicle_model}
         />
       )}
 
