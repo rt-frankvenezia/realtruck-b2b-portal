@@ -22,6 +22,8 @@ export type DealerCartItem = {
   pricingTiers: PricingTier[] | null
   categorySlug: string
   quantity: number
+  /** Set when this item was added from a quote (configured LEER cap). Blocks mixing with regular catalog items. */
+  quoteId?: string
 }
 
 type DealerCartContextValue = {

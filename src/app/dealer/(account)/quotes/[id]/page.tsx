@@ -10,7 +10,7 @@ import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignD
 import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
 import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
 import { SendQuotePanel } from '@/components/dealer/SendQuotePanel'
-import { PlaceOrderPanel } from '@/components/dealer/PlaceOrderPanel'
+import { QuoteAddToCartPanel } from '@/components/dealer/QuoteAddToCartPanel'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL, ACC_CONFIG_METHODS, FIBERGLASS_CONFIG_METHODS } from '@/lib/quote-config'
 
@@ -181,9 +181,9 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
       {/* Message To Customer / Send Quote */}
       <SendQuotePanel quoteId={quote.id} status={quote.status} />
 
-      {/* Fiberglass → wholesale order (LEER, Century, Snugtop) */}
+      {/* Fiberglass → add configured cap to cart for normal checkout */}
       {FIBERGLASS_CONFIG_METHODS.has((quote as any).configuration_method) && (lineItems ?? []).length > 0 && (
-        <PlaceOrderPanel
+        <QuoteAddToCartPanel
           quoteId={quote.id}
           brand={(quote as any).brand ?? 'LEER'}
           status={quote.status}

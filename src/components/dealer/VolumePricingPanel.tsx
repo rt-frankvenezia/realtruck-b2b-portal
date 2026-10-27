@@ -34,8 +34,9 @@ export function VolumePricingPanel({
   purchaseAllowed = true,
   children,
 }: Props) {
-  const { addItem } = useDealerCart()
+  const { addItem, items } = useDealerCart()
   const [quantity, setQuantity] = useState(1)
+  const hasLeerCap = items.some((i) => i.quoteId != null)
 
   const effectiveTier = resolveEffectiveTier(pricingTiers, quantity)
   const effectivePrice = resolveEffectivePrice(mapPrice, pricingTiers, quantity)
@@ -116,24 +117,34 @@ export function VolumePricingPanel({
 
       {/* Quantity + Add to Cart — hidden when purchase is not allowed */}
       {purchaseAllowed && (
-        <div className="mt-5 flex items-center gap-2">
-          <Input
-            id={`qty-${productId}`}
-            type="number"
-            min={1}
-            value={quantity}
-            onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-            className="w-20 shrink-0"
-          />
-          <Button
-            disabled={disabled}
-            onClick={handleAddToCart}
-            className="flex-1 bg-[#0082C8] text-white hover:bg-[#006BAA]"
-          >
-            <ShoppingCart size={16} />
-            ADD TO CART
-          </Button>
-        </div>
+        hasLeerCap ? (
+          <p className="mt-5 text-xs text-amber-700 rounded border border-amber-200 bg-amber-50 px-3 py-2">
+            Your cart has a configured LEER cap.{' '}
+            <a href="/dealer/shop/cart" className="font-medium underline">
+              Checkout or remove it
+            </a>{' '}
+            before adding other items.
+          </p>
+        ) : (
+          <div className="mt-5 flex items-center gap-2">
+            <Input
+              id={`qty-${productId}`}
+              type="number"
+              min={1}
+              value={quantity}
+              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+              className="w-20 shrink-0"
+            />
+            <Button
+              disabled={disabled}
+              onClick={handleAddToCart}
+              className="flex-1 bg-[#0082C8] text-white hover:bg-[#006BAA]"
+            >
+              <ShoppingCart size={16} />
+              ADD TO CART
+            </Button>
+          </div>
+        )
       )}
     </div>
   )
