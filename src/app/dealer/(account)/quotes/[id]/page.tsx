@@ -195,6 +195,7 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
         quoteId={quote.id}
         lineItems={lineItems ?? []}
         taxRate={quote.tax_rate}
+        configMethod={configMethod}
       />
 
       {/* Aluminum → ACC external order number recording */}
