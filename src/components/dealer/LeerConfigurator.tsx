@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
+import { actionUpdateQuoteConfiguration } from '@/lib/actions/quotes'
 import {
   compileKit,
   defaultSelections,
@@ -220,15 +220,7 @@ export function LeerConfigurator({
     try {
       const snapshot = { kit: kitId, selections: (result as any).selections }
       const lineItems = buildLineItems(kit, bom, result, est, kitModels[kitId], quoteId)
-
-      const supabase = createClient()
-      await supabase
-        .from('quotes')
-        .update({ configuration_snapshot: snapshot })
-        .eq('id', quoteId)
-      await supabase.from('quote_line_items').delete().eq('quote_id', quoteId)
-      await supabase.from('quote_line_items').insert(lineItems)
-
+      await actionUpdateQuoteConfiguration(quoteId, snapshot, lineItems)
       startTransition(() => {
         router.push(returnUrl ?? `/dealer/quotes/${quoteId}`)
       })

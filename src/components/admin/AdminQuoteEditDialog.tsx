@@ -22,7 +22,7 @@ import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import type { Database, Tables } from '@/lib/database.types'
 
 type QuoteStatus = Database['public']['Enums']['quote_status']
-const ALL_STATUSES: QuoteStatus[] = ['new', 'working', 'quote_sent', 'converted', 'lost', 'spam', 'invalid', 'test']
+const ALL_STATUSES: QuoteStatus[] = ['new', 'working', 'quote_sent', 'closed_won', 'closed_lost', 'spam', 'invalid', 'test']
 
 export function AdminQuoteEditDialog({ quote }: { quote: Tables<'quotes'> }) {
   const router = useRouter()

@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { CheckCircle2, Send } from 'lucide-react'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionSendQuote } from '@/lib/actions/quotes'
 import { Button } from '@/components/ui/button'
 import type { Database } from '@/lib/database.types'
 
@@ -21,7 +20,6 @@ export function SendQuotePanel({
   quoteId: string
   status: QuoteStatus
 }) {
-  const router = useRouter()
   const [message, setMessage] = useState('')
   const [isPending, startTransition] = useTransition()
 
@@ -32,57 +30,13 @@ export function SendQuotePanel({
 
   function handleSend() {
     startTransition(async () => {
-      const supabase = createClient()
-
-      if (message.trim()) {
-        const { error: noteError } = await supabase.rpc('add_quote_note', {
-          p_quote_id: quoteId,
-          p_message: message.trim(),
-          p_is_internal: false,
-        })
-        if (noteError) {
-          toast.error(noteError.message)
-          return
-        }
+      try {
+        await actionSendQuote(quoteId, message.trim() || undefined)
+        toast.success(alreadySent ? 'Quote resent to customer' : 'Quote sent to customer')
+        setMessage('')
+      } catch {
+        toast.error('Failed to send quote')
       }
-
-      const { error } = await supabase.rpc('send_quote', { p_quote_id: quoteId })
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-
-      toast.success('Quote sent to customer')
-      setMessage('')
-      router.refresh()
-    })
-  }
-
-  function handleResend() {
-    startTransition(async () => {
-      const supabase = createClient()
-
-      if (message.trim()) {
-        const { error: noteError } = await supabase.rpc('add_quote_note', {
-          p_quote_id: quoteId,
-          p_message: message.trim(),
-          p_is_internal: false,
-        })
-        if (noteError) {
-          toast.error(noteError.message)
-          return
-        }
-      }
-
-      const { error } = await supabase.rpc('send_quote', { p_quote_id: quoteId })
-      if (error) {
-        toast.error(error.message)
-        return
-      }
-
-      toast.success('Quote resent to customer')
-      setMessage('')
-      router.refresh()
     })
   }
 
@@ -120,7 +74,7 @@ export function SendQuotePanel({
                 : 'Sending the quote will notify the customer and move the quote to Quote Sent status.'}
             </p>
             <Button
-              onClick={alreadySent ? handleResend : handleSend}
+              onClick={handleSend}
               disabled={isPending}
               className="shrink-0 bg-[#FFC60B] font-semibold uppercase tracking-wide text-[#1E1E1E] hover:bg-[#FFC60B]/90"
             >

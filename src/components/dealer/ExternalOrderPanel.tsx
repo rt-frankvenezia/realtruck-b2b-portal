@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { CheckCircle2, ExternalLink } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { actionSaveExternalOrder } from '@/lib/actions/quotes'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -25,7 +24,6 @@ export function ExternalOrderPanel({
   initialOrderNumber: string | null
   orderedAt: string | null
 }) {
-  const router = useRouter()
   const [orderNumber, setOrderNumber] = useState(initialOrderNumber ?? '')
   const [isPending, startTransition] = useTransition()
   const [localOrderedAt, setLocalOrderedAt] = useState<string | null>(orderedAt)
@@ -36,25 +34,14 @@ export function ExternalOrderPanel({
   function handleMarkAsOrdered() {
     if (!orderNumber.trim()) return
     startTransition(async () => {
-      const supabase = createClient()
-      const now = new Date().toISOString()
-      const { error } = await supabase
-        .from('quotes')
-        .update({
-          external_order_number: orderNumber.trim(),
-          ordered_externally_at: now,
-        })
-        .eq('id', quoteId)
-
-      if (error) {
+      try {
+        await actionSaveExternalOrder(quoteId, orderNumber.trim())
+        setLocalOrderNumber(orderNumber.trim())
+        setLocalOrderedAt(new Date().toISOString())
+        toast.success('Order recorded.')
+      } catch {
         toast.error('Failed to save order number.')
-        return
       }
-
-      setLocalOrderNumber(orderNumber.trim())
-      setLocalOrderedAt(now)
-      toast.success('Order recorded.')
-      router.refresh()
     })
   }
 

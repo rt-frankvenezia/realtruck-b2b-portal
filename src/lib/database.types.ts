@@ -4084,8 +4084,8 @@ export type Database = {
         | "new"
         | "working"
         | "quote_sent"
-        | "converted"
-        | "lost"
+        | "closed_won"
+        | "closed_lost"
         | "spam"
         | "invalid"
         | "test"
@@ -4401,8 +4401,8 @@ export const Constants = {
         "new",
         "working",
         "quote_sent",
-        "converted",
-        "lost",
+        "closed_won",
+        "closed_lost",
         "spam",
         "invalid",
         "test",

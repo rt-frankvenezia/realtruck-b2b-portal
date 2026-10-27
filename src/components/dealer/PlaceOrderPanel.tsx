@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
 import { CheckCircle2, ShoppingCart, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/client'
+import { actionPlaceFiberglassOrder } from '@/lib/actions/quotes'
 import { Button } from '@/components/ui/button'
 import type { Database } from '@/lib/database.types'
 
@@ -49,12 +48,11 @@ export function PlaceOrderPanel({
   vehicleMake: string | null
   vehicleModel: string | null
 }) {
-  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [orderNumber, setOrderNumber] = useState<string | null>(null)
 
   const canOrder = status === 'quote_sent'
-  const isConverted = status === 'converted'
+  const isConverted = status === 'closed_won'
 
   if (!canOrder && !isConverted) return null
 
@@ -69,17 +67,13 @@ export function PlaceOrderPanel({
 
   function handlePlaceOrder() {
     startTransition(async () => {
-      const supabase = createClient()
-      const { data, error } = await supabase.rpc('place_leer_fiberglass_order', {
-        p_quote_id: quoteId,
-      })
-      if (error) {
-        toast.error(error.message)
-        return
+      try {
+        const result = await actionPlaceFiberglassOrder(quoteId)
+        setOrderNumber(result.orderNumber)
+        toast.success('Wholesale order placed successfully')
+      } catch (err: any) {
+        toast.error(err.message ?? 'Failed to place order')
       }
-      setOrderNumber((data as any)?.order_number ?? null)
-      toast.success('Wholesale order placed successfully')
-      router.refresh()
     })
   }
 

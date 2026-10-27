@@ -1184,7 +1184,7 @@ export const QUOTES = [
   },
   {
     id: '55555555-5555-5555-5555-000000000004',
-    status: 'converted',
+    status: 'closed_won',
     source: 'realtruck.com',
     location_id: '22222222-2222-2222-2222-000000000003',
     company_id: '11111111-1111-1111-1111-000000000002',
@@ -1203,7 +1203,7 @@ export const QUOTES = [
   },
   {
     id: '55555555-5555-5555-5555-000000000005',
-    status: 'lost',
+    status: 'closed_lost',
     source: 'realtruck.com',
     location_id: '22222222-2222-2222-2222-000000000003',
     company_id: '11111111-1111-1111-1111-000000000002',
@@ -1458,7 +1458,7 @@ export const QUOTES = [
   },
   {
     id: '55555555-5555-5555-5555-000000000018',
-    status: 'working',
+    status: 'quote_sent',
     source: 'leer.com',
     brand: 'LEER',
     configuration_method: 'leer-fiberglass',
@@ -1484,7 +1484,7 @@ export const QUOTES = [
   // LEER quote — aluminum (Lone Star, LEER-only dealer)
   {
     id: '55555555-5555-5555-5555-000000000019',
-    status: 'new',
+    status: 'quote_sent',
     source: 'leer.com',
     brand: 'LEER',
     configuration_method: 'leer-aluminum',

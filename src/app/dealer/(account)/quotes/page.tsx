@@ -45,7 +45,7 @@ export default async function DealerQuotesPage() {
   const requiresAction = rows.filter((q) => q.status === 'new').length
   const total = rows.length
   const active = rows.filter((q) => activeStatuses.has(q.status)).length
-  const converted = rows.filter((q) => q.status === 'converted').length
+  const converted = rows.filter((q) => q.status === 'closed_won').length
   const conversionRate = total > 0 ? Math.round((converted / total) * 100) : 0
 
   return (

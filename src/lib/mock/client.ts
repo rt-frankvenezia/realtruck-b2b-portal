@@ -37,7 +37,7 @@ import {
 } from './fixtures'
 import { DEMO_USERS } from './session'
 
-const FIXTURE_MAP: Record<string, any[]> = {
+export const FIXTURE_MAP: Record<string, any[]> = {
   product_categories: PRODUCT_CATEGORIES,
   catalog_products: CATALOG_PRODUCTS,
   catalog_product_inventory: CATALOG_PRODUCT_INVENTORY,
@@ -505,7 +505,7 @@ export function createMockClient(userId?: string) {
             // Transition quote to converted
             const quoteIdx = quotesArr.findIndex((q: any) => q.id === p_quote_id)
             if (quoteIdx !== -1) {
-              quotesArr[quoteIdx] = { ...quotesArr[quoteIdx], status: 'converted', updated_at: now }
+              quotesArr[quoteIdx] = { ...quotesArr[quoteIdx], status: 'closed_won', updated_at: now }
             }
 
             // Activity entry
