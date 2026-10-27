@@ -32,10 +32,13 @@ export function QuoteLineItemsEditor({
   quoteId,
   lineItems,
   taxRate,
+  configuratorControlled = false,
 }: {
   quoteId: string
   lineItems: LineItem[]
   taxRate?: number | null
+  /** When true (fiberglass configurator quotes), hides add/remove controls — line items come from the configurator. */
+  configuratorControlled?: boolean
 }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
@@ -149,54 +152,58 @@ export function QuoteLineItemsEditor({
                       <div className="px-3 py-2 text-sm text-muted-foreground">{formatCurrency(opt.price)}</div>
                       <div className="px-3 py-2 text-center text-sm text-muted-foreground">{opt.quantity}</div>
                       <div />
-                      <button
-                        onClick={() => handleRemoveItem(opt.id)}
-                        disabled={isPending}
-                        className="flex items-center justify-center text-muted-foreground hover:text-destructive disabled:opacity-40"
-                        title="Remove option"
-                      >
-                        <X size={14} />
-                      </button>
+                      {!configuratorControlled && (
+                        <button
+                          onClick={() => handleRemoveItem(opt.id)}
+                          disabled={isPending}
+                          className="flex items-center justify-center text-muted-foreground hover:text-destructive disabled:opacity-40"
+                          title="Remove option"
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
               )}
 
-              {/* Add option row */}
-              {addingItemToGroupId === group.base.id ? (
-                <div className="border-t border-muted bg-muted/20 px-4 py-3">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Option description"
-                      value={newOptionDesc}
-                      onChange={(e) => setNewOptionDesc(e.target.value)}
-                      className="flex-1"
-                      autoFocus
-                    />
-                    <Input
-                      type="number"
-                      placeholder="0.00"
-                      value={newOptionPrice}
-                      onChange={(e) => setNewOptionPrice(e.target.value)}
-                      className="w-24"
-                    />
-                    <Button size="sm" onClick={() => handleAddOption(group.base.id)} disabled={isPending || !newOptionDesc.trim()}>
-                      Add
-                    </Button>
-                    <Button size="sm" variant="ghost" onClick={() => { setAddingItemToGroupId(null); setNewOptionDesc(''); setNewOptionPrice('') }}>
-                      Cancel
-                    </Button>
+              {/* Add option row — hidden for configurator-controlled quotes */}
+              {!configuratorControlled && (
+                addingItemToGroupId === group.base.id ? (
+                  <div className="border-t border-muted bg-muted/20 px-4 py-3">
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Option description"
+                        value={newOptionDesc}
+                        onChange={(e) => setNewOptionDesc(e.target.value)}
+                        className="flex-1"
+                        autoFocus
+                      />
+                      <Input
+                        type="number"
+                        placeholder="0.00"
+                        value={newOptionPrice}
+                        onChange={(e) => setNewOptionPrice(e.target.value)}
+                        className="w-24"
+                      />
+                      <Button size="sm" onClick={() => handleAddOption(group.base.id)} disabled={isPending || !newOptionDesc.trim()}>
+                        Add
+                      </Button>
+                      <Button size="sm" variant="ghost" onClick={() => { setAddingItemToGroupId(null); setNewOptionDesc(''); setNewOptionPrice('') }}>
+                        Cancel
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <div className="border-t border-muted/40 px-4 py-2">
-                  <button
-                    onClick={() => setAddingItemToGroupId(group.base.id)}
-                    className="text-xs font-medium text-primary hover:underline"
-                  >
-                    + ADD OPTION
-                  </button>
-                </div>
+                ) : (
+                  <div className="border-t border-muted/40 px-4 py-2">
+                    <button
+                      onClick={() => setAddingItemToGroupId(group.base.id)}
+                      className="text-xs font-medium text-primary hover:underline"
+                    >
+                      + ADD OPTION
+                    </button>
+                  </div>
+                )
               )}
             </div>
           )
@@ -212,38 +219,40 @@ export function QuoteLineItemsEditor({
       {/* Bottom actions + totals */}
       <div className="mt-3 flex items-start justify-between gap-4">
         <div className="flex gap-2">
-          {addingItemToGroupId === '__new__' ? (
-            <div className="flex gap-2">
-              <Input
-                placeholder="Item description"
-                value={newItemDescription}
-                onChange={(e) => setNewItemDescription(e.target.value)}
-                className="w-56"
-                autoFocus
-              />
-              <Input
-                type="number"
-                placeholder="Price"
-                value={newItemPrice}
-                onChange={(e) => setNewItemPrice(e.target.value)}
-                className="w-24"
-              />
-              <Button size="sm" onClick={handleAddItem} disabled={isPending || !newItemDescription.trim()}>
-                Add
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => { setAddingItemToGroupId(null); setNewItemDescription(''); setNewItemPrice('') }}>
-                Cancel
-              </Button>
-            </div>
-          ) : (
-            <>
-              <Button size="sm" variant="outline" onClick={() => setAddingItemToGroupId('__new__')}>
-                + ADD ITEM
-              </Button>
-              <Button size="sm" variant="outline" disabled>
-                + ADD DISCOUNT
-              </Button>
-            </>
+          {!configuratorControlled && (
+            addingItemToGroupId === '__new__' ? (
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Item description"
+                  value={newItemDescription}
+                  onChange={(e) => setNewItemDescription(e.target.value)}
+                  className="w-56"
+                  autoFocus
+                />
+                <Input
+                  type="number"
+                  placeholder="Price"
+                  value={newItemPrice}
+                  onChange={(e) => setNewItemPrice(e.target.value)}
+                  className="w-24"
+                />
+                <Button size="sm" onClick={handleAddItem} disabled={isPending || !newItemDescription.trim()}>
+                  Add
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => { setAddingItemToGroupId(null); setNewItemDescription(''); setNewItemPrice('') }}>
+                  Cancel
+                </Button>
+              </div>
+            ) : (
+              <>
+                <Button size="sm" variant="outline" onClick={() => setAddingItemToGroupId('__new__')}>
+                  + ADD ITEM
+                </Button>
+                <Button size="sm" variant="outline" disabled>
+                  + ADD DISCOUNT
+                </Button>
+              </>
+            )
           )}
         </div>
 

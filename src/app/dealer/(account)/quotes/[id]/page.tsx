@@ -1,22 +1,23 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { ChevronLeft } from 'lucide-react'
+import { ChevronLeft, ExternalLink } from 'lucide-react'
 import { createClient } from '@/lib/supabase/server'
 import { getCurrentUser } from '@/lib/auth'
-import { QuoteStatusActions } from '@/components/dealer/QuoteStatusActions'
+import { QuoteStatusSelect } from '@/components/dealer/QuoteStatusSelect'
 import { QuoteActivityTimeline } from '@/components/dealer/QuoteActivityTimeline'
 import { QuoteLineItemsEditor } from '@/components/dealer/QuoteLineItemsEditor'
 import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignDialog'
 import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
 import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
-import { SendQuotePanel } from '@/components/dealer/SendQuotePanel'
+import { QuoteSendButton } from '@/components/dealer/QuoteSendButton'
 import { QuoteCartButton } from '@/components/dealer/QuoteCartButton'
-import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL, ACC_CONFIG_METHODS, FIBERGLASS_CONFIG_METHODS } from '@/lib/quote-config'
 
 const PANEL = 'overflow-hidden rounded border border-[#d5d5d5] bg-white'
 const PANEL_HEADER = 'bg-[#1E1E1E] px-4 py-3'
 const PANEL_BODY = 'p-4'
+
+const ACC_PORTAL_URL = 'https://acc.leergroup.com'
 
 function quoteDisplayNum(id: string): string {
   const n = parseInt(id.split('-').pop() ?? '0', 16)
@@ -68,6 +69,10 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
 
   const displayNum = quoteDisplayNum(quote.id)
   const currentLocationName = location ? `${location.code} ${location.city}` : 'Unknown'
+  const configMethod = (quote as any).configuration_method ?? null
+  const isFiberglass = FIBERGLASS_CONFIG_METHODS.has(configMethod)
+  const isACC = ACC_CONFIG_METHODS.has(configMethod)
+  const hasLineItems = (lineItems ?? []).length > 0
 
   const createdAt = new Date(quote.created_at).toLocaleString('en-US', {
     month: 'short',
@@ -94,7 +99,8 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
               locations={reassignLocations}
             />
           )}
-          {FIBERGLASS_CONFIG_METHODS.has((quote as any).configuration_method) && (lineItems ?? []).length > 0 && (
+          {/* Fiberglass: Add to Cart when quote_sent */}
+          {isFiberglass && hasLineItems && (
             <QuoteCartButton
               quoteId={quote.id}
               brand={(quote as any).brand ?? 'LEER'}
@@ -103,7 +109,20 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
               configurationSnapshot={(quote as any).configuration_snapshot}
             />
           )}
-          <QuoteStatusActions quoteId={quote.id} status={quote.status} />
+          {/* Aluminum: ACC portal link when quote_sent */}
+          {isACC && quote.status === 'quote_sent' && (
+            <a
+              href={ACC_PORTAL_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 rounded border border-input bg-background px-3 py-1.5 text-sm font-semibold hover:bg-muted"
+            >
+              ACC Order Portal
+              <ExternalLink size={13} />
+            </a>
+          )}
+          {/* Send / Resend quote */}
+          <QuoteSendButton quoteId={quote.id} status={quote.status} />
         </div>
       </div>
 
@@ -141,7 +160,7 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
           <div className={`${PANEL_BODY} flex flex-col gap-3`}>
             <div>
               <p className="text-xs text-muted-foreground">Status</p>
-              <p className="mt-0.5 text-sm font-medium">{QUOTE_STATUS_LABEL[quote.status]}</p>
+              <QuoteStatusSelect quoteId={quote.id} status={quote.status} />
             </div>
             <Field label="Quote ID" value={displayNum} />
             <Field label="Created" value={createdAt} />
@@ -163,10 +182,10 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
       {(quote as any).brand === 'LEER' && (
         <LeerConfigurePanel
           quoteId={quote.id}
-          configurationMethod={(quote as any).configuration_method ?? null}
+          configurationMethod={configMethod}
           originalRequestedProduct={(quote as any).original_requested_product ?? null}
           configurationSnapshot={(quote as any).configuration_snapshot ?? null}
-          hasLineItems={(lineItems ?? []).length > 0}
+          hasLineItems={hasLineItems}
         />
       )}
 
@@ -175,10 +194,11 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
         quoteId={quote.id}
         lineItems={lineItems ?? []}
         taxRate={quote.tax_rate}
+        configuratorControlled={isFiberglass}
       />
 
-      {/* Aluminum → ACC external order portal (LEER, Century, Snugtop) */}
-      {ACC_CONFIG_METHODS.has((quote as any).configuration_method) && (
+      {/* Aluminum → ACC external order number recording */}
+      {isACC && (
         <ExternalOrderPanel
           quoteId={quote.id}
           brand={(quote as any).brand ?? 'LEER'}
@@ -186,9 +206,6 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
           orderedAt={(quote as any).ordered_externally_at ?? null}
         />
       )}
-
-      {/* Message To Customer / Send Quote */}
-      <SendQuotePanel quoteId={quote.id} status={quote.status} />
 
       {/* Activity */}
       <div className={PANEL}>
