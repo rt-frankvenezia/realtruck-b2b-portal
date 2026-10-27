@@ -4079,7 +4079,7 @@ export type Database = {
         | "delivered"
         | "pending_credit_review"
       quote_activity_type: "status_change" | "note" | "quote_sent" | "system"
-      quote_line_item_type: "base" | "option" | "custom"
+      quote_line_item_type: "base" | "option" | "custom" | "discount"
       quote_status:
         | "new"
         | "working"
@@ -4396,7 +4396,7 @@ export const Constants = {
         "pending_credit_review",
       ],
       quote_activity_type: ["status_change", "note", "quote_sent", "system"],
-      quote_line_item_type: ["base", "option", "custom"],
+      quote_line_item_type: ["base", "option", "custom", "discount"],
       quote_status: [
         "new",
         "working",

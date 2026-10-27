@@ -132,6 +132,72 @@ export async function actionSaveExternalOrder(quoteId: string, orderNumber: stri
   revalidatePath(`/dealer/quotes/${quoteId}`)
 }
 
+export async function actionAddQuoteLineItem(quoteId: string, description: string, price: number) {
+  const now = new Date().toISOString()
+  const liArr = FIXTURE_MAP['quote_line_items']
+  if (liArr) {
+    liArr.push({
+      id: randomId(),
+      quote_id: quoteId,
+      description,
+      price,
+      msrp: price,
+      quantity: 1,
+      is_required: false,
+      type: 'base',
+      created_at: now,
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+}
+
+export async function actionAddQuoteOption(quoteId: string, description: string, price: number) {
+  const now = new Date().toISOString()
+  const liArr = FIXTURE_MAP['quote_line_items']
+  if (liArr) {
+    liArr.push({
+      id: randomId(),
+      quote_id: quoteId,
+      description,
+      price,
+      msrp: price,
+      quantity: 1,
+      is_required: false,
+      type: 'option',
+      created_at: now,
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+}
+
+export async function actionRemoveQuoteLineItem(itemId: string, quoteId: string) {
+  const liArr = FIXTURE_MAP['quote_line_items']
+  if (liArr) {
+    const idx = liArr.findIndex((li: any) => li.id === itemId)
+    if (idx !== -1) liArr.splice(idx, 1)
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+}
+
+export async function actionAddQuoteDiscount(quoteId: string, description: string, amount: number) {
+  const now = new Date().toISOString()
+  const liArr = FIXTURE_MAP['quote_line_items']
+  if (liArr) {
+    liArr.push({
+      id: randomId(),
+      quote_id: quoteId,
+      description,
+      price: -Math.abs(amount),
+      msrp: 0,
+      quantity: 1,
+      is_required: false,
+      type: 'discount',
+      created_at: now,
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+}
+
 export async function actionPlaceFiberglassOrder(quoteId: string): Promise<{ orderNumber: string }> {
   const now = new Date().toISOString()
   const user = await currentUser()
