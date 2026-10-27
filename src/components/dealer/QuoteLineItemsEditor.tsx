@@ -37,15 +37,13 @@ function isManuallyAdded(item: LineItem): boolean {
   return item.id.startsWith('tmp-')
 }
 
-// Shared editable number cell for MAP / Your Price
+// Editable price cell — used only for aluminum / manually-added items
 function EditablePrice({
   value,
   onChange,
-  placeholder = '0.00',
 }: {
   value: number
   onChange: (n: number) => void
-  placeholder?: string
 }) {
   const [raw, setRaw] = useState<string>(() => String(value))
   return (
@@ -54,7 +52,7 @@ function EditablePrice({
       min={0}
       step={0.01}
       value={raw}
-      placeholder={placeholder}
+      placeholder="0.00"
       onChange={(e) => {
         setRaw(e.target.value)
         const n = parseFloat(e.target.value)
@@ -277,25 +275,24 @@ export function QuoteLineItemsEditor({
           {priceEditable(item) ? (
             <EditablePrice
               value={Number(item.price)}
-              onChange={(n) => handleUpdateItem(item.id, isAluminum ? { price: n, msrp: n } : { price: n })}
+              onChange={(n) => handleUpdateItem(item.id, { price: n, msrp: n })}
             />
           ) : (
-            <span className={`text-right text-sm tabular-nums ${isOption ? 'text-muted-foreground' : ''} block w-full`}>
+            <span className={`block w-full text-right text-sm tabular-nums ${isOption ? 'text-muted-foreground' : ''}`}>
               {formatCurrency(item.price)}
             </span>
           )}
         </div>
 
-        {/* MAP (conditional) */}
+        {/* MAP — read-only published price; only shown for fiberglass/ARE configurator items */}
         {showMapColumn && (
-          <div className={`flex items-center px-3 ${isOption ? 'py-2' : 'py-3'}`}>
+          <div className={`flex items-center justify-end px-3 ${isOption ? 'py-2' : 'py-3'}`}>
             {itemHasMap(item) ? (
-              <EditablePrice
-                value={Number(item.msrp)}
-                onChange={(n) => handleUpdateItem(item.id, { msrp: n })}
-              />
+              <span className={`text-sm tabular-nums ${isOption ? 'text-muted-foreground' : ''}`}>
+                {formatCurrency(item.msrp)}
+              </span>
             ) : (
-              <span className="block w-full text-right text-sm text-muted-foreground">—</span>
+              <span className="text-sm text-muted-foreground">—</span>
             )}
           </div>
         )}
