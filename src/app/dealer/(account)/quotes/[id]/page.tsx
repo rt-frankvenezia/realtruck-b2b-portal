@@ -10,7 +10,7 @@ import { AdminQuoteReassignDialog } from '@/components/admin/AdminQuoteReassignD
 import { LeerConfigurePanel } from '@/components/dealer/LeerConfigurePanel'
 import { ExternalOrderPanel } from '@/components/dealer/ExternalOrderPanel'
 import { SendQuotePanel } from '@/components/dealer/SendQuotePanel'
-import { QuoteAddToCartPanel } from '@/components/dealer/QuoteAddToCartPanel'
+import { QuoteCartButton } from '@/components/dealer/QuoteCartButton'
 import { QUOTE_STATUS_LABEL } from '@/lib/status-labels'
 import { QUOTE_SOURCE_LABEL, QUOTE_BRAND_LABEL, ACC_CONFIG_METHODS, FIBERGLASS_CONFIG_METHODS } from '@/lib/quote-config'
 
@@ -92,6 +92,15 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
               quoteDisplayNum={displayNum}
               currentLocationName={currentLocationName}
               locations={reassignLocations}
+            />
+          )}
+          {FIBERGLASS_CONFIG_METHODS.has((quote as any).configuration_method) && (lineItems ?? []).length > 0 && (
+            <QuoteCartButton
+              quoteId={quote.id}
+              brand={(quote as any).brand ?? 'LEER'}
+              status={quote.status}
+              lineItems={(lineItems ?? []) as any}
+              configurationSnapshot={(quote as any).configuration_snapshot}
             />
           )}
           <QuoteStatusActions quoteId={quote.id} status={quote.status} />
@@ -180,17 +189,6 @@ export default async function QuoteDetailPage({ params }: { params: Promise<{ id
 
       {/* Message To Customer / Send Quote */}
       <SendQuotePanel quoteId={quote.id} status={quote.status} />
-
-      {/* Fiberglass → add configured cap to cart for normal checkout */}
-      {FIBERGLASS_CONFIG_METHODS.has((quote as any).configuration_method) && (lineItems ?? []).length > 0 && (
-        <QuoteAddToCartPanel
-          quoteId={quote.id}
-          brand={(quote as any).brand ?? 'LEER'}
-          status={quote.status}
-          lineItems={(lineItems ?? []) as any}
-          configurationSnapshot={(quote as any).configuration_snapshot}
-        />
-      )}
 
       {/* Activity */}
       <div className={PANEL}>
