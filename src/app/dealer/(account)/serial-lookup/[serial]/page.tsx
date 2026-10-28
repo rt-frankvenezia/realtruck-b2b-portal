@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft, Truck, Paintbrush, CalendarDays } from 'lucide-react'
+import { ArrowLeft, Truck, Store, CalendarDays } from 'lucide-react'
 import { SERIAL_LOOKUP } from '@/lib/leer/data/serial-lookup'
 import { PartsCatalog } from '@/components/dealer/PartsCatalog'
 
@@ -79,21 +79,21 @@ export default async function SerialResultPage({
               {cap.truck_year} {cap.truck_make} {cap.truck_model}
             </p>
             <p className="text-sm text-muted-foreground">{cap.bed_length} bed</p>
-          </div>
-
-          {/* Color + dealer */}
-          <div className="flex flex-col gap-1.5 px-6 py-5">
-            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              <Paintbrush size={11} />
-              Color
-            </div>
-            <div className="flex items-center gap-2">
-              <p className="text-base font-semibold text-foreground">{cap.color}</p>
+            <div className="mt-0.5 flex items-center gap-2">
+              <p className="text-sm text-muted-foreground">{cap.color}</p>
               <span className="rounded bg-[#f0f0f0] px-1.5 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
                 {cap.color_code}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">Sold by {cap.dealer}</p>
+          </div>
+
+          {/* Dealer */}
+          <div className="flex flex-col gap-1.5 px-6 py-5">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <Store size={11} />
+              Selling Dealer
+            </div>
+            <p className="text-base font-semibold text-foreground">{cap.dealer}</p>
           </div>
 
           {/* Dates */}
