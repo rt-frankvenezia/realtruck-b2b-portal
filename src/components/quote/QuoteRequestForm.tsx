@@ -39,6 +39,72 @@ const PRODUCTS = [
   { id: '180CC',     tagline: 'Commercial CC',  desc: 'Crew cab version of the 180 — commercial durability, longer configuration.' },
 ]
 
+// ─── Demo data pools ──────────────────────────────────────────────────────────
+
+const DEMO_CUSTOMERS = [
+  { firstName: 'Alex',    lastName: 'Martinez',  address: '1234 Timber Ridge Rd', city: 'Denver',       usState: 'CO', zip: '80203' },
+  { firstName: 'Sarah',   lastName: 'Chen',      address: '567 Pearl Street',     city: 'Boulder',      usState: 'CO', zip: '80302' },
+  { firstName: 'Marcus',  lastName: 'Williams',  address: '890 College Ave',      city: 'Fort Collins',  usState: 'CO', zip: '80521' },
+  { firstName: 'Jamie',   lastName: 'O\'Brien',  address: '3301 Mesa Drive',      city: 'Grand Junction',usState: 'CO', zip: '81501' },
+  { firstName: 'Taylor',  lastName: 'Nguyen',    address: '415 Broadmoor Ave',    city: 'Colorado Springs', usState: 'CO', zip: '80906' },
+  { firstName: 'Jordan',  lastName: 'Patel',     address: '88 River Run Rd',      city: 'Vail',         usState: 'CO', zip: '81657' },
+  { firstName: 'Morgan',  lastName: 'Davis',     address: '2200 Canyon Blvd',     city: 'Longmont',     usState: 'CO', zip: '80501' },
+  { firstName: 'Casey',   lastName: 'Thompson',  address: '710 South St',         city: 'Loveland',     usState: 'CO', zip: '80537' },
+]
+
+const DEMO_VEHICLES = [
+  { year: '2025', make: 'Ford',      model: 'F-150',          submodel: 'Lariat',    bodyType: 'SuperCrew Cab Pickup',  bedLength: "5'7\"" },
+  { year: '2024', make: 'Chevrolet', model: 'Silverado 1500', submodel: 'LTZ',       bodyType: 'Crew Cab Pickup',       bedLength: "5'8\"" },
+  { year: '2025', make: 'Ram',       model: '1500',           submodel: 'Big Horn',  bodyType: 'Crew Cab Pickup',       bedLength: "5'7\"" },
+  { year: '2024', make: 'GMC',       model: 'Sierra 1500',    submodel: 'SLT',       bodyType: 'Crew Cab Pickup',       bedLength: "5'8\"" },
+  { year: '2023', make: 'Toyota',    model: 'Tacoma',         submodel: 'TRD Pro',   bodyType: 'Crew Cab Pickup',       bedLength: "5'0\"" },
+  { year: '2025', make: 'Ford',      model: 'F-250',          submodel: 'XLT',       bodyType: 'SuperCrew Cab Pickup',  bedLength: "6'9\"" },
+  { year: '2024', make: 'Chevrolet', model: 'Colorado',       submodel: 'Z71',       bodyType: 'Crew Cab Pickup',       bedLength: "5'2\"" },
+  { year: '2023', make: 'Ram',       model: '2500',           submodel: 'Tradesman', bodyType: 'Mega Cab Pickup',       bedLength: "6'4\"" },
+]
+
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
+function randomPhone(): string {
+  const area = Math.floor(Math.random() * 800 + 200)
+  const mid  = Math.floor(Math.random() * 900 + 100)
+  const last = Math.floor(Math.random() * 9000 + 1000)
+  return `${area}-${mid}-${last}`
+}
+
+function generateDemoData(locations: Location[]): FormData {
+  const c = pick(DEMO_CUSTOMERS)
+  const v = pick(DEMO_VEHICLES)
+  const p = pick(PRODUCTS)
+  const dealer = locations[0]
+  return {
+    firstName: c.firstName,
+    lastName: c.lastName,
+    phone: randomPhone(),
+    email: `${c.firstName.toLowerCase()}.${c.lastName.toLowerCase().replace(/[^a-z]/g, '')}@example.com`,
+    address: c.address,
+    country: 'United States',
+    zip: c.zip,
+    city: c.city,
+    usState: c.usState,
+    marketingConsent: true,
+    year: v.year,
+    make: v.make,
+    model: v.model,
+    submodel: v.submodel,
+    bodyType: v.bodyType,
+    bedLength: v.bedLength,
+    product: p.id,
+    dealerId: dealer?.id ?? '',
+    dealerName: dealer?.name ?? '',
+    dealerCity: dealer?.city ?? '',
+    dealerState: dealer?.state ?? '',
+    dealerAddress: dealer?.address ?? '',
+  }
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Location = {
@@ -60,16 +126,6 @@ type FormData = {
   bodyType: string; bedLength: string
   product: string
   dealerId: string; dealerName: string; dealerCity: string; dealerState: string; dealerAddress: string
-}
-
-const EMPTY: FormData = {
-  firstName: '', lastName: '', phone: '', email: '',
-  address: '', country: 'United States', zip: '', city: '', usState: '',
-  marketingConsent: true,
-  year: '', make: '', model: '', submodel: '',
-  bodyType: '', bedLength: '',
-  product: '',
-  dealerId: '', dealerName: '', dealerCity: '', dealerState: '', dealerAddress: '',
 }
 
 type Step = 'contact' | 'vehicle' | 'product' | 'dealer' | 'summary'
@@ -427,7 +483,7 @@ function SuccessScreen({ quoteId, d }: { quoteId: string; d: FormData }) {
 
 export function QuoteRequestForm({ locations }: { locations: Location[] }) {
   const [step, setStep] = useState<Step>('contact')
-  const [data, setData] = useState<FormData>(EMPTY)
+  const [data, setData] = useState<FormData>(() => generateDemoData(locations))
   const [pending, startTransition] = useTransition()
   const [submitted, setSubmitted] = useState<{ quoteId: string; data: FormData } | null>(null)
 
@@ -542,7 +598,7 @@ export function QuoteRequestForm({ locations }: { locations: Location[] }) {
             <Button
               variant="ghost"
               className="text-muted-foreground"
-              onClick={() => { setData(EMPTY); setStep('contact'); window.scrollTo({ top: 0 }) }}
+              onClick={() => { setData(generateDemoData(locations)); setStep('contact'); window.scrollTo({ top: 0 }) }}
             >
               Reset
             </Button>
