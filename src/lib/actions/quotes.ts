@@ -533,3 +533,70 @@ export async function actionPlaceFiberglassOrder(quoteId: string): Promise<{ ord
   revalidatePath('/dealer/orders')
   return { orderNumber }
 }
+
+export async function actionSubmitQuoteRequest(input: {
+  firstName: string
+  lastName: string
+  phone: string
+  email: string
+  year: string
+  make: string
+  model: string
+  submodel: string
+  bodyType: string
+  bedLength: string
+  product: string
+  dealerId: string
+}): Promise<string> {
+  const now = new Date().toISOString()
+  const id = randomId()
+
+  // Look up the location to get company_id
+  const locArr = FIXTURE_MAP['locations']
+  const loc = locArr?.find((l: any) => l.id === input.dealerId)
+  const companyId = loc?.company_id ?? null
+
+  const newQuote = {
+    id,
+    status: 'new',
+    source: 'leer.com',
+    brand: 'LEER',
+    configuration_method: 'fiberglass_direct',
+    location_id: input.dealerId,
+    company_id: companyId,
+    customer_name: `${input.firstName} ${input.lastName}`,
+    customer_email: input.email,
+    customer_phone: input.phone,
+    vehicle_year: parseInt(input.year, 10),
+    vehicle_make: input.make,
+    vehicle_model: input.model,
+    bed_length: input.bedLength,
+    body_type: input.bodyType,
+    engine: null,
+    tax_rate: 0.029,
+    original_requested_product: input.product,
+    parts_status: 'not_ordered',
+    created_at: now,
+    updated_at: now,
+  }
+
+  const quotesArr = FIXTURE_MAP['quotes']
+  if (quotesArr) quotesArr.unshift(newQuote)
+
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    actArr.unshift({
+      id: randomId(),
+      quote_id: id,
+      type: 'status_change',
+      message: 'Quote submitted via customer form',
+      is_internal: false,
+      actor_id: null,
+      created_at: now,
+      users: { name: `${input.firstName} ${input.lastName}` },
+    })
+  }
+
+  revalidatePath('/dealer/quotes')
+  return id
+}
