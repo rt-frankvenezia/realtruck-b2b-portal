@@ -26,7 +26,7 @@ const BODY_TYPES = [
   'Mega Cab Pickup',
 ]
 
-const BED_LENGTHS = ["5'0\"", "5'7\"", "6'0\"", "6'5\"", "6'6\"", "8'0\""]
+const BED_LENGTHS = ["5'0\"", "5'2\"", "5'7\"", "5'8\"", "6'0\"", "6'4\"", "6'5\"", "6'6\"", "6'9\"", "8'0\""]
 
 const PRODUCTS = [
   { id: '100S',      tagline: 'Sport Series',   desc: 'Clean, low-profile design with tip-out side windows and finished interior.' },
@@ -53,15 +53,27 @@ const DEMO_CUSTOMERS = [
 ]
 
 const DEMO_VEHICLES = [
-  { year: '2025', make: 'Ford',      model: 'F-150',          submodel: 'Lariat',    bodyType: 'SuperCrew Cab Pickup',  bedLength: "5'7\"" },
-  { year: '2024', make: 'Chevrolet', model: 'Silverado 1500', submodel: 'LTZ',       bodyType: 'Crew Cab Pickup',       bedLength: "5'8\"" },
-  { year: '2025', make: 'Ram',       model: '1500',           submodel: 'Big Horn',  bodyType: 'Crew Cab Pickup',       bedLength: "5'7\"" },
-  { year: '2024', make: 'GMC',       model: 'Sierra 1500',    submodel: 'SLT',       bodyType: 'Crew Cab Pickup',       bedLength: "5'8\"" },
-  { year: '2023', make: 'Toyota',    model: 'Tacoma',         submodel: 'TRD Pro',   bodyType: 'Crew Cab Pickup',       bedLength: "5'0\"" },
-  { year: '2025', make: 'Ford',      model: 'F-250',          submodel: 'XLT',       bodyType: 'SuperCrew Cab Pickup',  bedLength: "6'9\"" },
-  { year: '2024', make: 'Chevrolet', model: 'Colorado',       submodel: 'Z71',       bodyType: 'Crew Cab Pickup',       bedLength: "5'2\"" },
-  { year: '2023', make: 'Ram',       model: '2500',           submodel: 'Tradesman', bodyType: 'Mega Cab Pickup',       bedLength: "6'4\"" },
+  { year: '2025', make: 'Ford',      model: 'F-150',          bodyType: 'SuperCrew Cab Pickup',  bedLength: "5'7\"" },
+  { year: '2024', make: 'Chevrolet', model: 'Silverado 1500', bodyType: 'Crew Cab Pickup',       bedLength: "5'8\"" },
+  { year: '2025', make: 'Ram',       model: '1500',           bodyType: 'Crew Cab Pickup',       bedLength: "5'7\"" },
+  { year: '2024', make: 'GMC',       model: 'Sierra 1500',    bodyType: 'Crew Cab Pickup',       bedLength: "5'8\"" },
+  { year: '2023', make: 'Toyota',    model: 'Tacoma',         bodyType: 'Crew Cab Pickup',       bedLength: "5'0\"" },
+  { year: '2025', make: 'Ford',      model: 'F-250 Super Duty', bodyType: 'SuperCrew Cab Pickup',bedLength: "6'9\"" },
+  { year: '2024', make: 'Chevrolet', model: 'Colorado',       bodyType: 'Crew Cab Pickup',       bedLength: "5'2\"" },
+  { year: '2023', make: 'Ram',       model: '2500',           bodyType: 'Mega Cab Pickup',       bedLength: "6'4\"" },
 ]
+
+const MODELS_BY_MAKE: Record<string, string[]> = {
+  Ford:      ['F-150', 'F-250 Super Duty', 'F-350 Super Duty', 'Ranger', 'Maverick'],
+  Chevrolet: ['Silverado 1500', 'Silverado 2500 HD', 'Colorado', 'Suburban'],
+  GMC:       ['Sierra 1500', 'Sierra 2500 HD', 'Canyon', 'Yukon'],
+  Ram:       ['1500', '2500', '3500', 'Dakota'],
+  Toyota:    ['Tacoma', 'Tundra', '4Runner'],
+  Nissan:    ['Frontier', 'Titan', 'Titan XD'],
+  Honda:     ['Ridgeline'],
+  Jeep:      ['Gladiator', 'Wrangler'],
+  Other:     ['Other'],
+}
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
@@ -93,7 +105,6 @@ function generateDemoData(locations: Location[]): FormData {
     year: v.year,
     make: v.make,
     model: v.model,
-    submodel: v.submodel,
     bodyType: v.bodyType,
     bedLength: v.bedLength,
     product: p.id,
@@ -122,7 +133,7 @@ type FormData = {
   firstName: string; lastName: string; phone: string; email: string
   address: string; country: string; zip: string; city: string; usState: string
   marketingConsent: boolean
-  year: string; make: string; model: string; submodel: string
+  year: string; make: string; model: string
   bodyType: string; bedLength: string
   product: string
   dealerId: string; dealerName: string; dealerCity: string; dealerState: string; dealerAddress: string
@@ -233,16 +244,16 @@ function VehicleStep({ d, set }: { d: FormData; set: (u: Partial<FormData>) => v
           </select>
         </Field>
         <Field label="Make" required>
-          <select className={INPUT} value={d.make} onChange={(e) => set({ make: e.target.value })}>
+          <select className={INPUT} value={d.make} onChange={(e) => set({ make: e.target.value, model: '' })}>
             <option value="">Select make…</option>
             {COMMON_MAKES.map((m) => <option key={m} value={m}>{m}</option>)}
           </select>
         </Field>
         <Field label="Model" required>
-          <input className={INPUT} value={d.model} onChange={(e) => set({ model: e.target.value })} placeholder="e.g. F-150" />
-        </Field>
-        <Field label="Submodel">
-          <input className={INPUT} value={d.submodel} onChange={(e) => set({ submodel: e.target.value })} placeholder="e.g. XLT, Lariat (optional)" />
+          <select className={INPUT} value={d.model} onChange={(e) => set({ model: e.target.value })} disabled={!d.make}>
+            <option value="">{d.make ? 'Select model…' : 'Select make first…'}</option>
+            {(MODELS_BY_MAKE[d.make] ?? []).map((m) => <option key={m} value={m}>{m}</option>)}
+          </select>
         </Field>
         <Field label="Body Type" required>
           <select className={INPUT} value={d.bodyType} onChange={(e) => set({ bodyType: e.target.value })}>
@@ -402,7 +413,6 @@ function SummaryStep({ d, goToStep }: { d: FormData; goToStep: (s: Step) => void
         <SummaryField label="Year" value={d.year} />
         <SummaryField label="Make" value={d.make} />
         <SummaryField label="Model" value={d.model} />
-        {d.submodel && <SummaryField label="Submodel" value={d.submodel} />}
         <SummaryField label="Body Type" value={d.bodyType} />
         <SummaryField label="Bed Length" value={d.bedLength} />
       </SummarySection>
@@ -524,7 +534,6 @@ export function QuoteRequestForm({ locations }: { locations: Location[] }) {
         year: data.year,
         make: data.make,
         model: data.model,
-        submodel: data.submodel,
         bodyType: data.bodyType,
         bedLength: data.bedLength,
         product: data.product,

@@ -542,7 +542,6 @@ export async function actionSubmitQuoteRequest(input: {
   year: string
   make: string
   model: string
-  submodel: string
   bodyType: string
   bedLength: string
   product: string
