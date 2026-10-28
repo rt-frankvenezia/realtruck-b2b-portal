@@ -209,6 +209,240 @@ export async function actionAddQuoteDiscount(quoteId: string, description: strin
   revalidatePath(`/dealer/quotes/${quoteId}`)
 }
 
+export async function actionStartWorking(quoteId: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) arr[idx] = { ...arr[idx], status: 'working', updated_at: now }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'status_change',
+      message: `${user.name} started working on the quote`,
+      is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+  revalidatePath('/dealer/quotes')
+}
+
+export async function actionMarkAsSent(quoteId: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) arr[idx] = { ...arr[idx], status: 'quote_sent', updated_at: now }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'quote_sent',
+      message: `${user.name} marked the quote as sent (presented outside portal)`,
+      is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+  revalidatePath('/dealer/quotes')
+}
+
+export async function actionMarkCustomerApproved(quoteId: string, note?: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) {
+      arr[idx] = {
+        ...arr[idx],
+        status: 'customer_approved',
+        approval_at: now,
+        approval_actor_id: user.id,
+        approval_note: note?.trim() || null,
+        updated_at: now,
+      }
+    }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    const msg = note?.trim()
+      ? `${user.name} marked the quote as customer approved — "${note.trim()}"`
+      : `${user.name} marked the quote as customer approved`
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'status_change',
+      message: msg, is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+  revalidatePath('/dealer/quotes')
+}
+
+export async function actionReviseQuote(quoteId: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) arr[idx] = { ...arr[idx], status: 'working', updated_at: now }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'status_change',
+      message: `${user.name} created a new revision — quote returned to Working`,
+      is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+  revalidatePath('/dealer/quotes')
+}
+
+export async function actionCloseAsLost(quoteId: string, reason: string, note?: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) {
+      arr[idx] = { ...arr[idx], status: 'closed_lost', lost_reason: reason, lost_note: note?.trim() || null, updated_at: now }
+    }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    const detail = note?.trim() ? ` — ${note.trim()}` : ''
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'status_change',
+      message: `${user.name} closed the quote as lost: ${reason}${detail}`,
+      is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+  revalidatePath('/dealer/quotes')
+}
+
+export async function actionDismiss(quoteId: string, reason: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) arr[idx] = { ...arr[idx], status: 'dismissed', dismissed_reason: reason, updated_at: now }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'status_change',
+      message: `${user.name} dismissed the quote: ${reason}`,
+      is_internal: true, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+  revalidatePath('/dealer/quotes')
+}
+
+export async function actionReopenQuote(quoteId: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) arr[idx] = { ...arr[idx], status: 'working', updated_at: now }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'status_change',
+      message: `${user.name} reopened the quote`,
+      is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+  revalidatePath('/dealer/quotes')
+}
+
+export async function actionMarkPartsArranged(quoteId: string, reason: string, note?: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) {
+      arr[idx] = {
+        ...arr[idx],
+        parts_status: 'parts_arranged',
+        parts_arranged_reason: reason,
+        parts_arranged_note: note?.trim() || null,
+        parts_arranged_at: now,
+        parts_arranged_actor_id: user.id,
+        updated_at: now,
+      }
+    }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    const detail = note?.trim() ? ` — ${note.trim()}` : ''
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'system',
+      message: `${user.name} marked parts as arranged: ${reason}${detail}`,
+      is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+}
+
+export async function actionUndoPartsArranged(quoteId: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1) {
+      arr[idx] = {
+        ...arr[idx],
+        parts_status: 'not_ordered',
+        parts_arranged_reason: null,
+        parts_arranged_note: null,
+        parts_arranged_at: null,
+        parts_arranged_actor_id: null,
+        updated_at: now,
+      }
+    }
+  }
+  const actArr = FIXTURE_MAP['quote_activity']
+  if (actArr) {
+    actArr.unshift({
+      id: randomId(), quote_id: quoteId, type: 'system',
+      message: `${user.name} reversed Parts Arranged — returned to Not Ordered`,
+      is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+    })
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+}
+
+export async function actionCreateQuoteCheckout(quoteId: string) {
+  const now = new Date().toISOString()
+  const user = await currentUser()
+  const arr = FIXTURE_MAP['quotes']
+  if (arr) {
+    const idx = arr.findIndex((q) => q.id === quoteId)
+    if (idx !== -1 && arr[idx].parts_status !== 'in_checkout') {
+      arr[idx] = { ...arr[idx], parts_status: 'in_checkout', updated_at: now }
+      const actArr = FIXTURE_MAP['quote_activity']
+      if (actArr) {
+        actArr.unshift({
+          id: randomId(), quote_id: quoteId, type: 'system',
+          message: `${user.name} started checkout for quote parts`,
+          is_internal: false, actor_id: user.id, created_at: now, users: { name: user.name },
+        })
+      }
+    }
+  }
+  revalidatePath(`/dealer/quotes/${quoteId}`)
+}
+
 export async function actionPlaceFiberglassOrder(quoteId: string): Promise<{ orderNumber: string }> {
   const now = new Date().toISOString()
   const user = await currentUser()
@@ -270,7 +504,14 @@ export async function actionPlaceFiberglassOrder(quoteId: string): Promise<{ ord
 
   if (quotesArr) {
     const idx = quotesArr.findIndex((q) => q.id === quoteId)
-    if (idx !== -1) quotesArr[idx] = { ...quotesArr[idx], status: 'closed_won', updated_at: now }
+    if (idx !== -1) {
+      quotesArr[idx] = {
+        ...quotesArr[idx],
+        parts_status: 'ordered',
+        order_number: orderNumber,
+        updated_at: now,
+      }
+    }
   }
 
   const actArr = FIXTURE_MAP['quote_activity']
@@ -278,8 +519,8 @@ export async function actionPlaceFiberglassOrder(quoteId: string): Promise<{ ord
     actArr.unshift({
       id: randomId(),
       quote_id: quoteId,
-      type: 'status_change',
-      message: `Wholesale order placed: ${orderNumber}`,
+      type: 'system',
+      message: `${user.name} placed a wholesale order: ${orderNumber}`,
       is_internal: false,
       actor_id: user.id,
       created_at: now,

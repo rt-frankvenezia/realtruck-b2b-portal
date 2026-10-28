@@ -1190,7 +1190,11 @@ export const QUOTES = [
   },
   {
     id: '55555555-5555-5555-5555-000000000004',
-    status: 'closed_won',
+    status: 'customer_approved',
+    parts_status: 'ordered',
+    order_number: 'RT-2026-8127',
+    approval_note: 'Approved by phone.',
+    approval_at: '2026-09-22T14:30:00Z',
     source: 'realtruck.com',
     brand: 'ARE',
     configuration_method: 'are-consumer',
@@ -1212,6 +1216,7 @@ export const QUOTES = [
   {
     id: '55555555-5555-5555-5555-000000000005',
     status: 'closed_lost',
+    lost_reason: 'Price',
     source: 'realtruck.com',
     brand: 'ARE',
     configuration_method: 'are-consumer',
@@ -1232,7 +1237,8 @@ export const QUOTES = [
   },
   {
     id: '55555555-5555-5555-5555-000000000006',
-    status: 'spam',
+    status: 'dismissed',
+    dismissed_reason: 'Spam',
     source: 'realtruck.com',
     brand: 'ARE',
     configuration_method: 'are-consumer',
@@ -1253,7 +1259,8 @@ export const QUOTES = [
   },
   {
     id: '55555555-5555-5555-5555-000000000007',
-    status: 'invalid',
+    status: 'dismissed',
+    dismissed_reason: 'Invalid',
     source: 'realtruck.com',
     brand: 'ARE',
     configuration_method: 'are-consumer',
@@ -1274,7 +1281,8 @@ export const QUOTES = [
   },
   {
     id: '55555555-5555-5555-5555-000000000008',
-    status: 'test',
+    status: 'dismissed',
+    dismissed_reason: 'Test',
     source: 'realtruck.com',
     brand: 'ARE',
     configuration_method: 'are-consumer',

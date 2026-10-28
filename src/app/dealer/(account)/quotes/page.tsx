@@ -41,11 +41,11 @@ export default async function DealerQuotesPage() {
   const locMap = new Map<string, LocRow>((locations ?? []).map((l: any) => [l.id as string, l as LocRow]))
 
   const rows = quotes ?? []
-  const activeStatuses = new Set(['new', 'working', 'quote_sent'])
+  const activeStatuses = new Set(['new', 'working', 'quote_sent', 'customer_approved'])
   const requiresAction = rows.filter((q) => q.status === 'new').length
-  const total = rows.length
-  const active = rows.filter((q) => activeStatuses.has(q.status)).length
-  const converted = rows.filter((q) => q.status === 'closed_won').length
+  const total = rows.filter((q) => !['dismissed'].includes((q as any).status)).length
+  const active = rows.filter((q) => activeStatuses.has((q as any).status)).length
+  const converted = rows.filter((q) => (q as any).status === 'customer_approved' || (q as any).status === 'closed_won').length
   const conversionRate = total > 0 ? Math.round((converted / total) * 100) : 0
 
   return (

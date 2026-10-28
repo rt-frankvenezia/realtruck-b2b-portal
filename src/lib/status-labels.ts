@@ -26,26 +26,45 @@ export const DEALER_STATUS_VARIANT: Record<Database['public']['Enums']['dealer_o
   cancelled: 'destructive',
 }
 
-export const QUOTE_STATUS_LABEL: Record<Database['public']['Enums']['quote_status'], string> = {
+export const QUOTE_STATUS_LABEL: Record<string, string> = {
   new: 'New',
   working: 'Working',
   quote_sent: 'Quote Sent',
-  closed_won: 'Closed Won',
+  customer_approved: 'Customer Approved',
   closed_lost: 'Closed Lost',
-  spam: 'Spam',
-  invalid: 'Invalid',
-  test: 'Test',
+  dismissed: 'Dismissed',
+  // legacy — kept for any existing data that hasn't been migrated
+  closed_won: 'Customer Approved',
+  spam: 'Dismissed',
+  invalid: 'Dismissed',
+  test: 'Dismissed',
 }
 
-export const QUOTE_STATUS_VARIANT: Record<Database['public']['Enums']['quote_status'], BadgeVariant> = {
+export const QUOTE_STATUS_VARIANT: Record<string, BadgeVariant> = {
   new: 'info',
   working: 'secondary',
   quote_sent: 'secondary',
-  closed_won: 'success',
+  customer_approved: 'success',
   closed_lost: 'destructive',
-  spam: 'destructive',
-  invalid: 'destructive',
+  dismissed: 'outline',
+  closed_won: 'success',
+  spam: 'outline',
+  invalid: 'outline',
   test: 'outline',
+}
+
+export const PARTS_STATUS_LABEL: Record<string, string> = {
+  not_ordered: 'Not Ordered',
+  in_checkout: 'In Checkout',
+  ordered: 'Ordered',
+  parts_arranged: 'Parts Arranged',
+}
+
+export const PARTS_STATUS_VARIANT: Record<string, BadgeVariant> = {
+  not_ordered: 'outline',
+  in_checkout: 'secondary',
+  ordered: 'success',
+  parts_arranged: 'success',
 }
 
 export const PAYOUT_STATUS_LABEL: Record<Database['public']['Enums']['payout_status'], string> = {
