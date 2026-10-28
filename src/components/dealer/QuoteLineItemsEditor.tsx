@@ -44,13 +44,28 @@ function EditablePrice({
   value: number
   onChange: (n: number) => void
 }) {
+  const [focused, setFocused] = useState(false)
   const [raw, setRaw] = useState(String(value))
+
+  if (!focused) {
+    return (
+      <button
+        type="button"
+        onClick={() => { setRaw(String(value)); setFocused(true) }}
+        className="w-full cursor-text text-right text-sm tabular-nums hover:text-primary"
+      >
+        {formatCurrency(value)}
+      </button>
+    )
+  }
+
   return (
     <input
       type="number"
       min={0}
       step={0.01}
       value={raw}
+      autoFocus
       placeholder="0.00"
       onChange={(e) => {
         setRaw(e.target.value)
@@ -58,6 +73,7 @@ function EditablePrice({
         if (!isNaN(n)) onChange(n)
       }}
       onBlur={() => {
+        setFocused(false)
         if (raw === '' || isNaN(parseFloat(raw))) {
           setRaw('0')
           onChange(0)
