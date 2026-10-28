@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Truck, Paintbrush, CalendarDays } from 'lucide-react'
 import { SERIAL_LOOKUP } from '@/lib/leer/data/serial-lookup'
 import { PartsCatalog } from '@/components/dealer/PartsCatalog'
 
@@ -9,17 +9,6 @@ function formatDate(iso: string) {
     month: 'long',
     day: 'numeric',
   })
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex items-baseline justify-between gap-4 py-2.5">
-      <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-        {label}
-      </span>
-      <span className="text-sm text-foreground">{value}</span>
-    </div>
-  )
 }
 
 export default async function SerialResultPage({
@@ -65,64 +54,65 @@ export default async function SerialResultPage({
         <span className="font-mono font-medium text-foreground">{cap.serial}</span>
       </div>
 
-      {/* Cap details card */}
+      {/* Cap identity card */}
       <div className="overflow-hidden rounded-lg border border-[#e8e8e8]">
-        {/* Header bar */}
-        <div className="flex items-center justify-between bg-[#1E1E1E] px-6 py-3">
-          <span className="text-xs font-bold uppercase tracking-widest text-white/60">
-            Cap Details
-          </span>
-          <span className="rounded border border-[#FFC60B]/40 px-2 py-0.5 text-[11px] font-bold uppercase tracking-widest text-[#FFC60B]">
-            {cap.brand}
-          </span>
-        </div>
-
-        {/* Model + serial identity */}
-        <div className="border-b border-[#f0f0f0] bg-white px-6 py-5">
-          <p className="text-2xl font-bold text-foreground">{cap.model}</p>
-          <p className="mt-1 font-mono text-sm text-muted-foreground">SN {cap.serial}</p>
-        </div>
-
-        {/* Vehicle info */}
-        <div className="bg-white px-6">
-          <div className="border-b border-[#f0f0f0] pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Fitted Vehicle
+        {/* Dark header: brand + model + serial */}
+        <div className="flex items-center justify-between bg-[#1E1E1E] px-6 py-4">
+          <div className="flex items-center gap-3">
+            <span className="rounded bg-[#FFC60B] px-2 py-0.5 text-[11px] font-bold uppercase tracking-widest text-black">
+              {cap.brand}
             </span>
+            <span className="text-xl font-bold text-white">{cap.model}</span>
           </div>
-          <div className="divide-y divide-[#f0f0f0]">
-            <InfoRow
-              label="Vehicle"
-              value={`${cap.truck_year} ${cap.truck_make} ${cap.truck_model}`}
-            />
-            <InfoRow label="Bed Length" value={cap.bed_length} />
-            <InfoRow label="Color" value={`${cap.color} (${cap.color_code})`} />
-          </div>
+          <span className="font-mono text-sm text-white/50">SN: {cap.serial}</span>
         </div>
 
-        {/* Registration */}
-        <div className="bg-white px-6 pb-4">
-          <div className="border-b border-[#f0f0f0] pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Registration
-            </span>
+        {/* Three-column info strip */}
+        <div className="grid grid-cols-3 divide-x divide-[#f0f0f0] bg-white">
+          {/* Vehicle */}
+          <div className="flex flex-col gap-1.5 px-6 py-5">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <Truck size={11} />
+              Vehicle
+            </div>
+            <p className="text-base font-semibold text-foreground">
+              {cap.truck_year} {cap.truck_make} {cap.truck_model}
+            </p>
+            <p className="text-sm text-muted-foreground">{cap.bed_length} bed</p>
           </div>
-          <div className="divide-y divide-[#f0f0f0]">
-            <InfoRow label="Manufacture Date" value={formatDate(cap.manufactured_date)} />
-            <div className="flex items-baseline justify-between gap-4 py-2.5">
-              <span className="text-xs font-bold uppercase tracking-wide text-muted-foreground">
-                Warranty Expiration
-              </span>
-              <span className={`text-sm ${warrantyExpired ? 'text-red-500' : 'text-foreground'}`}>
-                {formatDate(cap.warranty_expiration)}
-                {warrantyExpired && (
-                  <span className="ml-2 rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-red-600">
-                    Expired
-                  </span>
-                )}
+
+          {/* Color + dealer */}
+          <div className="flex flex-col gap-1.5 px-6 py-5">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <Paintbrush size={11} />
+              Color
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="text-base font-semibold text-foreground">{cap.color}</p>
+              <span className="rounded bg-[#f0f0f0] px-1.5 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
+                {cap.color_code}
               </span>
             </div>
-            <InfoRow label="Selling Dealer" value={cap.dealer} />
+            <p className="text-sm text-muted-foreground">Sold by {cap.dealer}</p>
+          </div>
+
+          {/* Dates */}
+          <div className="flex flex-col gap-1.5 px-6 py-5">
+            <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              <CalendarDays size={11} />
+              Manufactured
+            </div>
+            <p className="text-base font-semibold text-foreground">
+              {formatDate(cap.manufactured_date)}
+            </p>
+            <p className={`text-sm ${warrantyExpired ? 'text-red-500' : 'text-muted-foreground'}`}>
+              Warranty through {formatDate(cap.warranty_expiration)}
+              {warrantyExpired && (
+                <span className="ml-1.5 rounded bg-red-100 px-1.5 py-0.5 text-[10px] font-bold uppercase text-red-600">
+                  Expired
+                </span>
+              )}
+            </p>
           </div>
         </div>
       </div>
