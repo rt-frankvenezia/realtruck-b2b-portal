@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { createAdminClient } from '@/lib/supabase/admin'
+import { FIXTURE_MAP } from '@/lib/mock/client'
 
 // Creating a real login requires the service role (auth.admin.*), which the
 // browser client can never hold — so this has to be a server route, not a
@@ -41,29 +42,39 @@ export async function POST(req: NextRequest) {
   // location_admin can only assign a new user to locations they themselves manage.
   if (caller.role === 'location_admin' && Array.isArray(locationIds) && locationIds.length > 0) {
     const { data: ownLocations } = await supabase.from('user_locations').select('location_id').eq('user_id', user.id)
-    const ownLocationIds = new Set((ownLocations ?? []).map((l) => l.location_id))
+    const ownLocationIds = new Set((ownLocations ?? []).map((l: any) => l.location_id))
     if (locationIds.some((id: string) => !ownLocationIds.has(id))) {
       return NextResponse.json({ error: 'You can only assign users to your own locations' }, { status: 403 })
     }
   }
 
-  const admin = createAdminClient()
+  const now = new Date().toISOString()
+  const userId = crypto.randomUUID()
   const tempPassword = crypto.randomUUID()
 
-  const { data: created, error: createError } = await admin.auth.admin.createUser({
+  const usersArr = FIXTURE_MAP['users']
+  if (!usersArr) return NextResponse.json({ error: 'users table not found' }, { status: 500 })
+
+  usersArr.push({
+    id: userId,
     email,
-    password: tempPassword,
-    email_confirm: true,
-    user_metadata: { name, role, company_id: companyId ?? null },
+    name,
+    role,
+    company_id: companyId ?? null,
+    status: 'active',
+    created_at: now,
+    updated_at: now,
   })
 
-  if (createError) return NextResponse.json({ error: createError.message }, { status: 400 })
-
   if (Array.isArray(locationIds) && locationIds.length > 0) {
-    const rows = locationIds.map((locationId: string) => ({ user_id: created.user.id, location_id: locationId }))
-    const { error: locError } = await admin.from('user_locations').insert(rows)
-    if (locError) return NextResponse.json({ error: locError.message }, { status: 400 })
+    const userLocArr = FIXTURE_MAP['user_locations']
+    if (userLocArr) {
+      for (const locationId of locationIds) {
+        userLocArr.push({ id: crypto.randomUUID(), user_id: userId, location_id: locationId, created_at: now })
+      }
+    }
   }
 
-  return NextResponse.json({ ok: true, userId: created.user.id, tempPassword })
+  revalidatePath('/admin', 'layout')
+  return NextResponse.json({ ok: true, userId, tempPassword })
 }
