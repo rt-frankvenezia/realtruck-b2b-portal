@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionCreateCompany } from '@/lib/actions/admin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -26,8 +26,7 @@ export function CreateCompanyDialog() {
 
   function handleCreate() {
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.from('companies').insert({ name, code })
+      const { error } = await actionCreateCompany(name, code)
       if (error) {
         toast.error(error.message)
         return

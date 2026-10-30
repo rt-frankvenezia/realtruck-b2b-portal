@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionUpdateCompanyCatalog } from '@/lib/actions/admin'
 import { Input } from '@/components/ui/input'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -55,13 +55,8 @@ export function CompanyCatalogSelect({
     if (next === (catalogId ?? NONE)) return
 
     startTransition(async () => {
-      const supabase = createClient()
-
       if (next === NONE) {
-        const { error } = await supabase
-          .from('companies')
-          .update({ catalog_id: null, pricing_group_id: null, restriction_group_id: null })
-          .eq('id', companyId)
+        const { error } = await actionUpdateCompanyCatalog(companyId, null, null, null)
         if (error) { toast.error(error.message); return }
         toast.success('Catalog removed')
         router.refresh()
@@ -72,14 +67,12 @@ export function CompanyCatalogSelect({
       if (!catalog) return
 
       // Sync pricing_group_id + restriction_group_id so storefront RPCs work unchanged.
-      const { error } = await supabase
-        .from('companies')
-        .update({
-          catalog_id: next,
-          pricing_group_id: catalog.pricing_group_id,
-          restriction_group_id: catalog.restriction_group_id,
-        })
-        .eq('id', companyId)
+      const { error } = await actionUpdateCompanyCatalog(
+        companyId,
+        next,
+        catalog.pricing_group_id,
+        catalog.restriction_group_id,
+      )
       if (error) { toast.error(error.message); return }
       toast.success('Catalog updated')
       router.refresh()

@@ -3,7 +3,7 @@
 import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionUpdateCompanyStatus } from '@/lib/actions/admin'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { COMPANY_STATUS_LABEL } from '@/lib/status-labels'
 import type { Database } from '@/lib/database.types'
@@ -17,8 +17,7 @@ export function CompanyStatusSelect({ companyId, status }: { companyId: string; 
 
   function handleChange(next: CompanyStatus) {
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.from('companies').update({ status: next }).eq('id', companyId)
+      const { error } = await actionUpdateCompanyStatus(companyId, next)
       if (error) {
         toast.error(error.message)
         return

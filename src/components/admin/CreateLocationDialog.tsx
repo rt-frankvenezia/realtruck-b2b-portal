@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionCreateLocation } from '@/lib/actions/admin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,8 +28,7 @@ export function CreateLocationDialog({ companyId }: { companyId: string }) {
 
   function handleCreate() {
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.from('locations').insert({ company_id: companyId, name, code, city, state })
+      const { error } = await actionCreateLocation(companyId, name, code, city, state)
       if (error) {
         toast.error(error.message)
         return

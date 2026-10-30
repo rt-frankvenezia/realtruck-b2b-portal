@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionUpdateCompanyNetSuiteId } from '@/lib/actions/admin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -14,8 +14,7 @@ export function NetSuiteIdForm({ companyId, netsuiteCustomerId }: { companyId: s
 
   function handleSave() {
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.from('companies').update({ netsuite_customer_id: value || null }).eq('id', companyId)
+      const { error } = await actionUpdateCompanyNetSuiteId(companyId, value || null)
       if (error) {
         toast.error(error.message)
         return

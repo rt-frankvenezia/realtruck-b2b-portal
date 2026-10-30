@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionApproveLocation, actionRejectLocation } from '@/lib/actions/admin'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -46,12 +46,7 @@ export function LocationApprovalDialog({
 
   function handleApprove() {
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.rpc('approve_location', {
-        p_location_id: locationId,
-        p_location_code: code,
-        p_internal_note: note || undefined,
-      })
+      const { error } = await actionApproveLocation(locationId, code, note || undefined)
       if (error) {
         toast.error(error.message)
         return
@@ -64,8 +59,7 @@ export function LocationApprovalDialog({
 
   function handleReject() {
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.rpc('reject_location', { p_location_id: locationId, p_reason: reason })
+      const { error } = await actionRejectLocation(locationId, reason)
       if (error) {
         toast.error(error.message)
         return

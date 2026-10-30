@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { createClient } from '@/lib/supabase/client'
+import { actionUpdateCompanyPricingGroup } from '@/lib/actions/admin'
 import { Input } from '@/components/ui/input'
 import { Check, ChevronsUpDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -54,11 +54,7 @@ export function CompanyPricingGroupSelect({
     if (next === (pricingGroupId ?? NONE)) return
 
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase
-        .from('companies')
-        .update({ pricing_group_id: next === NONE ? null : next })
-        .eq('id', companyId)
+      const { error } = await actionUpdateCompanyPricingGroup(companyId, next === NONE ? null : next)
       if (error) { toast.error(error.message); return }
       toast.success(next === NONE ? 'Pricing group removed' : 'Pricing group updated')
       router.refresh()

@@ -37,43 +37,50 @@ import {
 } from './fixtures'
 import { DEMO_USERS } from './session'
 
-export const FIXTURE_MAP: Record<string, any[]> = {
-  product_categories: PRODUCT_CATEGORIES,
-  catalog_products: CATALOG_PRODUCTS,
-  catalog_product_inventory: CATALOG_PRODUCT_INVENTORY,
-  fulfillment_locations: FULFILLMENT_LOCATIONS,
-  sku_fitment: SKU_FITMENT,
-  companies: COMPANIES,
-  locations: LOCATIONS,
-  users: USERS,
-  user_locations: USER_LOCATIONS,
-  credit_accounts: CREDIT_ACCOUNTS,
-  invoices: INVOICES,
-  invoice_line_items: INVOICE_LINE_ITEMS,
-  payments: PAYMENTS,
-  payment_allocations: PAYMENT_ALLOCATIONS,
-  bank_accounts: BANK_ACCOUNTS,
-  saved_payment_methods: SAVED_PAYMENT_METHODS,
-  saved_payment_method_locations: SAVED_PAYMENT_METHOD_LOCATIONS,
-  product_orders: PRODUCT_ORDERS,
-  product_order_items: PRODUCT_ORDER_ITEMS,
-  quotes: QUOTES,
-  quote_line_items: QUOTE_LINE_ITEMS,
-  installations: INSTALLATIONS,
-  resources: RESOURCES,
-  warranty_registrations: WARRANTY_REGISTRATIONS,
-  statements: STATEMENTS,
-  catalogs: CATALOGS,
-  pricing_groups: PRICING_GROUPS,
-  pricing_group_base_tiers: PRICING_GROUP_BASE_TIERS,
-  pricing_rules: PRICING_RULES,
-  pricing_rule_tiers: PRICING_RULE_TIERS,
-  restriction_groups: RESTRICTION_GROUPS,
-  restriction_rules: RESTRICTION_RULES,
-  audit_log: AUDIT_LOG,
-  credit_applications: CREDIT_APPLICATIONS,
-  quote_activity: QUOTE_ACTIVITY,
+// Persist fixture data across hot reloads by anchoring arrays on globalThis.
+// On first load, shallow-copy each seed array so mutations don't touch fixtures.ts.
+// On subsequent loads (hot reload), reuse the existing mutated arrays.
+const _g = globalThis as any
+if (!_g.__rtFixtureMap) {
+  _g.__rtFixtureMap = {
+    product_categories: [...PRODUCT_CATEGORIES],
+    catalog_products: [...CATALOG_PRODUCTS],
+    catalog_product_inventory: [...CATALOG_PRODUCT_INVENTORY],
+    fulfillment_locations: [...FULFILLMENT_LOCATIONS],
+    sku_fitment: [...SKU_FITMENT],
+    companies: [...COMPANIES],
+    locations: [...LOCATIONS],
+    users: [...USERS],
+    user_locations: [...USER_LOCATIONS],
+    credit_accounts: [...CREDIT_ACCOUNTS],
+    invoices: [...INVOICES],
+    invoice_line_items: [...INVOICE_LINE_ITEMS],
+    payments: [...PAYMENTS],
+    payment_allocations: [...PAYMENT_ALLOCATIONS],
+    bank_accounts: [...BANK_ACCOUNTS],
+    saved_payment_methods: [...SAVED_PAYMENT_METHODS],
+    saved_payment_method_locations: [...SAVED_PAYMENT_METHOD_LOCATIONS],
+    product_orders: [...PRODUCT_ORDERS],
+    product_order_items: [...PRODUCT_ORDER_ITEMS],
+    quotes: [...QUOTES],
+    quote_line_items: [...QUOTE_LINE_ITEMS],
+    installations: [...INSTALLATIONS],
+    resources: [...RESOURCES],
+    warranty_registrations: [...WARRANTY_REGISTRATIONS],
+    statements: [...STATEMENTS],
+    catalogs: [...CATALOGS],
+    pricing_groups: [...PRICING_GROUPS],
+    pricing_group_base_tiers: [...PRICING_GROUP_BASE_TIERS],
+    pricing_rules: [...PRICING_RULES],
+    pricing_rule_tiers: [...PRICING_RULE_TIERS],
+    restriction_groups: [...RESTRICTION_GROUPS],
+    restriction_rules: [...RESTRICTION_RULES],
+    audit_log: [...AUDIT_LOG],
+    credit_applications: [...CREDIT_APPLICATIONS],
+    quote_activity: [...QUOTE_ACTIVITY],
+  }
 }
+export const FIXTURE_MAP: Record<string, any[]> = _g.__rtFixtureMap
 
 function randomUUID(): string {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {

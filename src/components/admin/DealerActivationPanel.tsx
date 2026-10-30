@@ -4,7 +4,7 @@ import { useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { Check, X } from 'lucide-react'
-import { createClient } from '@/lib/supabase/client'
+import { actionUpdateCompanyStatus } from '@/lib/actions/admin'
 import { Button } from '@/components/ui/button'
 
 type Requirement = { label: string; met: boolean }
@@ -16,8 +16,7 @@ export function DealerActivationPanel({ companyId, requirements }: { companyId: 
 
   function handleActivate() {
     startTransition(async () => {
-      const supabase = createClient()
-      const { error } = await supabase.from('companies').update({ status: 'active' }).eq('id', companyId)
+      const { error } = await actionUpdateCompanyStatus(companyId, 'active')
       if (error) {
         toast.error(error.message)
         return
